@@ -229,14 +229,14 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 150,
+                        height: 170,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.all(12),
                           child:InkWell(
                             onTap: (){
                               /* if(_IsPay==1){
@@ -294,14 +294,14 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 150,
+                        height: 170,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.all(12),
                           child:InkWell(
                             onTap: (){
 
@@ -341,14 +341,14 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child:SizedBox(
                         width: 100,
-                        height: 150,
+                        height: 170,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.all(12),
                           child:InkWell(
                             onTap: (){
 
@@ -395,14 +395,14 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 150,
+                        height: 170,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.all(12),
                           child:InkWell(
                             onTap: (){
                               /* if(_IsPay==1){
@@ -460,14 +460,14 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 150,
+                        height: 170,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.all(12),
                           child:InkWell(
                             onTap: (){
 
@@ -507,14 +507,14 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child:SizedBox(
                         width: 100,
-                        height: 150,
+                        height: 170,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.all(12),
                           child:InkWell(
                             onTap: (){
 
@@ -560,7 +560,7 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 150,
+                        height: 140,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
@@ -581,7 +581,7 @@ class _MyHomePageState extends State<HomePage> {
                                     width: 60,
                                     child: Image.asset( "assets/reviewd.png", fit: BoxFit.cover),
                                   ),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 5),
                                   Text(
                                     "Reviews",maxLines: 2,textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -607,7 +607,7 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child:SizedBox(
                         width: 100,
-                        height: 150,
+                        height: 140,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
@@ -628,7 +628,7 @@ class _MyHomePageState extends State<HomePage> {
                                     width: 60,
                                     child: Image.asset("assets/contd.png", fit: BoxFit.cover),
                                   ),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 5),
                                   Text(
                                     "Contact Us",maxLines: 2,textAlign: TextAlign.center,
                                     style: TextStyle(

@@ -8,15 +8,15 @@ import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 
-class SignUp extends StatefulWidget {
+class Contacts extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return SignUpState();
+    return ContactsState();
   }
 }
 
 
-class SignUpState extends State<SignUp> {
+class ContactsState extends State<Contacts> {
   static const colors= AppColors();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 14.0);
   var emojiRegexp =
@@ -110,7 +110,7 @@ class SignUpState extends State<SignUp> {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: AssetImage("assets/bg2.png"),
+                                  image: AssetImage("assets/bg4.png"),
                                   fit: BoxFit.fill,
                                 ),
                               ),
@@ -120,7 +120,7 @@ class SignUpState extends State<SignUp> {
                                     children: <Widget>[
                                      SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 1,
                                         child:Column(
                                          // crossAxisAlignment: CrossAxisAlignment.center,
                                           mainAxisAlignment: MainAxisAlignment.center,
