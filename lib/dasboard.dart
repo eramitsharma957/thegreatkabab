@@ -2,6 +2,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thegreatkabab/const/colors.dart';
+import 'package:thegreatkabab/contact.dart';
 import 'package:thegreatkabab/custom_animated_bottom_bar.dart';
 import 'package:thegreatkabab/signup.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
@@ -203,7 +204,7 @@ class _MyHomePageState extends State<HomePage> {
       ),
       Container(
         color: Colors.white,
-        child: getHomePage(),
+        child: getContactPage(),
       ),
     ];
     return IndexedStack(
@@ -617,7 +618,8 @@ class _MyHomePageState extends State<HomePage> {
                           margin: EdgeInsets.all(5),
                           child:InkWell(
                             onTap: (){
-
+                              Navigator.push(
+                                  context, MaterialPageRoute(builder: (context) => ContactUs()));
                             },
                             child:Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -664,5 +666,218 @@ class _MyHomePageState extends State<HomePage> {
 
 
 
+  /////////////////////////////////// CONTACT PAGE ///////////////////////////
+  Widget getContactPage(){
+    return SingleChildScrollView(
+      child:   Container(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/bg4.png"),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+
+                Column(
+                    children: <Widget>[
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                      Expanded(
+                        flex: 1,
+                        child:Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                           SizedBox(
+                              height: 150.0,
+                              width: 150.0,
+                              child: Image.asset("assets/logo.png", fit: BoxFit.contain),
+                            ),
+                          ],
+                        ),
+
+                      ),
+
+                      Expanded(
+                        flex: 4,
+                        child:Stack(
+                          children: [
+                            Container(
+                              decoration:const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("assets/shapenew.png"),
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+
+                            Visibility(
+                              visible: true,
+                              child:  Padding(
+                                padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
+                                child:Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      //crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          flex:1,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.0),
+                                            child: SizedBox(
+                                              height: 50,
+                                              width: 50,
+                                              child: Image.asset( "assets/contact1.png", fit: BoxFit.contain),
+                                            ),
+                                          ),
+
+
+
+                                        ),
+
+                                        Expanded(
+                                          flex:2,
+                                          child:Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("CONTACT PERSON",
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                      fontWeight: FontWeight.w600)),
+                                              Text("Prabhakar Kumar Sign",
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
+                                                      fontWeight: FontWeight.w600)),
+                                            ],
+                                          ),
+                                        ),
+
+                                      ],),
+                                    Divider(
+
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      //crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          flex:1,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.0),
+                                            child: SizedBox(
+                                              height: 50,
+                                              width: 50,
+                                              child: Image.asset( "assets/contact2.png", fit: BoxFit.contain),
+                                            ),
+                                          ),
+
+
+
+                                        ),
+
+                                        Expanded(
+                                          flex:2,
+                                          child:Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("MOBILE",
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                      fontWeight: FontWeight.w600)),
+                                              Text("8000000000",
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
+                                                      fontWeight: FontWeight.w600)),
+                                            ],
+                                          ),
+                                        ),
+
+                                      ],),
+                                    Divider(
+
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      //crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          flex:1,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.0),
+                                            child: SizedBox(
+                                              height: 50,
+                                              width: 50,
+                                              child: Image.asset( "assets/contact3.png", fit: BoxFit.contain),
+                                            ),
+                                          ),
+
+
+
+                                        ),
+
+                                        Expanded(
+                                          flex:2,
+                                          child:Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("EMAIL",
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
+                                                      fontWeight: FontWeight.w600)),
+                                              Text("tgfk@gmail.com",
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
+                                                      fontWeight: FontWeight.w600)),
+                                            ],
+                                          ),
+                                        ),
+
+                                      ],),
+
+                                    SizedBox(
+                                      height: 100,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+
+
+
+
+                          ],
+                        ),
+
+
+
+
+
+
+                      ),
+
+                    ]
+                )
+
+
+
+
+              ]
+          )
+      )
+    );
+  }
 
 }

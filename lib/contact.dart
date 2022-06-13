@@ -8,15 +8,15 @@ import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 
-class Contacts extends StatefulWidget {
+class ContactUs extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return ContactsState();
+    return ContactUsState();
   }
 }
 
 
-class ContactsState extends State<Contacts> {
+class ContactUsState extends State<ContactUs> {
   static const colors= AppColors();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 14.0);
   var emojiRegexp =
@@ -80,9 +80,9 @@ class ContactsState extends State<Contacts> {
 
     return Scaffold(
       //backgroundColor: colors.yellowlight,
-      /*appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: colors.redtheme,
-        title: const Text("",textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 16.0,fontFamily: 'Montserrat',
+        title: const Text("CONTACT US",textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 16.0,fontFamily: 'Montserrat',
             fontWeight: FontWeight.w700)),
         leading: IconButton(
           // icon: Text('Back', textAlign: TextAlign.center,style: TextStyle(color: Colors.black),),
@@ -93,7 +93,7 @@ class ContactsState extends State<Contacts> {
             }),
         // backgroundColor: Colors.transparent,
         elevation: 5,
-      ),*/
+      ),
       body: Builder(
         builder: (context) =>
             GestureDetector(
@@ -149,185 +149,141 @@ class ContactsState extends State<Contacts> {
                                          ),
 
                                             Visibility(
-                                               visible: _layoutlogin,
+                                               visible: true,
                                                child:  Padding(
-                                                 padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.03),
+                                                 padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
                                                  child:Column(
                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                    children: [
-                                                     SizedBox(
-                                                       height: 50.0,
-                                                     ),
-                                                     Text("  Enter mobile number for login",
-                                                         textAlign: TextAlign.start,
-                                                         style: TextStyle(color: colors.black,fontSize: 18.0,fontFamily: 'Montserrat',
-                                                             fontWeight: FontWeight.w700)),
-                                                     Card(
-                                                         clipBehavior: Clip.antiAlias,
-                                                         semanticContainer: true,
-                                                         shape: RoundedRectangleBorder(
-                                                           borderRadius: BorderRadius.circular(5.0),
+
+                                                  Row(
+                                                   mainAxisAlignment: MainAxisAlignment.center,
+                                                   //crossAxisAlignment: CrossAxisAlignment.center,
+                                                   children: [
+                                                     Expanded(
+                                                       flex:1,
+                                                         child: Padding(
+                                                           padding: EdgeInsets.all(10.0),
+                                                           child: SizedBox(
+                                                             height: 50,
+                                                             width: 50,
+                                                             child: Image.asset( "assets/contact1.png", fit: BoxFit.contain),
+                                                           ),
                                                          ),
-                                                         elevation: 5,
-                                                         margin: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
-                                                         child:Container(
-                                                           alignment: Alignment.topLeft,
-                                                           height: 60.0,
-                                                           margin: const EdgeInsets.all(0.0),
-                                                           padding: const EdgeInsets.only(left: 10.0),
-                                                           decoration: BoxDecoration(
-                                                             color:colors.white ,
-                                                             borderRadius: BorderRadius.circular(5.0),
-                                                             // border: Border.all(color: Colors.grey)
-                                                           ),
-                                                           child: Row(
-                                                             //mainAxisAlignment: MainAxisAlignment.center,
-                                                             //crossAxisAlignment: CrossAxisAlignment.center,
-                                                               children: [
-                                                                 Expanded(
-                                                                   flex: 1,
-                                                                   child:Column(
-                                                                     mainAxisAlignment: MainAxisAlignment.center,
-                                                                     //crossAxisAlignment: CrossAxisAlignment.center,
-                                                                     children: [
-                                                                       Text("+91",
-                                                                           textAlign: TextAlign.start,
-                                                                           style: TextStyle(color: colors.black,fontSize: 18.0,fontFamily: 'Montserrat',
-                                                                               fontWeight: FontWeight.w700)),
-                                                                     ],
-                                                                   ),
-                                                                 ),
 
-                                                                 Expanded(
-                                                                   flex: 6,
-                                                                   child: TextField(
-                                                                     controller: mobileController,
-                                                                     keyboardType: TextInputType.number,
-                                                                     inputFormatters: [LengthLimitingTextInputFormatter(10),FilteringTextInputFormatter.deny(
-                                                                         RegExp(emojiRegexp))],
-                                                                     maxLines: 1,
-                                                                     obscureText: false,
-                                                                     style: TextStyle(color: colors.black,fontSize: 18.0,fontFamily: 'Montserrat',
-                                                                         fontWeight: FontWeight.w700),
-                                                                     decoration: const InputDecoration(
-                                                                       border: InputBorder.none,
-                                                                       hintText: "",
-                                                                       enabled: true,
-                                                                     ),
-                                                                   ),
-                                                                 ),
-                                                               ]),
-                                                         )
+
+
                                                      ),
 
-                                                     const SizedBox(height: 25.0),
-                                                     Container(
-                                                         margin: const EdgeInsets.symmetric(horizontal: 9),
-                                                         child: Material(
-                                                           elevation: 5.0,
-                                                           borderRadius: BorderRadius.circular(5.0),
-                                                           color: colors.redtheme,
-                                                           child: MaterialButton(
-                                                             minWidth: MediaQuery.of(context).size.width,
-                                                             height: 60.0,
-                                                             padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                                             onPressed: () async {
-                                                               setState(() {
-                                                                 _layoutlogin=false;
-                                                               });
-                                                               if(mobileController.text.isEmpty){
-                                                                // commonAlert.showToast(context,"Enter Mobile");  //
-                                                               }else{
-                                                                 // this.commonAlert.showLoadingDialog(context,_keyLoader);
-
-                                                               }
-                                                             },
-                                                             child: Text("NEXT",
-                                                                 textAlign: TextAlign.center,
-                                                                 style: style.copyWith(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 18.0)),
-                                                           ),
-                                                         )
+                                                     Expanded(
+                                                       flex:2,
+                                                         child:Column(
+                                                           mainAxisAlignment: MainAxisAlignment.start,
+                                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                                           children: [
+                                                             Text("CONTACT PERSON",
+                                                                 textAlign: TextAlign.start,
+                                                                 style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                     fontWeight: FontWeight.w600)),
+                                                             Text("Prabhakar Kumar Sign",
+                                                                 textAlign: TextAlign.start,
+                                                                 style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                     fontWeight: FontWeight.w600)),
+                                                           ],
+                                                         ),
                                                      ),
+
+                                                     ],),
+                                                     Divider(
+
+                                                     ),
+                                                  Row(
+                                                       mainAxisAlignment: MainAxisAlignment.center,
+                                                       //crossAxisAlignment: CrossAxisAlignment.center,
+                                                       children: [
+                                                         Expanded(
+                                                           flex:1,
+                                                           child: Padding(
+                                                             padding: EdgeInsets.all(10.0),
+                                                             child: SizedBox(
+                                                               height: 50,
+                                                               width: 50,
+                                                               child: Image.asset( "assets/contact2.png", fit: BoxFit.contain),
+                                                             ),
+                                                           ),
+
+
+
+                                                         ),
+
+                                                         Expanded(
+                                                           flex:2,
+                                                           child:Column(
+                                                             mainAxisAlignment: MainAxisAlignment.start,
+                                                             crossAxisAlignment: CrossAxisAlignment.start,
+                                                             children: [
+                                                               Text("MOBILE",
+                                                                   textAlign: TextAlign.start,
+                                                                   style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                       fontWeight: FontWeight.w600)),
+                                                               Text("8000000000",
+                                                                   textAlign: TextAlign.start,
+                                                                   style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                       fontWeight: FontWeight.w600)),
+                                                             ],
+                                                           ),
+                                                         ),
+
+                                                       ],),
+                                                     Divider(
+
+                                                     ),
+                                                  Row(
+                                                       mainAxisAlignment: MainAxisAlignment.center,
+                                                       //crossAxisAlignment: CrossAxisAlignment.center,
+                                                       children: [
+                                                         Expanded(
+                                                           flex:1,
+                                                           child: Padding(
+                                                             padding: EdgeInsets.all(10.0),
+                                                             child: SizedBox(
+                                                               height: 50,
+                                                               width: 50,
+                                                               child: Image.asset( "assets/contact3.png", fit: BoxFit.contain),
+                                                             ),
+                                                           ),
+
+
+
+                                                         ),
+
+                                                         Expanded(
+                                                           flex:2,
+                                                           child:Column(
+                                                             mainAxisAlignment: MainAxisAlignment.start,
+                                                             crossAxisAlignment: CrossAxisAlignment.start,
+                                                             children: [
+                                                               Text("EMAIL",
+                                                                   textAlign: TextAlign.start,
+                                                                   style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
+                                                                       fontWeight: FontWeight.w600)),
+                                                               Text("tgfk@gmail.com",
+                                                                   textAlign: TextAlign.start,
+                                                                   style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
+                                                                       fontWeight: FontWeight.w600)),
+                                                             ],
+                                                           ),
+                                                         ),
+
+                                                       ],),
+
                                                    ],
                                                  ),
                                                ),
                                            ),
 
-                                            Visibility(
-                                              visible: _layoutlogin==true?false:true,
-                                              child:  Padding(
-                                                padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.03),
-                                                child:Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 50.0,
-                                                    ),
-                                                    Text("We sent OTP code to verify your number",
-                                                        textAlign: TextAlign.start,
-                                                        style: TextStyle(color: colors.black,fontSize: 18.0,fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w700)),
-                                                    const SizedBox(height: 10.0),
-                                                    Text("Timer - 1:00",
-                                                        textAlign: TextAlign.start,
-                                                        style: TextStyle(color: colors.grey,fontSize: 14.0,fontFamily: 'Montserrat',
-                                                            fontWeight: FontWeight.w700)),
-                                                    const SizedBox(height: 20.0),
-                                                    Center(
-                                                      child: OTPTextField(
-                                                          controller: otpController,
-                                                          length: 4,
-                                                          width: MediaQuery.of(context).size.width,
-                                                          textFieldAlignment: MainAxisAlignment.spaceEvenly,
-                                                          fieldWidth: 45,
-                                                          fieldStyle: FieldStyle.box,
-                                                          outlineBorderRadius: 10,
-                                                          style: TextStyle(fontSize: 17),
-                                                          onChanged: (pin) {
-                                                            print("Changed: " + pin);
-                                                          },
-                                                          onCompleted: (pin) {
-                                                            setState(() {
-                                                              _Otp=pin;
-                                                            });
 
-                                                            print("Completed: " + pin);
-                                                          }),
-                                                    ),
-
-                                                    const SizedBox(height: 25.0),
-                                                    Container(
-                                                        margin: const EdgeInsets.symmetric(horizontal: 9),
-                                                        child: Material(
-                                                          elevation: 5.0,
-                                                          borderRadius: BorderRadius.circular(5.0),
-                                                          color: colors.redtheme,
-                                                          child: MaterialButton(
-                                                            minWidth: MediaQuery.of(context).size.width,
-                                                            height: 60.0,
-                                                            padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                                            onPressed: () async {
-                                                              Navigator.pushReplacement(
-                                                                  context, MaterialPageRoute(builder: (context) => HomePage()));
-                                                              if(_Otp.toString().length>4){
-                                                                commonAlert.showToast(context,"Enter OTP");  //
-                                                              }else{
-                                                                // this.commonAlert.showLoadingDialog(context,_keyLoader);
-
-                                                              }
-                                                            },
-                                                            child: Text("NEXT",
-                                                                textAlign: TextAlign.center,
-                                                                style: style.copyWith(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 18.0)),
-                                                          ),
-                                                        )
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
 
 
 

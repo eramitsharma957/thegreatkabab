@@ -18,7 +18,7 @@ class AppColors{
   final greylight= const Color(0xffecebeb);
   final greylight2= const Color(0xffe2e2e2);
   final greylight3= const Color(0xfff1f0f0);
-  final black= const Color(0xff242424);
+  final black= const Color(0xff050505);
   final blue= const Color(0xff0d4282);
   final bluelight= const Color(0xff0560cd);
   final bluelighthigh= const Color(0xff2c88f5);
