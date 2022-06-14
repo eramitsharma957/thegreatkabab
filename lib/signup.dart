@@ -230,7 +230,7 @@ class SignUpState extends State<SignUp> {
                                                            color: colors.redtheme,
                                                            child: MaterialButton(
                                                              minWidth: MediaQuery.of(context).size.width,
-                                                             height: 60.0,
+                                                             height: 55.0,
                                                              padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                                              onPressed: () async {
                                                                setState(() {
@@ -273,7 +273,7 @@ class SignUpState extends State<SignUp> {
                                                     Text("Timer - 1:00",
                                                         textAlign: TextAlign.start,
                                                         style: TextStyle(color: colors.grey,fontSize: 14.0,fontFamily: 'Poppins',
-                                                            fontWeight: FontWeight.w300)),
+                                                            fontWeight: FontWeight.w400)),
                                                     const SizedBox(height: 10.0),
                                                     Center(
                                                       child: OTPTextField(
@@ -296,7 +296,7 @@ class SignUpState extends State<SignUp> {
                                                             print("Completed: " + pin);
                                                           }),
                                                     ),
-                                                    const SizedBox(height: 5.0),
+                                                    const SizedBox(height: 10.0),
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -304,14 +304,14 @@ class SignUpState extends State<SignUp> {
                                                         Text("Don't receive an OTP? ",
                                                             textAlign: TextAlign.start,
                                                             style: TextStyle(color: colors.grey,fontSize: 14.0,fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w300)),
+                                                                fontWeight: FontWeight.w400)),
                                                         Text("Resend OTP",
                                                             textAlign: TextAlign.start,
                                                             style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w300)),
+                                                                fontWeight: FontWeight.w400)),
                                                       ],
                                                     ),
-                                                    const SizedBox(height: 15.0),
+                                                    const SizedBox(height: 20.0),
                                                     Container(
                                                         margin: const EdgeInsets.symmetric(horizontal: 9),
                                                         child: Material(
@@ -320,7 +320,7 @@ class SignUpState extends State<SignUp> {
                                                           color: colors.redtheme,
                                                           child: MaterialButton(
                                                             minWidth: MediaQuery.of(context).size.width,
-                                                            height: 60.0,
+                                                            height: 55.0,
                                                             padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                                             onPressed: () async {
                                                               Navigator.pushReplacement(
