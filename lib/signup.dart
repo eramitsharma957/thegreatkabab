@@ -267,14 +267,14 @@ class SignUpState extends State<SignUp> {
                                                     ),
                                                     Text("We sent OTP code to verify your number",
                                                         textAlign: TextAlign.center,
-                                                        style: TextStyle(color: Colors.black,fontSize: 16.0,fontFamily: 'Poppins',
+                                                        style: TextStyle(color: Colors.black,fontSize: 15.0,fontFamily: 'Poppins',
                                                             fontWeight: FontWeight.w600)),
-                                                    const SizedBox(height: 10.0),
+                                                    const SizedBox(height: 5.0),
                                                     Text("Timer - 1:00",
                                                         textAlign: TextAlign.start,
                                                         style: TextStyle(color: colors.grey,fontSize: 14.0,fontFamily: 'Poppins',
                                                             fontWeight: FontWeight.w300)),
-                                                    const SizedBox(height: 20.0),
+                                                    const SizedBox(height: 10.0),
                                                     Center(
                                                       child: OTPTextField(
                                                           controller: otpController,
@@ -296,7 +296,7 @@ class SignUpState extends State<SignUp> {
                                                             print("Completed: " + pin);
                                                           }),
                                                     ),
-                                                    const SizedBox(height: 10.0),
+                                                    const SizedBox(height: 5.0),
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -311,7 +311,7 @@ class SignUpState extends State<SignUp> {
                                                                 fontWeight: FontWeight.w300)),
                                                       ],
                                                     ),
-                                                    const SizedBox(height: 20.0),
+                                                    const SizedBox(height: 15.0),
                                                     Container(
                                                         margin: const EdgeInsets.symmetric(horizontal: 9),
                                                         child: Material(
