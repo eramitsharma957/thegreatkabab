@@ -32,9 +32,22 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'Poppins',
-          primaryColor: colors.redtheme,
-          accentColor: colors.redtheme,
+          primaryColor: colors.redthemenew,
+          accentColor: colors.redthemenew,
+          textSelectionColor:colors.redthemenew ,
           accentColorBrightness: Brightness.dark,
+          buttonColor: colors.redthemenew,
+          inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(
+              color: colors.redthemenew,
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                style: BorderStyle.solid,
+                color: colors.redthemenew,
+              ),
+            ),
+          ),
         ),
         home: const MyHomePage(title: 'Flutter Demo Home Page'),
       ),

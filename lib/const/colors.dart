@@ -11,8 +11,8 @@ class AppColors{
   final greydark = const Color(0xFF585858);
   final lightgrey = const Color(0xFFC2C2C2);
   final greymidum = const Color(0xFF7D7C7C);
-  final redtheme= const Color(0xff8b32c4);
-  final redthemenew= const Color(0xff7934b4);
+  final redtheme= const Color(0xff6e26d2);
+  final redthemenew= const Color(0xff662b99);
   final redtlight= const Color(0xfff8615f);
   final greylist= const Color(0xff9a9999);
   final greylight= const Color(0xffecebeb);
@@ -25,7 +25,7 @@ class AppColors{
   final skyblue= const Color(0xff529ffa);
   final orange= const Color(0xffc15928);
   final red= const Color(0xffc13f28);
-  final purpals= const Color(0xFF5B41AA);
+  final purpals= const Color(0xFFE7E0FA);
   final reddark= const Color(0xff951f0a);
   final brownred= const Color(0xffb33e2a);
   final green= const Color(0xff21a837);
