@@ -41,6 +41,9 @@ class BookSeatState extends State<BookSeat> {
   bool _Islunch=true;
   double value  = 0.0;
   double valuefinal  = 0.5;
+  int _n = 0;
+  int _v = 0;
+  int _c = 0;
 
 
   @override
@@ -167,7 +170,7 @@ class BookSeatState extends State<BookSeat> {
               child: SingleChildScrollView(
                   child: Container(
                     height: MediaQuery.of(context).size.height,
-                    child: Padding(padding:const EdgeInsets.all(25.0),
+                    child: Padding(padding:const EdgeInsets.all(15.0),
                       child: Column(
                         children: [
                           Text(
@@ -343,7 +346,7 @@ class BookSeatState extends State<BookSeat> {
                             ],
                           ),
 
-                          SizedBox(height: 50),
+                          /*SizedBox(height: 50),
                           Center(
                         child: Container(
                           child: Column(
@@ -392,7 +395,507 @@ class BookSeatState extends State<BookSeat> {
                             ],
                           ),
                         ),
+                      ),*/
+                          SizedBox(height: 20),
+
+                          Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 5,
+                        margin: const EdgeInsets.all(0),
+                        child:Padding(padding:const EdgeInsets.all(8.0),
+                          child:Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child:Row(
+                                  children: [
+                                  SizedBox(
+                                  height: 45.0,
+                                  width: 45.0,
+                                  child: CircleAvatar(
+                                      backgroundImage: const AssetImage('assets/food_sample.png'),
+                                      radius: 65.0,
+                                      backgroundColor: Colors.white
+                                  ),
+                                  ),
+
+                                    SizedBox(
+                                      width: 5.0,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Veg",style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black,
+                                          fontSize: 12.0,
+                                        ),),
+
+                                        Text("879/-",textAlign: TextAlign.center,style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                          fontSize: 10.0,
+                                        ),),
+                                      ],
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child:Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: colors.redtheme),
+                                    borderRadius: BorderRadius.circular(50.0),
+                                  ),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                      SizedBox(
+                                      height: 40.0,
+                                      width: 40.0,
+                                      child: IconButton(
+                                        icon: Icon(Icons.remove, color: Colors.black,size: 20,),
+                                        onPressed:minus,
+                                      ),
+                                      ),
+
+                                        Text('$_v',style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 14.0,
+                                        ),),
+                                    SizedBox(
+                                      height: 40.0,
+                                      width: 40.0,
+                                      child:IconButton(
+                                        icon: Icon(Icons.add, color: Colors.black,size: 20,),
+                                        onPressed: add,
+                                      ),
+                                    ),
+
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child:Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset("assets/orange_menu_icon.png",
+                                      width: 35.0,
+                                      height: 35.0,
+                                    ),
+                                    Text(" 880.0",style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.black,
+                                      fontSize: 18.0,
+                                    ),),
+                                  ],
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+
+
+
                       ),
+                          SizedBox(height: 10),
+                          Card(
+                            clipBehavior: Clip.antiAlias,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            elevation: 5,
+                            margin: const EdgeInsets.all(0),
+                            child:Padding(padding:const EdgeInsets.all(8.0),
+                              child:Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child:Row(
+                                      children: [
+                                        SizedBox(
+                                          height: 45.0,
+                                          width: 45.0,
+                                          child: CircleAvatar(
+                                              backgroundImage: const AssetImage('assets/food_sample.png'),
+                                              radius: 65.0,
+                                              backgroundColor: Colors.white
+                                          ),
+                                        ),
+
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text("Non-Veg",style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black,
+                                              fontSize: 12.0,
+                                            ),),
+
+                                            Text("979/-",style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                              fontSize: 10.0,
+                                            ),),
+                                          ],
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child:Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: colors.redtheme),
+                                        borderRadius: BorderRadius.circular(50.0),
+                                      ),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: <Widget>[
+                                            SizedBox(
+                                              height: 40.0,
+                                              width: 40.0,
+                                              child: IconButton(
+                                                icon: Icon(Icons.remove, color: Colors.black,size: 20,),
+                                                onPressed:minusNon,
+                                              ),
+                                            ),
+
+                                            Text('$_n',style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                              fontSize: 14.0,
+                                            ),),
+                                            SizedBox(
+                                              height: 40.0,
+                                              width: 40.0,
+                                              child:IconButton(
+                                                icon: Icon(Icons.add, color: Colors.black,size: 20,),
+                                                onPressed: addNon,
+                                              ),
+                                            ),
+
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child:Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset("assets/orange_menu_icon.png",
+                                          width: 35.0,
+                                          height: 35.0,
+                                        ),
+                                        Text(" 880.0",style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.black,
+                                          fontSize: 18.0,
+                                        ),),
+                                      ],
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            ),
+
+
+
+                          ),
+                          SizedBox(height: 10),
+                          Card(
+                            clipBehavior: Clip.antiAlias,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            elevation: 5,
+                            margin: const EdgeInsets.all(0),
+                            child:Padding(padding:const EdgeInsets.all(8.0),
+                              child:Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child:Row(
+                                      children: [
+                                        SizedBox(
+                                          height: 45.0,
+                                          width: 45.0,
+                                          child: CircleAvatar(
+                                              backgroundImage: const AssetImage('assets/food_sample.png'),
+                                              radius: 65.0,
+                                              backgroundColor: Colors.white
+                                          ),
+                                        ),
+
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text("Kid(5-12)",style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black,
+                                              fontSize: 12.0,
+                                            ),),
+
+                                            Text("469/-",style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                              fontSize: 10.0,
+                                            ),),
+                                          ],
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child:Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: colors.redtheme),
+                                        borderRadius: BorderRadius.circular(50.0),
+                                      ),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: <Widget>[
+                                            SizedBox(
+                                              height: 40.0,
+                                              width: 40.0,
+                                              child: IconButton(
+                                                icon: Icon(Icons.remove, color: Colors.black,size: 20,),
+                                                onPressed:minusChild,
+                                              ),
+                                            ),
+
+                                            Text('$_c',style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                              fontSize: 14.0,
+                                            ),),
+                                            SizedBox(
+                                              height: 40.0,
+                                              width: 40.0,
+                                              child:IconButton(
+                                                icon: Icon(Icons.add, color: Colors.black,size: 20,),
+                                                onPressed: addChild,
+                                              ),
+                                            ),
+
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child:Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset("assets/orange_menu_icon.png",
+                                          width: 35.0,
+                                          height: 35.0,
+                                        ),
+                                        Text(" 880.0",style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.black,
+                                          fontSize: 18.0,
+                                        ),),
+                                      ],
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            ),
+
+
+
+                          ),
+
+                          SizedBox(height: 30),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text("Sub Total",style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                              Expanded(
+                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text("CGST",style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                              Expanded(
+                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text("SGST",style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                              Expanded(
+                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Divider(
+                            height: 1.0,
+                            color: colors.redtheme,
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text("Total",style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                              Expanded(
+                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text("Discount",style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                              Expanded(
+                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Divider(
+                            height: 1.0,
+                            color: colors.redtheme,
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text("Net Amount",style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                              Expanded(
+                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Divider(
+                            height: 1.0,
+                            color: colors.redtheme,
+                          ),
+
+
+
 
                           const SizedBox(height: 30.0),
                           Container(
@@ -444,7 +947,44 @@ class BookSeatState extends State<BookSeat> {
 
 
 
+  void minus() {
+    setState(() {
+      if (_v != 0)
+        _v--;
+    });
+  }
 
+  void add() {
+    setState(() {
+      _v++;
+    });
+  }
+
+  void minusNon() {
+    setState(() {
+      if (_n != 0)
+        _n--;
+    });
+  }
+
+  void addNon() {
+    setState(() {
+      _n++;
+    });
+  }
+
+  void minusChild() {
+    setState(() {
+      if (_c != 0)
+        _c--;
+    });
+  }
+
+  void addChild() {
+    setState(() {
+      _c++;
+    });
+  }
 
 }
 

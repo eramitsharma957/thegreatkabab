@@ -33,6 +33,7 @@ class _MyHomePageState extends State<HomePage> {
   var colors= AppColors();
   var _IsPay;
   SFData sfdata= SFData();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -98,14 +99,302 @@ class _MyHomePageState extends State<HomePage> {
     );
   }
 
+  _drawerMenus(){
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 60.0,
+        ),
+        Container(
+          height: 60.0,
+          child: Row(
+            children: [
+              Expanded(
+                flex:1,
+                child: Image.asset("assets/logo.png",
+                  width: 50.0,
+                  height: 50.0,
+                ),
+              ),
+              Expanded(
+                flex:3,
+                child:Text(""),
+              ),
+              Expanded(
+                  flex:1,
+                child: new IconButton(
+                           icon: Icon(Icons.close, color: Colors.white,size: 30.0,),
+                           onPressed: () {
+                             _scaffoldKey.currentState!.openEndDrawer();
+                           },
+                   )
+
+
+
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 120.0,
+          width: MediaQuery.of(context).size.width,
+          child: Image.asset("assets/drawerbanner.png", fit: BoxFit.cover),
+        ),
+
+        Expanded(
+          child:MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+             child: ListView(
+              children: <Widget>[
+                 ListTile(
+          leading:Image.asset("assets/menu_done.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: Text("Home",style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 14.0,
+          ),),
+          trailing: Icon(Icons.keyboard_arrow_right_sharp),
+          onTap: (){
+            Navigator.of(context).pop();
+          },
+        ),
+                 Divider(color: colors.purpals,),
+                 ListTile(
+          leading:Image.asset("assets/menu_dtwo.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: Text("Book Seat",style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 14.0,
+          ),),
+          trailing: Icon(Icons.keyboard_arrow_right_sharp),
+          onTap: () async {
+            ///  Comment //////
+            Navigator.of(context).pop();
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BookSeat()),
+            );
+
+          },
+        ),
+                 Divider(color: colors.purpals,),
+                 ListTile(
+          leading:Image.asset("assets/menu_dthree.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: Text("Book PDR",style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 14.0,
+          ),),
+          trailing: Icon(Icons.keyboard_arrow_right_sharp),
+          onTap: () async {
+            ///  Comment //////
+            Navigator.of(context).pop();
+           /* final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Notifications()),
+            );*/
+
+          },
+        ),
+                 Divider(color: colors.purpals,),
+                 ListTile(
+          leading:Image.asset("assets/menu_dfour.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: Text("Book Status",style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 14.0,
+          ),),
+          trailing: Icon(Icons.keyboard_arrow_right_sharp),
+          onTap: () async {
+            ///  Comment //////
+            Navigator.of(context).pop();
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BookingStatus()),
+            );
+
+          },
+        ),
+                 Divider(color: colors.purpals,),
+                 ListTile(
+          leading:Image.asset("assets/menu_dfive.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: Text("Menu Items",style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 14.0,
+          ),),
+          trailing: Icon(Icons.keyboard_arrow_right_sharp),
+          onTap: () async {
+            ///  Comment //////
+            Navigator.of(context).pop();
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MenuView()),
+            );
+
+          },
+        ),
+                 Divider(color: colors.purpals,),
+                 ListTile(
+          leading:Image.asset("assets/menu_dsix.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: Text("Gallery",style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 14.0,
+          ),),
+          trailing: Icon(Icons.keyboard_arrow_right_sharp),
+          onTap: () async {
+            ///  Comment //////
+            Navigator.of(context).pop();
+            /*final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Notifications()),
+            );*/
+
+          },
+        ),
+                 Divider(color: colors.purpals,),
+                 ListTile(
+          leading:Image.asset("assets/menu_dseven.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: Text("Notification",style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 14.0,
+          ),),
+          trailing: Icon(Icons.keyboard_arrow_right_sharp),
+          onTap: () async {
+            ///  Comment //////
+            Navigator.of(context).pop();
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Notifications()),
+            );
+
+          },
+        ),
+                 Divider(color: colors.purpals,),
+                 ListTile(
+          leading:Image.asset("assets/menu_dnine.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: Text("Contact",style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontSize: 14.0,
+          ),),
+          trailing: Icon(Icons.keyboard_arrow_right_sharp),
+          onTap: () async {
+            ///  Comment //////
+            Navigator.of(context).pop();
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ContactUs()),
+            );
+
+          },
+        ),
+                 Divider(color: colors.purpals,),
+
+      ],
+    ),
+          ),
+
+
+
+
+        ),
+
+        Container(
+          padding: const EdgeInsets.all(15.0),
+          child: Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: Text(colors.appversion,style: TextStyle(color: colors.white),),
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         backgroundColor: colors.white,
+        /*drawer: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: Colors.white,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/header.jpeg"),
+                        fit: BoxFit.cover)),
+                child: Text("Header"),
+              ),
+              ListTile(
+                title: Text("Home"),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+        ),*/
+
+        drawer: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+           // color: colors.redtheme,
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      const Color(0xff662b99),
+                      const Color(0xff6e26d2),
+                     // Colors.deepPurple, Colors.deepPurpleAccent
+                    ])),//<-- SEE HERE
+            child: _drawerMenus(),
+          ),
+
         appBar: AppBar(
           elevation: 0,
-          toolbarHeight: 80, // default is 56
-          toolbarOpacity: 0.5,
+          toolbarHeight: 90, // default is 56
+          //toolbarOpacity: 1,
           automaticallyImplyLeading: false,
           flexibleSpace: Container(
             decoration: BoxDecoration(
@@ -117,6 +406,37 @@ class _MyHomePageState extends State<HomePage> {
           ),
           centerTitle: true,
           backgroundColor: Colors.transparent,
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+              ),
+              SizedBox(height: 28.0,)
+              // Your widgets here
+            ],
+          ),
+
+          actions: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  onPressed: (){
+                    _scaffoldKey.currentState?.openDrawer();
+                  },
+                  icon: Icon(Icons.more_vert, color: Colors.white),
+                ),
+                SizedBox(height: 30.0,)
+                // Your widgets here
+              ],
+            ),
+
+
+          ],
         ),
         body: getBody(),
         bottomNavigationBar: _buildBottomBar()

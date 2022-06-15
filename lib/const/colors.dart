@@ -51,7 +51,7 @@ class AppColors{
   final imageUrl= "http://allenp.superhouseerp.com";
   final imageUploadUrl= "http://183.83.180.48/HRSystem_API/api/";
   final defaultImage="https://lh3.googleusercontent.com/proxy/FGxj4dgqzTt0xnStnpPslEtxkFsqosrc4qJi0TFMrXSxnrhTl9gBt6N7bBmUO0nniUcAcIoHEPl_56E27Xd5PR7urGmHztus_crfdPImnMTpicvN73koQ09LFCVP";
-  final appversion="Ver.- 1.0.17";
+  final appversion="Ver.- 1.0.1";
   const AppColors();
 
 }
