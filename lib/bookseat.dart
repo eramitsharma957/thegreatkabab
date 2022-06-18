@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:otp_text_field/otp_text_field.dart';
@@ -396,7 +397,7 @@ class BookSeatState extends State<BookSeat> {
                           ),
                         ),
                       ),*/
-                          SizedBox(height: 20),
+                          SizedBox(height: 30),
 
                           Card(
                         clipBehavior: Clip.antiAlias,
@@ -911,7 +912,22 @@ class BookSeatState extends State<BookSeat> {
                                   onPressed: () async {
                                     setState(() {
 
+
                                     });
+                                    CoolAlert.show(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      type: CoolAlertType.success,
+                                      backgroundColor: colors.redtheme,
+                                      text: 'Thanks! your booing id- 12345454',
+                                      // autoCloseDuration: Duration(seconds: 2),
+                                      onConfirmBtnTap: () {
+                                        Navigator.pop(context);
+
+
+                                      },
+                                      confirmBtnText: 'Booking Status',
+                                    );
                                     if(mobileController.text.isEmpty){
                                       // commonAlert.showToast(context,"Enter Mobile");  //
                                     }else{
@@ -919,7 +935,7 @@ class BookSeatState extends State<BookSeat> {
 
                                     }
                                   },
-                                  child: Text("PROCEED NOW!",
+                                  child: Text("BOOK NOW!",
                                       textAlign: TextAlign.center,
                                       style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w400,fontSize: 16.0)),
                                 ),
