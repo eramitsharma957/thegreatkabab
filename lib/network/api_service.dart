@@ -5,7 +5,7 @@ import 'dart:async';
 
 part 'api_service.g.dart';
 
-@RestApi(baseUrl:"http://183.83.180.48/HRSystem_API/api/")
+@RestApi(baseUrl:"http://api.tgkfexpresspatna.com/api/")
 abstract class ApiService {
   factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
 
@@ -26,22 +26,14 @@ abstract class ApiService {
   Future<List<ConnectionConnector>> getconnection(
       @Field("BranchUrl") branchUrl,
       );
+*/
+  @GET("GenerateMobileOTP/{Mobile}")
+  Future<String> signUp(
+      @Field("Mobile") mobile,
+      );
 
-  @POST("LoginApi/UserAuthentication")
-  Future<List<LoginResponse>> signUp(
-      @Field("UserName") UserName,
-      @Field("Password") Password,
-      @Field("DisplayCode") DisplayCode,
-      @Field("GroupCode") GroupCode,
-      @Field("SocietyCode") SocietyCode,
-      @Field("SchoolCode") SchoolCode,
-      @Field("BranchCode") BranchCode,
-      @Field("GSMID") GSMID,
-      @Field("LastLoginWith") LastLoginWith,
-      );*/
 
-/*
-  @POST("UserSignup")
+  /*@POST("UserSignup")
   Future<SignupData> signUp(
       @Field("Login_Email") email,
       @Field("Login_Mobile") mobile,

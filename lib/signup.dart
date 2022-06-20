@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
+import 'package:thegreatkabab/network/api_service.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 
 class SignUp extends StatefulWidget {
@@ -36,33 +39,68 @@ class SignUpState extends State<SignUp> {
   SFData sfdata= SFData();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   OtpFieldController otpController = OtpFieldController();
-  var _Otp;
+  String _Otp="";
   bool _layoutlogin=true;
+  bool _timerlogin=false;
+  bool _timerresend=false;
+  String serverOTP="";
+
+  late Timer _timer;
+  int _start = 30;
 
   @override
   void initState() {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
+      oneSec,
+          (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            timer.cancel();
+            _timerresend=true;
+            _timerlogin=false;
+          });
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
 
 
- /* //////////////////  Get Class Link  //////////////////////
+ //////////////////  Get Class Link  //////////////////////
   Future<Null> signUp() async {
     // EasyLoading.show(status: 'Loading');
     //  SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .signUp(emailController.text,mobileController.text,nameController.text,passwordController.text)
+        .signUp(mobileController.text)
         .then((result) {
       setState(() {
         // EasyLoading.dismiss();
         Navigator.of(context,rootNavigator: true).pop();
-        if(result.loginId==0){
-          commonAlert.messageAlertError(context,result.message,"Error");
+        if(result.isNotEmpty){
+          _layoutlogin=false;
+          serverOTP=result;
+          _timerlogin=true;
+          _timerresend=false;
+          startTimer();
+        //  commonAlert.messageAlertError(context,result.message,"Error");
         }else{
-          sfdata.saveLoginDataToSF(context,result.loginId,nameController.text,"1",mobileController.text,emailController.text);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => OTPSave(result)));
+          _layoutlogin=false;
+          _timerlogin=false;
 
         }
       });
@@ -72,7 +110,7 @@ class SignUpState extends State<SignUp> {
       print(error);
     });
   }
-*/
+
 
 
   @override
@@ -214,6 +252,14 @@ class SignUpState extends State<SignUp> {
                                                                        border: InputBorder.none,
                                                                        hintText: "",
                                                                        enabled: true,
+                                                                       enabledBorder: UnderlineInputBorder(
+                                                                         borderSide: BorderSide(color:Colors.white)
+                                                                       ),
+                                                                       focusedBorder: UnderlineInputBorder(
+                                                                           borderSide: BorderSide(color:Colors.white)
+                                                                       ),
+
+
                                                                      ),
                                                                    ),
                                                                  ),
@@ -233,13 +279,15 @@ class SignUpState extends State<SignUp> {
                                                              height: 55.0,
                                                              padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                                              onPressed: () async {
-                                                               setState(() {
-                                                                 _layoutlogin=false;
-                                                               });
                                                                if(mobileController.text.isEmpty){
-                                                                // commonAlert.showToast(context,"Enter Mobile");  //
+                                                                commonAlert.showToast(context,"Enter Mobile");  //
                                                                }else{
-                                                                 // this.commonAlert.showLoadingDialog(context,_keyLoader);
+                                                                 commonAlert.showLoadingDialog(context,_keyLoader);
+                                                                 // startTimer();
+                                                                 //_layoutlogin=false;
+                                                                 // _timerlogin=true;
+                                                                 signUp();
+
 
                                                                }
                                                              },
@@ -248,6 +296,23 @@ class SignUpState extends State<SignUp> {
                                                                  style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w700,fontSize: 16.0)),
                                                            ),
                                                          )
+                                                     ),
+                                                     const SizedBox(height: 5.0),
+                                                     Row(
+                                                       mainAxisAlignment: MainAxisAlignment.end,
+                                                       children: [
+                                                         GestureDetector(
+                                                           onTap: (){
+                                                             Navigator.pushReplacement(
+                                                                 context, MaterialPageRoute(builder: (context) => HomePage()));
+                                                           },
+                                                           child: Text("SKIP",
+                                                               textAlign: TextAlign.end,
+                                                               style: TextStyle(color: colors.black,fontSize: 16.0,fontFamily: 'Poppins',
+                                                                   fontWeight: FontWeight.w600,decoration: TextDecoration.underline)),
+                                                         ),
+
+                                                       ],
                                                      ),
                                                    ],
                                                  ),
@@ -270,10 +335,14 @@ class SignUpState extends State<SignUp> {
                                                         style: TextStyle(color: Colors.black,fontSize: 15.0,fontFamily: 'Poppins',
                                                             fontWeight: FontWeight.w600)),
                                                     const SizedBox(height: 5.0),
-                                                    Text("Timer - 1:00",
-                                                        textAlign: TextAlign.start,
-                                                        style: TextStyle(color: colors.grey,fontSize: 14.0,fontFamily: 'Poppins',
-                                                            fontWeight: FontWeight.w400)),
+                                                    Visibility(
+                                                      visible: _timerlogin,
+                                                      child: Text(_start.toString(),
+                                                          textAlign: TextAlign.start,
+                                                          style: TextStyle(color: colors.grey,fontSize: 18.0,fontFamily: 'Poppins',
+                                                              fontWeight: FontWeight.w600)),
+                                                    ),
+
                                                     const SizedBox(height: 10.0),
                                                     Center(
                                                       child: OTPTextField(
@@ -297,20 +366,31 @@ class SignUpState extends State<SignUp> {
                                                           }),
                                                     ),
                                                     const SizedBox(height: 10.0),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Text("Don't receive an OTP? ",
-                                                            textAlign: TextAlign.start,
-                                                            style: TextStyle(color: colors.grey,fontSize: 14.0,fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w400)),
-                                                        Text("Resend OTP",
-                                                            textAlign: TextAlign.start,
-                                                            style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w400)),
-                                                      ],
+                                                    Visibility(
+                                                      visible: _timerresend,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            Text("Don't receive an OTP? ",
+                                                                textAlign: TextAlign.start,
+                                                                style: TextStyle(color: colors.grey,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                    fontWeight: FontWeight.w400)),
+                                                            GestureDetector(
+                                                              onTap: (){
+
+
+                                                              },
+                                                              child: Text("Resend OTP",
+                                                                  textAlign: TextAlign.start,
+                                                                  style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                      fontWeight: FontWeight.w400,decoration: TextDecoration.underline)),
+                                                            ),
+
+                                                          ],
+                                                        ),
                                                     ),
+
                                                     const SizedBox(height: 20.0),
                                                     Container(
                                                         margin: const EdgeInsets.symmetric(horizontal: 9),
@@ -323,11 +403,19 @@ class SignUpState extends State<SignUp> {
                                                             height: 55.0,
                                                             padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                                             onPressed: () async {
-                                                              Navigator.pushReplacement(
-                                                                  context, MaterialPageRoute(builder: (context) => HomePage()));
-                                                              if(_Otp.toString().length>4){
+                                                              print("OTP ${serverOTP}");
+                                                              print("OTPENTER ${_Otp}");
+
+                                                              if(_Otp.toString().length<4){
                                                                 commonAlert.showToast(context,"Enter OTP");  //
                                                               }else{
+                                                                if(_Otp==serverOTP){
+                                                                  Navigator.pushReplacement(
+                                                                      context, MaterialPageRoute(builder: (context) => HomePage()));
+                                                                }else{
+                                                                  commonAlert.showToast(context,"Entered OTP not matched");
+                                                                }
+
                                                                 // this.commonAlert.showLoadingDialog(context,_keyLoader);
 
                                                               }
