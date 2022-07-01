@@ -18,17 +18,50 @@ class _ApiService implements ApiService {
   String? baseUrl;
 
   @override
-  Future<String> signUp(mobile) async {
+  Future<VerifyOtp> verifyOTP(mobileNo, otp, hotelId) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = {'Mobile': mobile};
-    final _result = await _dio.fetch<String>(_setStreamType<String>(
-        Options(method: 'GET', headers: _headers, extra: _extra)
-            .compose(_dio.options, 'GenerateMobileOTP/{Mobile}',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = _result.data!;
+    final _data = {'MobileNo': mobileNo, 'OTP': otp};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<VerifyOtp>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'users/verifymobileOTP/${hotelId}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = VerifyOtp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<Logindata> signUp(mobile, hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<Logindata>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'GenerateMobileOTP/${mobile}/${hotelId}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = Logindata.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<HotelData> hotelData(hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HotelData>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'hotelbyid/${hotelId}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = HotelData.fromJson(_result.data!);
     return value;
   }
 

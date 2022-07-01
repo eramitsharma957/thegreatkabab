@@ -5,62 +5,72 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SFData{
 
 
-  Future<void> saveLoginDataToSF(BuildContext context,int userId,String userName,String loginAs,String mobileNo,String emailId) async {
+  Future<void> saveLoginDataToSF(BuildContext context,String userId,String userName,int loginas) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('UserId', userId);
+    prefs.setString('UserId', userId);
     prefs.setString('UserName', userName);
-    prefs.setString('IsLogin', loginAs);
-    prefs.setString("MobileNo", mobileNo);
-    prefs.setString("EmailId", emailId);
+    prefs.setInt('loginAs', loginas);
   }
 
-  Future<void> saveIsLogin(BuildContext context,String islogin) async {
+/*
+  Future<void> saveIsAddSchool(BuildContext context,int status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('IsLoginTrue', islogin);
-  }
-
-
-  Future<String> getMobile(BuildContext context) async {
+    prefs.setInt('loginAs', loginas);
+  }*/
+  Future<int> getLogin(BuildContext context) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return (preferences.getString("MobileNo")?? "0");
+    return (preferences.getInt('loginAs')?? 0);
   }
-  Future<String> getEmailId(BuildContext context) async {
+
+  Future<String> getUserId(BuildContext context) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return (preferences.getString("EmailId")?? "0");
+    return (preferences.getString('UserId')?? "");
   }
-
-  Future<int> getUseId(BuildContext context) async {
+  Future<String> getUserName(BuildContext context) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return (preferences.getInt("UserId")?? 0);
+    return (preferences.getString('UserName')?? "");
   }
 
-
-  Future<String> getUsername(BuildContext context) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return (preferences.getString("UserName")?? "");
-  }
-
-  Future<String> getIslogin(BuildContext context) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return (preferences.getString("IsLogin")?? "0");
-  }
-
-  Future<String> getIsloginTrue(BuildContext context) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return (preferences.getString("IsLoginTrue")?? "0");
-  }
-
-
-  Future<void> saveIsPaid(BuildContext context,int pay) async {
+  Future<void> saveHotelData(BuildContext context,String Name,String Logo,String Address,String PhoneNumber,String Email,double SeatDiscountInPercent,double ItemDiscountInPercent,double FirstTimeDiscountInPercent,String ContactPerson) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('PAY', pay);
+    prefs.setString('Name', Name);
+    prefs.setString('Logo', Logo);
+    prefs.setString('Address', Address);
+    prefs.setString('PhoneNumber', PhoneNumber);
+    prefs.setString('Email', Email);
+    prefs.setDouble('SeatDiscountInPercent', SeatDiscountInPercent);
+    prefs.setDouble('ItemDiscountInPercent', ItemDiscountInPercent);
+    prefs.setDouble('FirstTimeDiscountInPercent', FirstTimeDiscountInPercent);
+    prefs.setString('ContactPerson', ContactPerson);
   }
 
-  Future<int> getPaid(BuildContext context) async {
+  Future<double> getSeatDiscount(BuildContext context) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return (preferences.getInt("PAY")?? 0);
+    return (preferences.getDouble('SeatDiscountInPercent')?? 0);
+  }
+  Future<String> getHotelName(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return (preferences.getString('Name')?? "");
+  }
+  Future<String> getLogo(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return (preferences.getString('Logo')?? "");
   }
 
-
-
+  Future<String> getAddress(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return (preferences.getString('Address')?? "");
+  }
+  Future<String> getPhoneNumber(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return (preferences.getString('PhoneNumber')?? "");
+  }
+  Future<String> getEmail(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return (preferences.getString('Email')?? "");
+  }
+  Future<String> getContactPerson(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return (preferences.getString('ContactPerson')?? "");
+  }
 }

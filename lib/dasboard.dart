@@ -1,6 +1,7 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:thegreatkabab/bookingstatus.dart';
 import 'package:thegreatkabab/bookseat.dart';
 import 'package:thegreatkabab/const/colors.dart';
@@ -9,6 +10,7 @@ import 'package:thegreatkabab/custom_animated_bottom_bar.dart';
 import 'package:thegreatkabab/dprbooking.dart';
 import 'package:thegreatkabab/gallery.dart';
 import 'package:thegreatkabab/menu.dart';
+import 'package:thegreatkabab/network/api_service.dart';
 import 'package:thegreatkabab/notification.dart';
 import 'package:thegreatkabab/reviews.dart';
 import 'package:thegreatkabab/signup.dart';
@@ -32,27 +34,49 @@ class _MyHomePageState extends State<HomePage> {
   TextEditingController topicController = new TextEditingController();
   final _inactiveColor = Colors.grey;
   TextStyle style = TextStyle(fontFamily:'Poppins', fontSize: 16.0);
-  var colors= AppColors();
-  var _IsPay;
+  var _IsLogin;
   SFData sfdata= SFData();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool restu=true,vegPic=false,nonvegPicfalse=false;
+  static const colors= AppColors();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    Future<int> getpay = sfdata.getPaid(context);
+    Future<int> getpay = sfdata.getLogin(context);
     getpay.then((data) {
       setState(() {
-        _IsPay=data;
+        _IsLogin=data;
       });
     },onError: (e) {
       print(e);
     });
 
+    hotelData();
   }
+
+  //////////////////  Hotel Details  //////////////////////
+  Future<Null> hotelData() async {
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .hotelData(colors.hotelId)
+        .then((result) {
+      setState(() {
+        if(result.data.isNotEmpty){
+        sfdata.saveHotelData(context,result.data[0].name, result.data[0].logo, result.data[0].address, result.data[0].phoneNumber, result.data[0].email, result.data[0].seatDiscountInPercent, result.data[0].itemDiscountInPercent, result.data[0].firstTimeDiscountInPercent, result.data[0].contactPerson);
+        }else{
+        }
+
+      });
+    }).catchError((error) {
+
+      // EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
 
   Widget _logoutBadge() {
     return Padding(
@@ -87,7 +111,7 @@ class _MyHomePageState extends State<HomePage> {
               child: const Text('Logout',style: TextStyle(color: Colors.red)),
               onPressed: () {
                 //sfdata.removeAll(context);
-                sfdata.saveIsLogin(context,"0");
+                sfdata.saveLoginDataToSF(context,"0","",0);
                 Navigator.of(context).pop(ConfirmAction.Accept);
                 Navigator.pushAndRemoveUntil(
                   context,

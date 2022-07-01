@@ -38,9 +38,44 @@ class ContactUsState extends State<ContactUs> {
   OtpFieldController otpController = OtpFieldController();
   var _Otp;
   bool _layoutlogin=true;
+  var _hotelName,_email,_contactPerson,_mobile;
 
   @override
   void initState() {
+
+    Future<String> getpay = sfdata.getHotelName(context);
+    getpay.then((data) {
+      setState(() {
+        _hotelName=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> add = sfdata.getEmail(context);
+    add.then((data) {
+      setState(() {
+        _email=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> conct = sfdata.getContactPerson(context);
+    conct.then((data) {
+      setState(() {
+        _contactPerson=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> mobile = sfdata.getPhoneNumber(context);
+    mobile.then((data) {
+      setState(() {
+        _mobile=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+
     super.initState();
   }
 
@@ -186,7 +221,7 @@ class ContactUsState extends State<ContactUs> {
                                                                  textAlign: TextAlign.start,
                                                                  style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
                                                                      fontWeight: FontWeight.w600)),
-                                                             Text("Prabhakar Kumar Sign",
+                                                             Text(_contactPerson,
                                                                  textAlign: TextAlign.start,
                                                                  style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
                                                                      fontWeight: FontWeight.w600)),
@@ -227,7 +262,7 @@ class ContactUsState extends State<ContactUs> {
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
                                                                        fontWeight: FontWeight.w600)),
-                                                               Text("8000000000",
+                                                               Text(_mobile,
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
                                                                        fontWeight: FontWeight.w600)),
@@ -268,7 +303,7 @@ class ContactUsState extends State<ContactUs> {
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
-                                                               Text("tgfk@gmail.com",
+                                                               Text(_email,
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),

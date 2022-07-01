@@ -38,9 +38,52 @@ class DprBookingState extends State<DprBooking> {
   OtpFieldController otpController = OtpFieldController();
   var _Otp;
   bool _layoutlogin=true;
+  var _hotelName,_email,_contactPerson,_mobile,_address;
 
   @override
   void initState() {
+
+    Future<String> getpay = sfdata.getHotelName(context);
+    getpay.then((data) {
+      setState(() {
+        _hotelName=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> add = sfdata.getEmail(context);
+    add.then((data) {
+      setState(() {
+        _email=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> conct = sfdata.getContactPerson(context);
+    conct.then((data) {
+      setState(() {
+        _contactPerson=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> mobile = sfdata.getPhoneNumber(context);
+    mobile.then((data) {
+      setState(() {
+        _mobile=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> ad = sfdata.getAddress(context);
+    ad.then((data) {
+      setState(() {
+        _address=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+
     super.initState();
   }
 
@@ -157,6 +200,9 @@ class DprBookingState extends State<DprBooking> {
                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                    children: [
 
+                                                  SizedBox(
+                                                    height: 50.0,
+                                                  ),
                                                   Row(
                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                    //crossAxisAlignment: CrossAxisAlignment.center,
@@ -269,6 +315,47 @@ class DprBookingState extends State<DprBooking> {
                                                                    style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                                Text("tgfk@gmail.com",
+                                                                   textAlign: TextAlign.start,
+                                                                   style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
+                                                                       fontWeight: FontWeight.w600)),
+                                                             ],
+                                                           ),
+                                                         ),
+
+                                                       ],),
+                                                     Divider(
+
+                                                     ),
+                                                     Row(
+                                                       mainAxisAlignment: MainAxisAlignment.center,
+                                                       //crossAxisAlignment: CrossAxisAlignment.center,
+                                                       children: [
+                                                         Expanded(
+                                                           flex:1,
+                                                           child: Padding(
+                                                             padding: EdgeInsets.all(10.0),
+                                                             child: SizedBox(
+                                                               height: 50,
+                                                               width: 50,
+                                                               child: Image.asset( "assets/contact3.png", fit: BoxFit.contain),
+                                                             ),
+                                                           ),
+
+
+
+                                                         ),
+
+                                                         Expanded(
+                                                           flex:2,
+                                                           child:Column(
+                                                             mainAxisAlignment: MainAxisAlignment.start,
+                                                             crossAxisAlignment: CrossAxisAlignment.start,
+                                                             children: [
+                                                               Text("ADDRESS",
+                                                                   textAlign: TextAlign.start,
+                                                                   style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
+                                                                       fontWeight: FontWeight.w600)),
+                                                               Text(_address,
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),

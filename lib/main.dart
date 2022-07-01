@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
+import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/network/api_service.dart';
 import 'package:thegreatkabab/signup.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
@@ -70,10 +71,19 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late Animation<double> animation;
   static const colors= AppColors();
   SFData sfdata= SFData();
+  var _IsLogin;
 
   @override
   void initState() {
     super.initState();
+    Future<int> getpay = sfdata.getLogin(context);
+    getpay.then((data) {
+      setState(() {
+        _IsLogin=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
     /*animationController = AnimationController(
         vsync: this, duration: const Duration(seconds: 2));
     animation = CurvedAnimation(parent: animationController, curve: Curves.easeOut);
@@ -89,8 +99,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   route() async {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => SignUp()));
+    if(_IsLogin==1){
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    }else{
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => SignUp()));
+    }
+
 
     /*Future<String> authToken = sfdata.getIsloginTrue(context);
     authToken.then((data) {

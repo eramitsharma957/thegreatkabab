@@ -1,11 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:thegreatkabab/models/hoteldata.dart';
 import 'dart:async';
+
+import 'package:thegreatkabab/models/logindata.dart';
+import 'package:thegreatkabab/models/verifyotp.dart';
 
 part 'api_service.g.dart';
 
 @RestApi(baseUrl:"http://api.tgkfexpresspatna.com/api/")
+
+
 abstract class ApiService {
   factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
 
@@ -22,14 +28,22 @@ abstract class ApiService {
   }
 
 
-/*@POST("LoginApi/ConnectionConnector")
-  Future<List<ConnectionConnector>> getconnection(
-      @Field("BranchUrl") branchUrl,
+  @POST("users/verifymobileOTP/{HotelId}")
+  Future<VerifyOtp> verifyOTP(
+      @Field("MobileNo") mobileNo,
+      @Field("OTP") otp,
+      @Path("HotelId") hotelId,
       );
-*/
-  @GET("GenerateMobileOTP/{Mobile}")
-  Future<String> signUp(
-      @Field("Mobile") mobile,
+
+  @GET("GenerateMobileOTP/{mobile}/{HotelId}")
+  Future<Logindata> signUp(
+      @Path("mobile") mobile,
+      @Path("HotelId")hotelId,
+      );
+
+  @GET("hotelbyid/{HotelId}")
+  Future<HotelData> hotelData(
+      @Path("HotelId") hotelId,
       );
 
 

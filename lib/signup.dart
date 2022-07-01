@@ -44,7 +44,6 @@ class SignUpState extends State<SignUp> {
   bool _timerlogin=false;
   bool _timerresend=false;
   String serverOTP="";
-
   late Timer _timer;
   int _start = 30;
 
@@ -80,29 +79,69 @@ class SignUpState extends State<SignUp> {
   }
 
 
- //////////////////  Get Class Link  //////////////////////
+  //////////////////  SignUp  //////////////////////
   Future<Null> signUp() async {
+    print(mobileController.text.toString());
     // EasyLoading.show(status: 'Loading');
     //  SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .signUp(mobileController.text)
+        .signUp(mobileController.text.toString().trim(),colors.hotelId)
         .then((result) {
       setState(() {
         // EasyLoading.dismiss();
         Navigator.of(context,rootNavigator: true).pop();
-        if(result.isNotEmpty){
-          _layoutlogin=false;
-          serverOTP=result;
-          _timerlogin=true;
-          _timerresend=false;
-          startTimer();
-        //  commonAlert.messageAlertError(context,result.message,"Error");
-        }else{
-          _layoutlogin=false;
-          _timerlogin=false;
+        if(result.header.isNotEmpty){
+          if(result.header[0].success=="True"){
+            _layoutlogin=false;
+            serverOTP=result.data[0].otp;
+            _timerlogin=true;
+            _timerresend=false;
+            startTimer();
+            //  commonAlert.messageAlertError(context,result.message,"Error");
+          }else{
+            commonAlert.messageAlertError(context,result.header[0].message,"Error");
+            _layoutlogin=false;
+            _timerlogin=false;
 
+          }
+        }else{
+          commonAlert.messageAlertError(context,"Server Error. Try again!!","Error");
         }
+
+      });
+    }).catchError((error) {
+
+      // EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
+  //////////////////  SignUp  //////////////////////
+  Future<Null> OTPVerify() async {
+    print(mobileController.text.toString());
+    // EasyLoading.show(status: 'Loading');
+    //  SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .verifyOTP(mobileController.text.toString().trim(),_Otp,colors.hotelId)
+        .then((result) {
+      setState(() {
+        // EasyLoading.dismiss();
+        Navigator.of(context,rootNavigator: true).pop();
+        if(result.data.isNotEmpty){
+          if(result.data[0].successStatus=="True"){
+            sfdata.saveLoginDataToSF(context, result.data[0].userID.toString(), "", 1);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomePage()));
+            //commonAlert.messageAlertError(context,result.message,"Error");
+          }else{
+            commonAlert.messageAlertError(context,result.data[0].message,"Error");
+          }
+        }else{
+          commonAlert.messageAlertError(context,"Server Error. Try again!!","Error");
+        }
+
       });
     }).catchError((error) {
 
@@ -378,8 +417,14 @@ class SignUpState extends State<SignUp> {
                                                                     fontWeight: FontWeight.w400)),
                                                             GestureDetector(
                                                               onTap: (){
-
-
+                                                                if(mobileController.text.isEmpty){
+                                                                  commonAlert.showToast(context,"Enter Mobile");  //
+                                                                }else if(mobileController.text.length==10){
+                                                                  commonAlert.showToast(context,"Enter 10 digit mobile number");  //
+                                                                }else{
+                                                                  commonAlert.showLoadingDialog(context,_keyLoader);
+                                                                  signUp();
+                                                                }
                                                               },
                                                               child: Text("Resend OTP",
                                                                   textAlign: TextAlign.start,
@@ -405,18 +450,13 @@ class SignUpState extends State<SignUp> {
                                                             onPressed: () async {
                                                               print("OTP ${serverOTP}");
                                                               print("OTPENTER ${_Otp}");
-
                                                               if(_Otp.toString().length<4){
                                                                 commonAlert.showToast(context,"Enter OTP");  //
                                                               }else{
-                                                                if(_Otp==serverOTP){
-                                                                  Navigator.pushReplacement(
-                                                                      context, MaterialPageRoute(builder: (context) => HomePage()));
-                                                                }else{
-                                                                  commonAlert.showToast(context,"Entered OTP not matched");
-                                                                }
+                                                                this.commonAlert.showLoadingDialog(context,_keyLoader);
+                                                                OTPVerify();
 
-                                                                // this.commonAlert.showLoadingDialog(context,_keyLoader);
+
 
                                                               }
                                                             },
