@@ -1,12 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
+
+import 'models/notificatiodata.dart';
+import 'network/api_service.dart';
 
 class Notifications extends StatefulWidget {
   @override
@@ -30,41 +36,49 @@ class NotificationsState extends State<Notifications> {
   OtpFieldController otpController = OtpFieldController();
   var _Otp;
   bool _layoutlogin=true;
+  var _UserID;
+  List<Datum> datalist=<Datum>[];
+  bool isLoader = false;
 
   @override
   void initState() {
+
+    Future<String> getpay = sfdata.getUserId(context);
+    getpay.then((data) {
+      setState(() {
+        _UserID=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    EasyLoading.show(status: 'Loading');
+    notificationList();
     super.initState();
   }
 
 
 
-  /* //////////////////  Get Class Link  //////////////////////
-  Future<Null> signUp() async {
-    // EasyLoading.show(status: 'Loading');
-    //  SharedPreferences preferences = await SharedPreferences.getInstance();
+   //////////////////  Get Class Link  //////////////////////
+  Future<Null> notificationList() async {
+
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .signUp(emailController.text,mobileController.text,nameController.text,passwordController.text)
+        .getnotification(_UserID,colors.hotelId)
         .then((result) {
       setState(() {
-        // EasyLoading.dismiss();
-        Navigator.of(context,rootNavigator: true).pop();
-        if(result.loginId==0){
-          commonAlert.messageAlertError(context,result.message,"Error");
-        }else{
-          sfdata.saveLoginDataToSF(context,result.loginId,nameController.text,"1",mobileController.text,emailController.text);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => OTPSave(result)));
-
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          datalist=result.data.toList();
         }
       });
     }).catchError((error) {
 
-      // EasyLoading.dismiss();
+       EasyLoading.dismiss();
       print(error);
     });
   }
-*/
+
 
 
   @override
@@ -132,197 +146,31 @@ class NotificationsState extends State<Notifications> {
                            ),
 
                            SizedBox(
-                             height: 20.0,
+                             height: 5.0,
                            ),
-
-                           Container(
-                             margin: const EdgeInsets.all(10.0),
-                             padding: const EdgeInsets.all(3.0),
-                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.black12),
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             child: Padding(padding:const EdgeInsets.all(5.0),
-                               child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                 children: [
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 35,
-                                       width: 35,
-                                       child: Image.asset('assets/bell_icon.png'),
-                                     ),
-                                   ),
-                                   Expanded(
-                                     flex: 5,
-                                     child:Column(
-                                         mainAxisAlignment: MainAxisAlignment.start,
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           Text("01-02-22",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                           Text("Message Here.....",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                         ]) ,
-                                   ),
-
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 22,
-                                       width: 22,
-                                       child: Image.asset('assets/down_arrow.png'),
-                                     ),
-                                   ),
-                                 ],
+                           MediaQuery.removePadding(
+                             context: context,
+                             removeTop: true,
+                             child:
+                             datalist.isNotEmpty
+                                 ? Container(
+                               child: Expanded(
+                                 child: ListView.builder(
+                                   itemCount: datalist.length,
+                                   itemBuilder: _buildRow,
+                                 ),
                                ),
+                             )
+                                 : isLoader == true
+                                 ? Container(
+                                 margin: const EdgeInsets.all(180.0),
+                                 child: const Center(child: CircularProgressIndicator()))
+                                 : Container(
+                               margin: const EdgeInsets.all(160.0),
+                               child: Text("",style: TextStyle(color: colors.redtheme),),
                              ),
                            ),
-                           Container(
-                             margin: const EdgeInsets.all(10.0),
-                             padding: const EdgeInsets.all(3.0),
-                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.black12),
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             child: Padding(padding:const EdgeInsets.all(5.0),
-                               child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                 children: [
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 35,
-                                       width: 35,
-                                       child: Image.asset('assets/bell_icon.png'),
-                                     ),
-                                   ),
-                                   Expanded(
-                                     flex: 5,
-                                     child:Column(
-                                         mainAxisAlignment: MainAxisAlignment.start,
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           Text("01-02-22",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                           Text("Message Here.....",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                         ]) ,
-                                   ),
 
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 22,
-                                       width: 22,
-                                       child: Image.asset('assets/down_arrow.png'),
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ),
-                           Container(
-                             margin: const EdgeInsets.all(10.0),
-                             padding: const EdgeInsets.all(3.0),
-                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.black12),
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             child: Padding(padding:const EdgeInsets.all(5.0),
-                               child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                 children: [
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 35,
-                                       width: 35,
-                                       child: Image.asset('assets/bell_icon.png'),
-                                     ),
-                                   ),
-                                   Expanded(
-                                     flex: 5,
-                                     child:Column(
-                                         mainAxisAlignment: MainAxisAlignment.start,
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           Text("01-02-22",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                           Text("Message Here.....",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                         ]) ,
-                                   ),
-
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 22,
-                                       width: 22,
-                                       child: Image.asset('assets/down_arrow.png'),
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ),
-                           Container(
-                             margin: const EdgeInsets.all(10.0),
-                             padding: const EdgeInsets.all(3.0),
-                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.black12),
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             child: Padding(padding:const EdgeInsets.all(5.0),
-                               child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                 children: [
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 35,
-                                       width: 35,
-                                       child: Image.asset('assets/bell_icon.png'),
-                                     ),
-                                   ),
-                                   Expanded(
-                                     flex: 5,
-                                     child:Column(
-                                         mainAxisAlignment: MainAxisAlignment.start,
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           Text("01-02-22",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                           Text("Message Here.....",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                         ]) ,
-                                   ),
-
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 22,
-                                       width: 22,
-                                       child: Image.asset('assets/down_arrow.png'),
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ),
 
                          ],
                        ),
@@ -334,7 +182,7 @@ class NotificationsState extends State<Notifications> {
 
               ),
             ),
-      ),
+       ),
 
 
 
@@ -343,6 +191,56 @@ class NotificationsState extends State<Notifications> {
 
 
 
+  Widget _buildRow(BuildContext context, int index) {
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(3.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black12),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Padding(padding:const EdgeInsets.all(5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 35,
+                width: 35,
+                child: Image.asset('assets/bell_icon.png'),
+              ),
+            ),
+            SizedBox(width: 10.0,),
+            Expanded(
+              flex: 5,
+              child:Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(commonAlert.dateFormateSQLServer(context,datalist[index].createdOn),
+                        textAlign: TextAlign.start,
+                        style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
+                    Text(datalist[index].notificationsMessage,
+                        textAlign: TextAlign.start,
+                        style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 13.0)),
+                  ]) ,
+            ),
+
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 0,
+                width: 0,
+                child: Image.asset('assets/down_arrow.png'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
 
 }

@@ -1,10 +1,13 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/bookingstatus.dart';
 import 'package:thegreatkabab/bookseat.dart';
 import 'package:thegreatkabab/const/colors.dart';
+import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/contact.dart';
 import 'package:thegreatkabab/custom_animated_bottom_bar.dart';
 import 'package:thegreatkabab/dprbooking.dart';
@@ -15,6 +18,9 @@ import 'package:thegreatkabab/notification.dart';
 import 'package:thegreatkabab/reviews.dart';
 import 'package:thegreatkabab/signup.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
+
+import 'models/menudata.dart';
+import 'models/notificatiodata.dart';
 
 enum ConfirmAction { Cancel, Accept}
 
@@ -34,11 +40,17 @@ class _MyHomePageState extends State<HomePage> {
   TextEditingController topicController = new TextEditingController();
   final _inactiveColor = Colors.grey;
   TextStyle style = TextStyle(fontFamily:'Poppins', fontSize: 16.0);
-  var _IsLogin;
+  var _IsLogin,_UserID;
   SFData sfdata= SFData();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool restu=true,vegPic=false,nonvegPicfalse=false;
   static const colors= AppColors();
+  bool isLoader = false;
+  List<Datum> datalist=<Datum>[];
+  CommonAction commonAlert= CommonAction();
+
+  List<Datamenu> menudata=<Datamenu>[];
+  var _selectmenu="Non Veg";
 
   @override
   void initState() {
@@ -54,7 +66,18 @@ class _MyHomePageState extends State<HomePage> {
       print(e);
     });
 
+    Future<String> userid = sfdata.getUserId(context);
+    userid.then((data) {
+      setState(() {
+        _UserID=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+
     hotelData();
+    notificationList();
+    menuList();
   }
 
   //////////////////  Hotel Details  //////////////////////
@@ -73,6 +96,44 @@ class _MyHomePageState extends State<HomePage> {
     }).catchError((error) {
 
       // EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
+  //////////////////  Get Class Link  //////////////////////
+  Future<Null> notificationList() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getnotification(_UserID,colors.hotelId)
+        .then((result) {
+      setState(() {
+        if(result.data.isNotEmpty){
+          datalist=result.data.toList();
+        }
+      });
+    }).catchError((error) {
+      print(error);
+    });
+  }
+
+  //////////////////  Get Menus //////////////////////
+  Future<Null> menuList() async {
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getMenuLsit(colors.hotelId)
+        .then((result) {
+      setState(() {
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          menudata=result.data.toList();
+        }
+      });
+    }).catchError((error) {
+
+      EasyLoading.dismiss();
       print(error);
     });
   }
@@ -352,7 +413,33 @@ class _MyHomePageState extends State<HomePage> {
 
           },
         ),
-                 Divider(color: colors.purpals,),
+         Divider(color: colors.purpals,),
+                ListTile(
+                  leading:Image.asset("assets/menu_dnine.png",
+                    width: 30.0,
+                    height: 30.0,
+                  ),
+                  title: Text("Logout",style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 14.0,
+                  ),),
+                  trailing: Icon(Icons.keyboard_arrow_right_sharp),
+                  onTap: () async {
+                    ///  Comment //////
+                    Navigator.of(context).pop();
+                    sfdata.saveLoginDataToSF(context, "0", "", 0);
+                    Navigator.of(context).pop(ConfirmAction.Accept);
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (BuildContext context) => SignUp()),
+                      ModalRoute.withName('/'),
+                    );
+
+                  },
+                ),
+                Divider(color: colors.purpals,),
 
       ],
     ),
@@ -1361,8 +1448,7 @@ class _MyHomePageState extends State<HomePage> {
           child: Padding(padding:const EdgeInsets.all(10.0),
             child: Column(
               children: [
-                Text(
-                             "Menu Items",maxLines: 2,textAlign: TextAlign.center,
+                Text("Menu Items",maxLines: 2,textAlign: TextAlign.center,
                              style: TextStyle(
                                fontFamily: 'Poppins',
                                fontWeight: FontWeight.w600,
@@ -1371,306 +1457,13 @@ class _MyHomePageState extends State<HomePage> {
                              ),
                            ),
                 SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        width: 180,
-                        height: 120,
-                        child:  Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          elevation: 5,
-                          margin: EdgeInsets.all(8),
-                          child:InkWell(
-                            onTap: (){
-
-                            },
-                            child:Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child:  Column(
-                                mainAxisAlignment: MainAxisAlignment.center
-                                ,
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child:Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
-                                  ),
-                                  //SizedBox(height: 5),
-                                  Text(
-                                    "Non Veg",maxLines: 2,textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12.0,
-                                      color: colors.redthemenew,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-
-
-                          ),
-
-                        ),
-                      ),
-
-
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        width: 180,
-                        height: 120,
-                        child:  Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          elevation: 5,
-                          margin: EdgeInsets.all(8),
-                          child:InkWell(
-                            onTap: (){
-
-                            },
-                            child:Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child:  Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child:Image.asset("assets/menu_item_icon2.png", fit: BoxFit.contain),
-                                  ),
-                                  //SizedBox(height: 5),
-                                  Text(
-                                    "Veg",maxLines: 2,textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12.0,
-                                      color: colors.redthemenew,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-
-
-                          ),
-
-                        ),
-                      ),
-
-
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        width: 180,
-                        height: 120,
-                        child:  Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          elevation: 5,
-                          margin: EdgeInsets.all(8),
-                          child:InkWell(
-                            onTap: (){
-
-                            },
-                            child:Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child:  Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child:Image.asset("assets/menu_item_icon3.png", fit: BoxFit.contain),
-                                  ),
-                                  //SizedBox(height: 5),
-                                  Text(
-                                    "Salad",maxLines: 2,textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12.0,
-                                      color: colors.redthemenew,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-
-
-                          ),
-
-                        ),
-                      ),
-
-
-                    ),
-                  ],
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: 250
+                  ),
+                  child:_periodlayout(context),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        width: 180,
-                        height: 120,
-                        child:  Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          elevation: 5,
-                          margin: EdgeInsets.all(8),
-                          child:InkWell(
-                            onTap: (){
-
-                            },
-                            child:Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child:  Column(
-                                mainAxisAlignment: MainAxisAlignment.center
-                                ,
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child:Image.asset("assets/menu_item_icon4.png", fit: BoxFit.contain),
-                                  ),
-                                  //SizedBox(height: 5),
-                                  Text(
-                                    "Dal",maxLines: 2,textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12.0,
-                                      color: colors.redthemenew,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-
-
-                          ),
-
-                        ),
-                      ),
-
-
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        width: 180,
-                        height: 120,
-                        child:  Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          elevation: 5,
-                          margin: EdgeInsets.all(8),
-                          child:InkWell(
-                            onTap: (){
-
-                            },
-                            child:Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child:  Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child:Image.asset("assets/menu_item_icon5.png", fit: BoxFit.contain),
-                                  ),
-                                  //SizedBox(height: 5),
-                                  Text(
-                                    "Dessert",maxLines: 2,textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12.0,
-                                      color: colors.redthemenew,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-
-
-                          ),
-
-                        ),
-                      ),
-
-
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        width: 180,
-                        height: 120,
-                        child:  Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          elevation: 5,
-                          margin: EdgeInsets.all(8),
-                          child:InkWell(
-                            onTap: (){
-
-                            },
-                            child:Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child:  Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child:Image.asset("assets/menu_item_icon6.png", fit: BoxFit.contain),
-                                  ),
-                                  //SizedBox(height: 5),
-                                  Text(
-                                    "Drinks",maxLines: 2,textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12.0,
-                                      color: colors.redthemenew,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-
-
-                          ),
-
-                        ),
-                      ),
-
-
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
                 Container(
                     margin: const EdgeInsets.symmetric(horizontal: 9),
                     child: Material(
@@ -1679,12 +1472,12 @@ class _MyHomePageState extends State<HomePage> {
                       color: colors.redtheme,
                       child: MaterialButton(
                         minWidth: MediaQuery.of(context).size.width,
-                        height: 60.0,
-                        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                        height: 25.0,
+                        padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
                         onPressed: () async {
 
                         },
-                        child: Text("Non Veg",
+                        child: Text(_selectmenu,
                             textAlign: TextAlign.center,
                             style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
                       ),
@@ -1895,194 +1688,29 @@ class _MyHomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(height: 10),
-                Container(
-                  margin: const EdgeInsets.all(10.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black12),
-                      borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(padding:const EdgeInsets.all(5.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          height: 35,
-                          width: 35,
-                          child: Image.asset('assets/bell_icon.png'),
-                        ),
+                MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  child:
+                  datalist.isNotEmpty
+                      ? Container(
+                    child: Expanded(
+                      child: ListView.builder(
+                        itemCount: datalist.length,
+                        itemBuilder: _buildRowNotification,
                       ),
-                      Expanded(
-                        flex: 5,
-                        child:Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("01-02-22",
-                                  textAlign: TextAlign.start,
-                                  style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                              Text("Message Here.....",
-                                  textAlign: TextAlign.start,
-                                  style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                            ]) ,
-                      ),
-
-                      Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          height: 22,
-                          width: 22,
-                          child: Image.asset('assets/down_arrow.png'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(10.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black12),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(padding:const EdgeInsets.all(5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: SizedBox(
-                            height: 35,
-                            width: 35,
-                            child: Image.asset('assets/bell_icon.png'),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 5,
-                          child:Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("01-02-22",
-                                    textAlign: TextAlign.start,
-                                    style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                Text("Message Here.....",
-                                    textAlign: TextAlign.start,
-                                    style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                              ]) ,
-                        ),
-
-                        Expanded(
-                          flex: 1,
-                          child: SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: Image.asset('assets/down_arrow.png'),
-                          ),
-                        ),
-                      ],
                     ),
+                  )
+                      : isLoader == true
+                      ? Container(
+                      margin: const EdgeInsets.all(180.0),
+                      child: const Center(child: CircularProgressIndicator()))
+                      : Container(
+                    margin: const EdgeInsets.all(160.0),
+                    child: Text("",style: TextStyle(color: colors.redtheme),),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.all(10.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black12),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(padding:const EdgeInsets.all(5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: SizedBox(
-                            height: 35,
-                            width: 35,
-                            child: Image.asset('assets/bell_icon.png'),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 5,
-                          child:Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("01-02-22",
-                                    textAlign: TextAlign.start,
-                                    style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                Text("Message Here.....",
-                                    textAlign: TextAlign.start,
-                                    style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                              ]) ,
-                        ),
 
-                        Expanded(
-                          flex: 1,
-                          child: SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: Image.asset('assets/down_arrow.png'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(10.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black12),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(padding:const EdgeInsets.all(5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: SizedBox(
-                            height: 35,
-                            width: 35,
-                            child: Image.asset('assets/bell_icon.png'),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 5,
-                          child:Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("01-02-22",
-                                    textAlign: TextAlign.start,
-                                    style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                Text("Message Here.....",
-                                    textAlign: TextAlign.start,
-                                    style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                              ]) ,
-                        ),
-
-                        Expanded(
-                          flex: 1,
-                          child: SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: Image.asset('assets/down_arrow.png'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
 
 
               ],
@@ -2095,5 +1723,124 @@ class _MyHomePageState extends State<HomePage> {
   }
 
 
+
+  Widget _buildRowNotification(BuildContext context, int index) {
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(3.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black12),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Padding(padding:const EdgeInsets.all(5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 35,
+                width: 35,
+                child: Image.asset('assets/bell_icon.png'),
+              ),
+            ),
+            SizedBox(width: 10.0,),
+            Expanded(
+              flex: 5,
+              child:Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(commonAlert.dateFormateSQLServer(context,datalist[index].createdOn),
+                        textAlign: TextAlign.start,
+                        style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
+                    Text(datalist[index].notificationsMessage,
+                        textAlign: TextAlign.start,
+                        style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 13.0)),
+                  ]) ,
+            ),
+
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 0,
+                width: 0,
+                child: Image.asset('assets/down_arrow.png'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+  onEditGrid(index,BuildContext context) async{
+    var rowData = menudata[index];
+    setState(() {
+      _selectmenu=rowData.name;
+    });
+  }
+
+  Widget _periodlayout(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 3,
+      childAspectRatio: MediaQuery.of(context).size.height / 750,
+      children: List<Widget>.generate(menudata.length, (index) {
+        return GridTile(
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 5,
+            margin: EdgeInsets.all(8),
+            child:InkWell(
+              onTap: () => onEditGrid(index,context),
+              child:Padding(
+                padding: const EdgeInsets.all(5.0),
+                child:  Column(
+                  mainAxisAlignment: MainAxisAlignment.center
+                  ,
+                  children: [
+                    SizedBox(
+                      height: 55,
+                      width: 55,
+                      child:Image.network(menudata[index].iconImage,
+                          errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
+                            return Image.asset("assets/logo.png", fit: BoxFit.contain);
+                          }
+
+                      ),
+
+
+                      // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
+                    ),
+                    //SizedBox(height: 5),
+                    Text(menudata[index].name,maxLines: 2,textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12.0,
+                        color: colors.redthemenew,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+
+
+            ),
+
+          ),
+        );
+      }),
+    );
+
+
+  }
 
 }

@@ -5,6 +5,8 @@ import 'package:thegreatkabab/models/hoteldata.dart';
 import 'dart:async';
 
 import 'package:thegreatkabab/models/logindata.dart';
+import 'package:thegreatkabab/models/menudata.dart';
+import 'package:thegreatkabab/models/notificatiodata.dart';
 import 'package:thegreatkabab/models/verifyotp.dart';
 
 part 'api_service.g.dart';
@@ -44,6 +46,17 @@ abstract class ApiService {
   @GET("hotelbyid/{HotelId}")
   Future<HotelData> hotelData(
       @Path("HotelId") hotelId,
+      );
+
+  @POST("SeatOrderNotifications/SeatOrderNotificationsByUser")
+  Future<NotificationData> getnotification(
+      @Field("UsersID_FK") mobileNo,
+      @Field("HotelID_FK") hotelId,
+      );
+
+  @POST("MenuItemCategory/MenuItemCategoryByHotel")
+  Future<MenuData> getMenuLsit(
+      @Field("HotelID_FK") hotelId,
       );
 
 

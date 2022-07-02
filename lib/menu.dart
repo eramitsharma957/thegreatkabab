@@ -1,12 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
+import 'package:thegreatkabab/models/menudata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
+
+import 'network/api_service.dart';
 
 class MenuView extends StatefulWidget {
   @override
@@ -38,41 +44,37 @@ class MenuViewState extends State<MenuView> {
   OtpFieldController otpController = OtpFieldController();
   var _Otp;
   bool _layoutlogin=true;
+  List<Datamenu> menudata=<Datamenu>[];
+  var _selectmenu="Non Veg";
 
   @override
   void initState() {
+    menuList();
     super.initState();
   }
 
 
 
-  /* //////////////////  Get Class Link  //////////////////////
-  Future<Null> signUp() async {
-    // EasyLoading.show(status: 'Loading');
-    //  SharedPreferences preferences = await SharedPreferences.getInstance();
+  //////////////////  Get Menus //////////////////////
+  Future<Null> menuList() async {
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .signUp(emailController.text,mobileController.text,nameController.text,passwordController.text)
+        .getMenuLsit(colors.hotelId)
         .then((result) {
       setState(() {
-        // EasyLoading.dismiss();
-        Navigator.of(context,rootNavigator: true).pop();
-        if(result.loginId==0){
-          commonAlert.messageAlertError(context,result.message,"Error");
-        }else{
-          sfdata.saveLoginDataToSF(context,result.loginId,nameController.text,"1",mobileController.text,emailController.text);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => OTPSave(result)));
-
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          menudata=result.data.toList();
         }
       });
     }).catchError((error) {
 
-      // EasyLoading.dismiss();
+      EasyLoading.dismiss();
       print(error);
     });
   }
-*/
 
 
   @override
@@ -139,7 +141,14 @@ class MenuViewState extends State<MenuView> {
                              ),
                            ),
                            SizedBox(height: 20),
-                           Row(
+                           ConstrainedBox(
+                             constraints: BoxConstraints(
+                                 maxHeight: 250
+                             ),
+                             child:_periodlayout(context),
+
+                           ),
+                          /* Row(
                              children: [
                                Expanded(
                                  child: SizedBox(
@@ -436,9 +445,9 @@ class MenuViewState extends State<MenuView> {
 
                                ),
                              ],
-                           ),
+                           ),*/
 
-                           const SizedBox(height: 20.0),
+                           const SizedBox(height: 10.0),
                            Container(
                                margin: const EdgeInsets.symmetric(horizontal: 9),
                                child: Material(
@@ -447,17 +456,18 @@ class MenuViewState extends State<MenuView> {
                                  color: colors.redtheme,
                                  child: MaterialButton(
                                    minWidth: MediaQuery.of(context).size.width,
-                                   height: 60.0,
-                                   padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                   height: 25.0,
+                                   padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
                                    onPressed: () async {
 
                                    },
-                                   child: Text("Non Veg",
+                                   child: Text(_selectmenu,
                                        textAlign: TextAlign.center,
                                        style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
                                  ),
                                )
                            ),
+
 
                          ],
                        ),
@@ -476,8 +486,71 @@ class MenuViewState extends State<MenuView> {
     );
   }
 
+  onEditGrid(index,BuildContext context) async{
+    var rowData = menudata[index];
+    setState(() {
+      _selectmenu=rowData.name;
+    });
+  }
+
+  Widget _periodlayout(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 3,
+      childAspectRatio: MediaQuery.of(context).size.height / 750,
+      children: List<Widget>.generate(menudata.length, (index) {
+        return GridTile(
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 5,
+            margin: EdgeInsets.all(8),
+            child:InkWell(
+              onTap: () => onEditGrid(index,context),
+              child:Padding(
+                padding: const EdgeInsets.all(5.0),
+                child:  Column(
+                  mainAxisAlignment: MainAxisAlignment.center
+                  ,
+                  children: [
+                    SizedBox(
+                      height: 55,
+                      width: 55,
+                      child:Image.network(menudata[index].iconImage,
+                          errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
+                            return Image.asset("assets/logo.png", fit: BoxFit.contain);
+                          }
+
+                      ),
 
 
+                     // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
+                    ),
+                    //SizedBox(height: 5),
+                    Text(menudata[index].name,maxLines: 2,textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12.0,
+                        color: colors.redthemenew,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+
+
+            ),
+
+          ),
+        );
+      }),
+    );
+
+
+  }
 
 
 }

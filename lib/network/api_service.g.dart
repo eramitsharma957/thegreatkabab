@@ -65,6 +65,40 @@ class _ApiService implements ApiService {
     return value;
   }
 
+  @override
+  Future<NotificationData> getnotification(mobileNo, hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'UsersID_FK': mobileNo, 'HotelID_FK': hotelId};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<NotificationData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options,
+                    'SeatOrderNotifications/SeatOrderNotificationsByUser',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = NotificationData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<MenuData> getMenuLsit(hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<MenuData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(
+                    _dio.options, 'MenuItemCategory/MenuItemCategoryByHotel',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = MenuData.fromJson(_result.data!);
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

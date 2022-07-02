@@ -173,7 +173,7 @@ class CommonAction{
 
   String dateFormateSQLServer(BuildContext context,DateTime date){
     String formateDate;
-    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final DateFormat formatter = DateFormat('dd-MMM-yyyy');
     formateDate= formatter.format(date);
     return formateDate;
   }
