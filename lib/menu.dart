@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,6 +11,7 @@ import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/models/menudata.dart';
+import 'package:thegreatkabab/models/menudescdata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 
 import 'network/api_service.dart';
@@ -45,7 +47,9 @@ class MenuViewState extends State<MenuView> {
   var _Otp;
   bool _layoutlogin=true;
   List<Datamenu> menudata=<Datamenu>[];
+  List<MenuDesc> menuDescdata=<MenuDesc>[];
   var _selectmenu="Non Veg";
+  var _selectmenuID=0;
 
   @override
   void initState() {
@@ -67,10 +71,38 @@ class MenuViewState extends State<MenuView> {
         EasyLoading.dismiss();
         if(result.data.isNotEmpty){
           menudata=result.data.toList();
+          menuDescription(menudata[0].menuItemCategoryIdPk);
         }
       });
     }).catchError((error) {
 
+      EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
+  //////////////////  Get Menus Description //////////////////////
+  Future<Null> menuDescription(int selectmenuID) async {
+    menuDescdata=[];
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getMenuDescription(colors.hotelId)
+        .then((result) {
+      setState(() {
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          for(int i=0;i<result.data.length;i++){
+            if(result.data[i].menuItemCategoryIdPk==selectmenuID){
+              menuDescdata.add(MenuDesc(menuIdPk: result.data[i].menuIdPk, item: result.data[i].item, itemPrice: result.data[i].itemPrice, itemDescription: result.data[i].itemDescription, menuItemCategoryIdPk: result.data[i].menuItemCategoryIdPk, name: result.data[i].name));
+            }
+          }
+
+
+        }
+      });
+    }).catchError((error) {
       EasyLoading.dismiss();
       print(error);
     });
@@ -140,332 +172,49 @@ class MenuViewState extends State<MenuView> {
                                color: colors.redtheme,
                              ),
                            ),
-                           SizedBox(height: 20),
+                           SizedBox(height: 10),
                            ConstrainedBox(
                              constraints: BoxConstraints(
-                                 maxHeight: 250
+                                 maxHeight: 240
                              ),
                              child:_periodlayout(context),
 
                            ),
-                          /* Row(
-                             children: [
-                               Expanded(
-                                 child: SizedBox(
-                                   width: 180,
-                                   height: 120,
-                                   child:  Card(
-                                     clipBehavior: Clip.antiAlias,
-                                     shape: RoundedRectangleBorder(
-                                       borderRadius: BorderRadius.circular(15.0),
-                                     ),
-                                     elevation: 5,
-                                     margin: EdgeInsets.all(8),
-                                     child:InkWell(
-                                       onTap: (){
+                          // const SizedBox(height: 10.0),
 
-                                       },
-                                       child:Padding(
-                                         padding: const EdgeInsets.all(5.0),
-                                         child:  Column(
-                                           mainAxisAlignment: MainAxisAlignment.center
-                                           ,
-                                           children: [
-                                             SizedBox(
-                                               height: 60,
-                                               width: 60,
-                                               child:Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
-                                             ),
-                                             //SizedBox(height: 5),
-                                             Text(
-                                               "Non Veg",maxLines: 2,textAlign: TextAlign.center,
-                                               style: TextStyle(
-                                                 fontFamily: 'Poppins',
-                                                 fontWeight: FontWeight.w600,
-                                                 fontSize: 12.0,
-                                                 color: colors.redthemenew,
-                                               ),
-                                             ),
-                                           ],
-                                         ),
-                                       ),
-
-
-
-                                     ),
-
-                                   ),
-                                 ),
-
-
-                               ),
-                               Expanded(
-                                 child: SizedBox(
-                                   width: 180,
-                                   height: 120,
-                                   child:  Card(
-                                     clipBehavior: Clip.antiAlias,
-                                     shape: RoundedRectangleBorder(
-                                       borderRadius: BorderRadius.circular(15.0),
-                                     ),
-                                     elevation: 5,
-                                     margin: EdgeInsets.all(8),
-                                     child:InkWell(
-                                       onTap: (){
-
-                                       },
-                                       child:Padding(
-                                         padding: const EdgeInsets.all(5.0),
-                                         child:  Column(
-                                           mainAxisAlignment: MainAxisAlignment.center,
-                                           children: [
-                                             SizedBox(
-                                               height: 60,
-                                               width: 60,
-                                               child:Image.asset("assets/menu_item_icon2.png", fit: BoxFit.contain),
-                                             ),
-                                             //SizedBox(height: 5),
-                                             Text(
-                                               "Veg",maxLines: 2,textAlign: TextAlign.center,
-                                               style: TextStyle(
-                                                 fontFamily: 'Poppins',
-                                                 fontWeight: FontWeight.w600,
-                                                 fontSize: 12.0,
-                                                 color: colors.redthemenew,
-                                               ),
-                                             ),
-                                           ],
-                                         ),
-                                       ),
-
-
-
-                                     ),
-
-                                   ),
-                                 ),
-
-
-                               ),
-                               Expanded(
-                                 child: SizedBox(
-                                   width: 180,
-                                   height: 120,
-                                   child:  Card(
-                                     clipBehavior: Clip.antiAlias,
-                                     shape: RoundedRectangleBorder(
-                                       borderRadius: BorderRadius.circular(15.0),
-                                     ),
-                                     elevation: 5,
-                                     margin: EdgeInsets.all(8),
-                                     child:InkWell(
-                                       onTap: (){
-
-                                       },
-                                       child:Padding(
-                                         padding: const EdgeInsets.all(5.0),
-                                         child:  Column(
-                                           mainAxisAlignment: MainAxisAlignment.center,
-                                           children: [
-                                             SizedBox(
-                                               height: 60,
-                                               width: 60,
-                                               child:Image.asset("assets/menu_item_icon3.png", fit: BoxFit.contain),
-                                             ),
-                                             //SizedBox(height: 5),
-                                             Text(
-                                               "Salad",maxLines: 2,textAlign: TextAlign.center,
-                                               style: TextStyle(
-                                                 fontFamily: 'Poppins',
-                                                 fontWeight: FontWeight.w600,
-                                                 fontSize: 12.0,
-                                                 color: colors.redthemenew,
-                                               ),
-                                             ),
-                                           ],
-                                         ),
-                                       ),
-
-
-
-                                     ),
-
-                                   ),
-                                 ),
-
-
-                               ),
-                             ],
-                           ),
-                           Row(
-                             children: [
-                               Expanded(
-                                 child: SizedBox(
-                                   width: 180,
-                                   height: 120,
-                                   child:  Card(
-                                     clipBehavior: Clip.antiAlias,
-                                     shape: RoundedRectangleBorder(
-                                       borderRadius: BorderRadius.circular(15.0),
-                                     ),
-                                     elevation: 5,
-                                     margin: EdgeInsets.all(8),
-                                     child:InkWell(
-                                       onTap: (){
-
-                                       },
-                                       child:Padding(
-                                         padding: const EdgeInsets.all(5.0),
-                                         child:  Column(
-                                           mainAxisAlignment: MainAxisAlignment.center
-                                           ,
-                                           children: [
-                                             SizedBox(
-                                               height: 60,
-                                               width: 60,
-                                               child:Image.asset("assets/menu_item_icon4.png", fit: BoxFit.contain),
-                                             ),
-                                             //SizedBox(height: 5),
-                                             Text(
-                                               "Dal",maxLines: 2,textAlign: TextAlign.center,
-                                               style: TextStyle(
-                                                 fontFamily: 'Poppins',
-                                                 fontWeight: FontWeight.w600,
-                                                 fontSize: 12.0,
-                                                 color: colors.redthemenew,
-                                               ),
-                                             ),
-                                           ],
-                                         ),
-                                       ),
-
-
-
-                                     ),
-
-                                   ),
-                                 ),
-
-
-                               ),
-                               Expanded(
-                                 child: SizedBox(
-                                   width: 180,
-                                   height: 120,
-                                   child:  Card(
-                                     clipBehavior: Clip.antiAlias,
-                                     shape: RoundedRectangleBorder(
-                                       borderRadius: BorderRadius.circular(15.0),
-                                     ),
-                                     elevation: 5,
-                                     margin: EdgeInsets.all(8),
-                                     child:InkWell(
-                                       onTap: (){
-
-                                       },
-                                       child:Padding(
-                                         padding: const EdgeInsets.all(5.0),
-                                         child:  Column(
-                                           mainAxisAlignment: MainAxisAlignment.center,
-                                           children: [
-                                             SizedBox(
-                                               height: 60,
-                                               width: 60,
-                                               child:Image.asset("assets/menu_item_icon5.png", fit: BoxFit.contain),
-                                             ),
-                                             //SizedBox(height: 5),
-                                             Text(
-                                               "Dessert",maxLines: 2,textAlign: TextAlign.center,
-                                               style: TextStyle(
-                                                 fontFamily: 'Poppins',
-                                                 fontWeight: FontWeight.w600,
-                                                 fontSize: 12.0,
-                                                 color: colors.redthemenew,
-                                               ),
-                                             ),
-                                           ],
-                                         ),
-                                       ),
-
-
-
-                                     ),
-
-                                   ),
-                                 ),
-
-
-                               ),
-                               Expanded(
-                                 child: SizedBox(
-                                   width: 180,
-                                   height: 120,
-                                   child:  Card(
-                                     clipBehavior: Clip.antiAlias,
-                                     shape: RoundedRectangleBorder(
-                                       borderRadius: BorderRadius.circular(15.0),
-                                     ),
-                                     elevation: 5,
-                                     margin: EdgeInsets.all(8),
-                                     child:InkWell(
-                                       onTap: (){
-
-                                       },
-                                       child:Padding(
-                                         padding: const EdgeInsets.all(5.0),
-                                         child:  Column(
-                                           mainAxisAlignment: MainAxisAlignment.center,
-                                           children: [
-                                             SizedBox(
-                                               height: 60,
-                                               width: 60,
-                                               child:Image.asset("assets/menu_item_icon6.png", fit: BoxFit.contain),
-                                             ),
-                                             //SizedBox(height: 5),
-                                             Text(
-                                               "Drinks",maxLines: 2,textAlign: TextAlign.center,
-                                               style: TextStyle(
-                                                 fontFamily: 'Poppins',
-                                                 fontWeight: FontWeight.w600,
-                                                 fontSize: 12.0,
-                                                 color: colors.redthemenew,
-                                               ),
-                                             ),
-                                           ],
-                                         ),
-                                       ),
-
-
-
-                                     ),
-
-                                   ),
-                                 ),
-
-
-                               ),
-                             ],
-                           ),*/
-
-                           const SizedBox(height: 10.0),
                            Container(
-                               margin: const EdgeInsets.symmetric(horizontal: 9),
-                               child: Material(
-                                 elevation: 5.0,
-                                 borderRadius: BorderRadius.circular(12.0),
                                  color: colors.redtheme,
-                                 child: MaterialButton(
-                                   minWidth: MediaQuery.of(context).size.width,
-                                   height: 25.0,
-                                   padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                                   onPressed: () async {
-
-                                   },
+                                 margin: const EdgeInsets.symmetric(horizontal: 9),
+                                 child:  Row(
+                                   mainAxisAlignment: MainAxisAlignment.center,
+                                     children: [
+                                 Padding(padding:const EdgeInsets.all(5.0),
                                    child: Text(_selectmenu,
                                        textAlign: TextAlign.center,
                                        style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
                                  ),
-                               )
+
+                                     ]
+                                 ),
+
+
+                               ),
+
+
+                           Padding(
+                               padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 0.0),
+                               child:ConstrainedBox(
+                                 constraints: BoxConstraints(
+                                     maxHeight: 600
+                                 ),
+                                 child:ListView.builder(
+                                   primary: false,
+                                   shrinkWrap: true,
+                                   itemCount: menuDescdata.length,
+                                   itemBuilder: _buildRow,
+                                 ),
+
+                               ),
                            ),
 
 
@@ -490,6 +239,8 @@ class MenuViewState extends State<MenuView> {
     var rowData = menudata[index];
     setState(() {
       _selectmenu=rowData.name;
+      _selectmenuID=rowData.menuItemCategoryIdPk;
+      menuDescription(_selectmenuID);
     });
   }
 
@@ -552,6 +303,38 @@ class MenuViewState extends State<MenuView> {
 
   }
 
+
+
+
+
+  Widget _buildRow(BuildContext context, int index) {
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(3.0),
+      child: Padding(padding:const EdgeInsets.all(5.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(menuDescdata[index].item,
+                textAlign: TextAlign.start,
+                style: style.copyWith(color: colors.black, fontWeight: FontWeight.w600,fontSize: 14.0)),
+
+            Text(menuDescdata[index].itemDescription,
+                textAlign: TextAlign.start,
+                style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 12.0)),
+
+            Text("₹ ${menuDescdata[index].itemPrice}",
+                textAlign: TextAlign.start,
+                style: style.copyWith(color: colors.redtheme, fontWeight: FontWeight.w400,fontSize: 14.0)),
+            DottedLine(),
+          ],
+        ),
+
+
+      ),
+    );
+  }
 
 }
 

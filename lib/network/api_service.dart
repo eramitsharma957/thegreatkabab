@@ -1,12 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:thegreatkabab/models/gallerydata.dart';
 import 'package:thegreatkabab/models/hoteldata.dart';
 import 'dart:async';
 
 import 'package:thegreatkabab/models/logindata.dart';
 import 'package:thegreatkabab/models/menudata.dart';
+import 'package:thegreatkabab/models/menudescdata.dart';
 import 'package:thegreatkabab/models/notificatiodata.dart';
+import 'package:thegreatkabab/models/reviewdata.dart';
 import 'package:thegreatkabab/models/verifyotp.dart';
 
 part 'api_service.g.dart';
@@ -59,6 +62,20 @@ abstract class ApiService {
       @Field("HotelID_FK") hotelId,
       );
 
+  @POST("Menu/MenuItemsWithCategoryByHotel")
+  Future<MenuDescData> getMenuDescription(
+      @Field("HotelID_FK") hotelId,
+      );
+
+  @POST("review/ReviewByHotel")
+  Future<ReviewData> getReviews(
+      @Field("HotelID_FK") hotelId,
+      );
+
+  @POST("PhotoGallery/PhotoGalleryByHotel")
+  Future<GalleryData> getGallery(
+      @Field("HotelID_FK") hotelId,
+      );
 
   /*@POST("UserSignup")
   Future<SignupData> signUp(

@@ -1,4 +1,5 @@
 import 'package:cool_alert/cool_alert.dart';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -12,7 +13,10 @@ import 'package:thegreatkabab/contact.dart';
 import 'package:thegreatkabab/custom_animated_bottom_bar.dart';
 import 'package:thegreatkabab/dprbooking.dart';
 import 'package:thegreatkabab/gallery.dart';
+import 'package:thegreatkabab/gallery_view.dart';
 import 'package:thegreatkabab/menu.dart';
+import 'package:thegreatkabab/models/gallerydata.dart';
+import 'package:thegreatkabab/models/menudescdata.dart';
 import 'package:thegreatkabab/network/api_service.dart';
 import 'package:thegreatkabab/notification.dart';
 import 'package:thegreatkabab/reviews.dart';
@@ -50,7 +54,14 @@ class _MyHomePageState extends State<HomePage> {
   CommonAction commonAlert= CommonAction();
 
   List<Datamenu> menudata=<Datamenu>[];
+  List<MenuDesc> menuDescdata=<MenuDesc>[];
   var _selectmenu="Non Veg";
+  var _selectmenuID=0;
+
+  List<GalleryList> gallerydata=<GalleryList>[];
+  List<GalleryList> restdata=<GalleryList>[];
+  List<GalleryList> vegdata=<GalleryList>[];
+  List<GalleryList> nonvegdata=<GalleryList>[];
 
   @override
   void initState() {
@@ -78,6 +89,7 @@ class _MyHomePageState extends State<HomePage> {
     hotelData();
     notificationList();
     menuList();
+    gallery();
   }
 
   //////////////////  Hotel Details  //////////////////////
@@ -129,6 +141,7 @@ class _MyHomePageState extends State<HomePage> {
         EasyLoading.dismiss();
         if(result.data.isNotEmpty){
           menudata=result.data.toList();
+          menuDescription(menudata[0].menuItemCategoryIdPk);
         }
       });
     }).catchError((error) {
@@ -137,6 +150,69 @@ class _MyHomePageState extends State<HomePage> {
       print(error);
     });
   }
+
+  //////////////////  Get Menus Description //////////////////////
+  Future<Null> menuDescription(int selectmenuID) async {
+    menuDescdata=[];
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getMenuDescription(colors.hotelId)
+        .then((result) {
+      setState(() {
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          for(int i=0;i<result.data.length;i++){
+            if(result.data[i].menuItemCategoryIdPk==selectmenuID){
+              menuDescdata.add(MenuDesc(menuIdPk: result.data[i].menuIdPk, item: result.data[i].item, itemPrice: result.data[i].itemPrice, itemDescription: result.data[i].itemDescription, menuItemCategoryIdPk: result.data[i].menuItemCategoryIdPk, name: result.data[i].name));
+            }
+          }
+
+
+        }
+      });
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
+
+
+  //////////////////  Get Menus Description //////////////////////
+  Future<Null> gallery() async {
+    gallerydata=[];
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getGallery(colors.hotelId)
+        .then((result) {
+      setState(() {
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          for(int i=0;i<result.data.length;i++){
+            if(result.data[i].photoGalleryCategoryIdPk==1){
+              vegdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
+            }
+            if(result.data[i].photoGalleryCategoryIdPk==2){
+              nonvegdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
+            }
+            if(result.data[i].photoGalleryCategoryIdPk==3){
+              restdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
+            }
+          }
+          gallerydata=restdata.toList();
+        }
+      });
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
+
 
 
   Widget _logoutBadge() {
@@ -173,6 +249,42 @@ class _MyHomePageState extends State<HomePage> {
               onPressed: () {
                 //sfdata.removeAll(context);
                 sfdata.saveLoginDataToSF(context,"0","",0);
+                Navigator.of(context).pop(ConfirmAction.Accept);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) => SignUp()),
+                  ModalRoute.withName('/'),
+                );
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+
+//////////////Logout dialog//////
+  Future<Future<ConfirmAction?>> _asyncloginAlert(BuildContext context) async {
+
+    return showDialog<ConfirmAction>(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Login'),
+          content: const Text(
+              'Login for complete the booking process'),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(ConfirmAction.Cancel);
+              },
+            ),
+            FlatButton(
+              child: const Text('Yes',style: TextStyle(color: Colors.green)),
+              onPressed: () {
                 Navigator.of(context).pop(ConfirmAction.Accept);
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -697,8 +809,14 @@ class _MyHomePageState extends State<HomePage> {
                           margin: EdgeInsets.all(10),
                           child:InkWell(
                             onTap: (){
-                              Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => BookSeat()));
+                              if(_IsLogin==1){
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => BookSeat()));
+                              }else{
+                                _asyncloginAlert(context);
+                              }
+
+
                               /* if(_IsPay==1){
                               CoolAlert.show(
                                 barrierDismissible: true,
@@ -1459,29 +1577,41 @@ class _MyHomePageState extends State<HomePage> {
                 SizedBox(height: 10),
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                      maxHeight: 250
+                      maxHeight: 240
                   ),
-                  child:_periodlayout(context),
+                  child:_menulayout(context),
                 ),
-                const SizedBox(height: 10.0),
                 Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 9),
-                    child: Material(
-                      elevation: 5.0,
-                      borderRadius: BorderRadius.circular(12.0),
-                      color: colors.redtheme,
-                      child: MaterialButton(
-                        minWidth: MediaQuery.of(context).size.width,
-                        height: 25.0,
-                        padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                        onPressed: () async {
+                  color: colors.redtheme,
+                  margin: const EdgeInsets.symmetric(horizontal: 9),
+                  child:  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(padding:const EdgeInsets.all(5.0),
+                          child: Text(_selectmenu,
+                              textAlign: TextAlign.center,
+                              style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
+                        ),
 
-                        },
-                        child: Text(_selectmenu,
-                            textAlign: TextAlign.center,
-                            style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
-                      ),
-                    )
+                      ]
+                  ),
+
+
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 0.0),
+                  child:ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight: 600
+                    ),
+                    child:ListView.builder(
+                      primary: false,
+                      shrinkWrap: true,
+                      itemCount: menuDescdata.length,
+                      itemBuilder: _buildRowMenuDesc,
+                    ),
+
+                  ),
                 ),
 
               ],
@@ -1494,7 +1624,7 @@ class _MyHomePageState extends State<HomePage> {
   }
 
 
-  /////////////////////////////////// NOTIFICATION PAGE ///////////////////////////
+  /////////////////////////////////// Gallery PAGE ///////////////////////////
   Widget getGalleryPage(){
 
     return SingleChildScrollView(
@@ -1520,16 +1650,18 @@ class _MyHomePageState extends State<HomePage> {
                   ],
                 ),
 
-             SizedBox(height: 20),
-             Row(
+              SizedBox(height: 20),
+              Row(
                mainAxisAlignment: MainAxisAlignment.center,
                children: [
                  GestureDetector(
                    onTap: (){
                      setState(() {
+                       gallerydata=[];
                        restu=true;
                        vegPic=false;
                        nonvegPicfalse=false;
+                       gallerydata=restdata.toList();
                      });
 
 
@@ -1563,9 +1695,11 @@ class _MyHomePageState extends State<HomePage> {
                  GestureDetector(
                    onTap: (){
                      setState(() {
+                       gallerydata=[];
                        restu=false;
                        vegPic=true;
                        nonvegPicfalse=false;
+                       gallerydata=vegdata.toList();
                      });
 
                    },
@@ -1598,9 +1732,11 @@ class _MyHomePageState extends State<HomePage> {
                  GestureDetector(
                    onTap: (){
                      setState(() {
+                       gallerydata=[];
                        restu=false;
                        vegPic=false;
                        nonvegPicfalse=true;
+                       gallerydata=nonvegdata.toList();
                      });
 
                    },
@@ -1634,26 +1770,18 @@ class _MyHomePageState extends State<HomePage> {
                ],
              ),
 
-              Row(
-               mainAxisAlignment: MainAxisAlignment.center,
-               crossAxisAlignment: CrossAxisAlignment.center,
-               children: [
-                 Container(
-                   width: MediaQuery.of(context).size.width,
-                   height: MediaQuery.of(context).size.height,
-                   color: colors.purpals,
-                   child: Text(
-                     "Gallery",textAlign: TextAlign.start,
-                     style: TextStyle(
-                       fontFamily: 'Poppins',
-                       fontWeight: FontWeight.w600,
-                       fontSize: 16.0,
-                       color: colors.redthemenew,
-                     ),
-                   ),
-                 ),
-               ],
-             ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        color: colors.purpals,
+                        child: _gallerylayout(context)
+                    ),
+                  ],
+                ),
 
 
 
@@ -1781,10 +1909,13 @@ class _MyHomePageState extends State<HomePage> {
     var rowData = menudata[index];
     setState(() {
       _selectmenu=rowData.name;
+      menuDescription(rowData.menuItemCategoryIdPk);
     });
   }
 
-  Widget _periodlayout(BuildContext context) {
+
+
+  Widget _menulayout(BuildContext context) {
     return GridView.count(
       crossAxisCount: 3,
       childAspectRatio: MediaQuery.of(context).size.height / 750,
@@ -1843,4 +1974,94 @@ class _MyHomePageState extends State<HomePage> {
 
   }
 
+  Widget _buildRowMenuDesc(BuildContext context, int index) {
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(3.0),
+      child: Padding(padding:const EdgeInsets.all(5.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(menuDescdata[index].item,
+                textAlign: TextAlign.start,
+                style: style.copyWith(color: colors.black, fontWeight: FontWeight.w600,fontSize: 14.0)),
+
+            Text(menuDescdata[index].itemDescription,
+                textAlign: TextAlign.start,
+                style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 12.0)),
+
+            Text("₹ ${menuDescdata[index].itemPrice}",
+                textAlign: TextAlign.start,
+                style: style.copyWith(color: colors.redtheme, fontWeight: FontWeight.w400,fontSize: 14.0)),
+            DottedLine(),
+          ],
+        ),
+
+
+      ),
+    );
+  }
+
+
+  onEditGalleryGrid(index,BuildContext context) async{
+    print("GRIDDD");
+    var rowData = gallerydata[index];
+    // _buildPopupDialog(context,rowData.url);
+    setState(() {
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GalleryViewPage(rowData.url)),
+    );
+
+  }
+  Widget _gallerylayout(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      childAspectRatio: MediaQuery.of(context).size.height / 800,
+      children: List<Widget>.generate(gallerydata.length, (index) {
+        return GridTile(
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 5,
+            margin: EdgeInsets.all(8),
+            child:InkWell(
+              onTap: () => onEditGalleryGrid(index,context),
+              child:Padding(
+                padding: const EdgeInsets.all(5.0),
+                child:  Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child:Image.network(gallerydata[index].url,
+                          errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
+                            return Image.asset("assets/logo.png", fit: BoxFit.contain);
+                          }
+
+                      ),
+
+
+                      // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
+                    ),
+                    //SizedBox(height: 5),
+                  ],
+                ),
+              ),
+
+
+
+            ),
+
+          ),
+        );
+      }),
+    );
+
+
+  }
 }

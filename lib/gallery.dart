@@ -1,12 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
+import 'package:thegreatkabab/gallery_view.dart';
+import 'package:thegreatkabab/models/gallerydata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
+
+import 'network/api_service.dart';
 
 class GalleryView extends StatefulWidget {
   @override
@@ -31,41 +40,51 @@ class GalleryViewState extends State<GalleryView> {
   var _Otp;
   bool _layoutlogin=true;
   bool restu=true,vegPic=false,nonvegPicfalse=false;
+  List<GalleryList> gallerydata=<GalleryList>[];
+  List<GalleryList> restdata=<GalleryList>[];
+  List<GalleryList> vegdata=<GalleryList>[];
+  List<GalleryList> nonvegdata=<GalleryList>[];
 
   @override
   void initState() {
+    gallery();
     super.initState();
   }
 
 
 
-  /* //////////////////  Get Class Link  //////////////////////
-  Future<Null> signUp() async {
-    // EasyLoading.show(status: 'Loading');
-    //  SharedPreferences preferences = await SharedPreferences.getInstance();
+
+  //////////////////  Get Menus Description //////////////////////
+  Future<Null> gallery() async {
+    gallerydata=[];
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .signUp(emailController.text,mobileController.text,nameController.text,passwordController.text)
+        .getGallery(colors.hotelId)
         .then((result) {
       setState(() {
-        // EasyLoading.dismiss();
-        Navigator.of(context,rootNavigator: true).pop();
-        if(result.loginId==0){
-          commonAlert.messageAlertError(context,result.message,"Error");
-        }else{
-          sfdata.saveLoginDataToSF(context,result.loginId,nameController.text,"1",mobileController.text,emailController.text);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => OTPSave(result)));
-
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          for(int i=0;i<result.data.length;i++){
+            if(result.data[i].photoGalleryCategoryIdPk==1){
+              vegdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
+            }
+            if(result.data[i].photoGalleryCategoryIdPk==2){
+              nonvegdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
+            }
+            if(result.data[i].photoGalleryCategoryIdPk==3){
+              restdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
+            }
+          }
+          gallerydata=restdata.toList();
         }
       });
     }).catchError((error) {
-
-      // EasyLoading.dismiss();
+      EasyLoading.dismiss();
       print(error);
     });
   }
-*/
 
 
   @override
@@ -146,9 +165,11 @@ class GalleryViewState extends State<GalleryView> {
                               GestureDetector(
                                 onTap: (){
                                   setState(() {
+                                    gallerydata=[];
                                     restu=true;
                                     vegPic=false;
                                     nonvegPicfalse=false;
+                                    gallerydata=restdata.toList();
                                   });
 
 
@@ -182,9 +203,11 @@ class GalleryViewState extends State<GalleryView> {
                               GestureDetector(
                                 onTap: (){
                                   setState(() {
+                                    gallerydata=[];
                                     restu=false;
                                     vegPic=true;
                                     nonvegPicfalse=false;
+                                    gallerydata=vegdata.toList();
                                   });
 
                                 },
@@ -217,9 +240,11 @@ class GalleryViewState extends State<GalleryView> {
                               GestureDetector(
                                 onTap: (){
                                   setState(() {
+                                    gallerydata=[];
                                     restu=false;
                                     vegPic=false;
                                     nonvegPicfalse=true;
+                                    gallerydata=nonvegdata.toList();
                                   });
 
                                 },
@@ -261,15 +286,7 @@ class GalleryViewState extends State<GalleryView> {
                                 width: MediaQuery.of(context).size.width,
                                 height: MediaQuery.of(context).size.height,
                                 color: colors.purpals,
-                                child: Text(
-                                  "Gallery",textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16.0,
-                                    color: colors.redthemenew,
-                                  ),
-                                ),
+                                child: _gallerylayout(context)
                               ),
                             ],
                           ),
@@ -298,7 +315,106 @@ class GalleryViewState extends State<GalleryView> {
   }
 
 
+  onEditGrid(index,BuildContext context) async{
+    print("GRIDDD");
+    var rowData = gallerydata[index];
+   // _buildPopupDialog(context,rowData.url);
+    setState(() {
+    });
+   Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GalleryViewPage(rowData.url)),
+    );
 
+
+  }
+
+  Widget _gallerylayout(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      childAspectRatio: MediaQuery.of(context).size.height / 800,
+      children: List<Widget>.generate(gallerydata.length, (index) {
+        return GridTile(
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 5,
+            margin: EdgeInsets.all(8),
+            child:InkWell(
+             onTap: () => onEditGrid(index,context),
+              child:Padding(
+                padding: const EdgeInsets.all(5.0),
+                child:  Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child:Image.network(gallerydata[index].url,
+                          errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
+                            return Image.asset("assets/logo.png", fit: BoxFit.contain);
+                          }
+
+                      ),
+
+
+                      // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
+                    ),
+                    //SizedBox(height: 5),
+                  ],
+                ),
+              ),
+
+
+
+            ),
+
+          ),
+        );
+      }),
+    );
+
+
+  }
+
+  Widget _buildPopupDialog(BuildContext context, String url) {
+    return new AlertDialog(
+      title: const Text('Hiiiii'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          PhotoView(
+            imageProvider: NetworkImage(
+              "http://tgkfexpresspatna.com/images/Gallery/rest1.jpg",
+            ),
+            // Contained = the smallest possible size to fit one dimension of the screen
+            minScale: PhotoViewComputedScale.contained * 0.8,
+            // Covered = the smallest possible size to fit the whole screen
+            maxScale: PhotoViewComputedScale.covered * 2,
+            enableRotation: true,
+            // Set the background color to the "classic white"
+            backgroundDecoration: BoxDecoration(
+              color: Theme.of(context).canvasColor,
+            ),
+            /*loadingChild: Center(
+          child: CircularProgressIndicator(),
+        ),*/
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
 
 
 }

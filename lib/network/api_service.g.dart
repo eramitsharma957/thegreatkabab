@@ -99,6 +99,54 @@ class _ApiService implements ApiService {
     return value;
   }
 
+  @override
+  Future<MenuDescData> getMenuDescription(hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<MenuDescData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'Menu/MenuItemsWithCategoryByHotel',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = MenuDescData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ReviewData> getReviews(hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ReviewData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'review/ReviewByHotel',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ReviewData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GalleryData> getGallery(hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GalleryData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'PhotoGallery/PhotoGalleryByHotel',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GalleryData.fromJson(_result.data!);
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

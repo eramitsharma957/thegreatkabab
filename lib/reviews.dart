@@ -1,11 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
+import 'package:thegreatkabab/models/reviewdata.dart';
+import 'package:thegreatkabab/network/api_service.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 
 class Reviews extends StatefulWidget {
@@ -28,43 +33,39 @@ class ReviewsState extends State<Reviews> {
   SFData sfdata= SFData();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   OtpFieldController otpController = OtpFieldController();
-  var _Otp;
-  bool _layoutlogin=true;
+  List<ReviewList> reviewdata=<ReviewList>[];
+  bool isLoader=false;
+
 
   @override
   void initState() {
+    reviews();
     super.initState();
   }
 
 
 
-  /* //////////////////  Get Class Link  //////////////////////
-  Future<Null> signUp() async {
-    // EasyLoading.show(status: 'Loading');
-    //  SharedPreferences preferences = await SharedPreferences.getInstance();
+  //////////////////  Get Menus Description //////////////////////
+  Future<Null> reviews() async {
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .signUp(emailController.text,mobileController.text,nameController.text,passwordController.text)
+        .getReviews(colors.hotelId)
         .then((result) {
       setState(() {
-        // EasyLoading.dismiss();
-        Navigator.of(context,rootNavigator: true).pop();
-        if(result.loginId==0){
-          commonAlert.messageAlertError(context,result.message,"Error");
-        }else{
-          sfdata.saveLoginDataToSF(context,result.loginId,nameController.text,"1",mobileController.text,emailController.text);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => OTPSave(result)));
-
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          reviewdata=result.data.toList();
         }
       });
     }).catchError((error) {
-
-      // EasyLoading.dismiss();
+      EasyLoading.dismiss();
       print(error);
     });
   }
-*/
+
+
 
 
   @override
@@ -132,192 +133,31 @@ class ReviewsState extends State<Reviews> {
                            ),
 
                            SizedBox(
-                             height: 20.0,
+                             height: 10.0,
+                           ),
+                           MediaQuery.removePadding(
+                             context: context,
+                             removeTop: true,
+                             child:
+                             reviewdata.isNotEmpty
+                                 ? Container(
+                               child: Expanded(
+                                 child: ListView.builder(
+                                   itemCount: reviewdata.length,
+                                   itemBuilder: _buildRow,
+                                 ),
+                               ),
+                             )
+                                 : isLoader == true
+                                 ? Container(
+                                 margin: const EdgeInsets.all(180.0),
+                                 child: const Center(child: CircularProgressIndicator()))
+                                 : Container(
+                               margin: const EdgeInsets.all(160.0),
+                               child: Text("",style: TextStyle(color: colors.redtheme),),
+                             ),
                            ),
 
-                           Stack(
-                               //alignment: Alignment.centerLeft,
-                               children: <Widget>[
-                                 Center(
-                                     child: Container(
-                                         padding: const EdgeInsets.all(2.0),
-                                         child: Container(
-                                           decoration: BoxDecoration(
-                                               borderRadius: BorderRadius.circular(15.0),
-                                               border: Border.all(color: Colors.grey)
-                                           ),
-                                           margin: EdgeInsets.all(10),
-                                           child:Padding(padding:const EdgeInsets.all(25.0),
-                                             child:  Column(
-                                               mainAxisAlignment: MainAxisAlignment.start,
-                                               crossAxisAlignment: CrossAxisAlignment.start,
-                                               children:<Widget>[
-                                                 Text(
-                                                   "A widget that shows progress along a circle. There are two kinds of circular progress indicators: ... The indicator arc is displayed with valueColor, an animated",
-                                                   style: TextStyle(
-                                                     fontFamily: 'Poppins',
-                                                     fontWeight: FontWeight.w300,
-                                                     fontSize: 14.0,
-                                                     color: Colors.black,
-                                                   ),
-                                                 ),
-                                                 SizedBox(
-                                                   height: 10.0,
-                                                 ),
-                                                 Text(
-                                                   "Person name",
-                                                   style: TextStyle(
-                                                     fontFamily: 'Poppins',
-                                                     fontWeight: FontWeight.w600,
-                                                     fontSize: 12.0,
-                                                     color: Colors.black,
-                                                   ),
-                                                 ),
-                                               ]),
-
-                                           ),
-                                         )
-                                     )
-                                 ),
-                                 Positioned(
-                                   left: 30.0,
-                                   top: 0,
-                                   child: Align(
-                                       alignment: Alignment.centerLeft,
-                                       child: Container(
-                                         width: 110.0,
-                                         decoration: BoxDecoration(
-                                             color:colors.purpals ,
-                                             borderRadius: BorderRadius.circular(15.0),
-                                             border: Border.all(color: colors.redthemenew)
-
-                                         ),
-                                         child: Padding(padding:const EdgeInsets.all(4.0),
-                                           child: Text("14-04-2022",textAlign: TextAlign.center,style:TextStyle(color: colors.redthemenew,fontSize: 14.0,fontFamily: 'Poppins',
-                                               fontWeight: FontWeight.w600)),
-                                         ),
-
-
-
-                                       )
-                                   ),
-
-                                 ),
-                                 Positioned(
-                                   right: 30.0,
-                                   top: 0,
-                                   child: Align(
-                                       alignment: Alignment.centerRight,
-                                       child: Container(
-                                         width: 50.0,
-                                         child: Padding(padding:const EdgeInsets.all(1.0),
-                                           child: SizedBox(
-                                             height: 25,
-                                             width: 25,
-                                             child: Image.asset('assets/quote.png'),
-                                           ),
-                                         ),
-
-
-
-                                       )
-                                   ),
-
-                                 ),
-
-                               ]),
-
-                           Stack(
-                             //alignment: Alignment.centerLeft,
-                               children: <Widget>[
-                                 Center(
-                                     child: Container(
-                                         padding: const EdgeInsets.all(2.0),
-                                         child: Container(
-                                           decoration: BoxDecoration(
-                                               borderRadius: BorderRadius.circular(15.0),
-                                               border: Border.all(color: Colors.grey)
-                                           ),
-                                           margin: EdgeInsets.all(10),
-                                           child:Padding(padding:const EdgeInsets.all(25.0),
-                                             child:  Column(
-                                                 mainAxisAlignment: MainAxisAlignment.start,
-                                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                                 children:<Widget>[
-                                                   Text(
-                                                     "A widget that shows progress along a circle. There are two kinds of circular progress indicators: ... The indicator arc is displayed with valueColor, an animated",
-                                                     style: TextStyle(
-                                                       fontFamily: 'Poppins',
-                                                       fontWeight: FontWeight.w300,
-                                                       fontSize: 14.0,
-                                                       color: Colors.black,
-                                                     ),
-                                                   ),
-                                                   SizedBox(
-                                                     height: 10.0,
-                                                   ),
-                                                   Text(
-                                                     "Person name",
-                                                     style: TextStyle(
-                                                       fontFamily: 'Poppins',
-                                                       fontWeight: FontWeight.w600,
-                                                       fontSize: 12.0,
-                                                       color: Colors.black,
-                                                     ),
-                                                   ),
-                                                 ]),
-
-                                           ),
-                                         )
-                                     )
-                                 ),
-                                 Positioned(
-                                   left: 30.0,
-                                   top: 0,
-                                   child: Align(
-                                       alignment: Alignment.centerLeft,
-                                       child: Container(
-                                         width: 110.0,
-                                         decoration: BoxDecoration(
-                                             color:colors.purpals ,
-                                             borderRadius: BorderRadius.circular(15.0),
-                                             border: Border.all(color: colors.redthemenew)
-
-                                         ),
-                                         child: Padding(padding:const EdgeInsets.all(4.0),
-                                           child: Text("14-04-2022",textAlign: TextAlign.center,style:TextStyle(color: colors.redthemenew,fontSize: 14.0,fontFamily: 'Poppins',
-                                               fontWeight: FontWeight.w600)),
-                                         ),
-
-
-
-                                       )
-                                   ),
-
-                                 ),
-                                 Positioned(
-                                   right: 30.0,
-                                   top: 0,
-                                   child: Align(
-                                       alignment: Alignment.centerRight,
-                                       child: Container(
-                                         width: 50.0,
-                                         child: Padding(padding:const EdgeInsets.all(1.0),
-                                           child: SizedBox(
-                                             height: 25,
-                                             width: 25,
-                                             child: Image.asset('assets/quote.png'),
-                                           ),
-                                         ),
-
-
-
-                                       )
-                                   ),
-
-                                 ),
-
-                               ])
 
                          ],
                        ),
@@ -338,6 +178,102 @@ class ReviewsState extends State<Reviews> {
 
 
 
+
+  Widget _buildRow(BuildContext context, int index) {
+    return Stack(
+        //alignment: Alignment.centerLeft,
+          children: <Widget>[
+            Container(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          border: Border.all(color: Colors.grey)
+                      ),
+                      margin: const EdgeInsets.all(10),
+                      child:Padding(padding:const EdgeInsets.all(25.0),
+                        child:  Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:<Widget>[
+                              Row(
+                                children: [
+                                  Text(reviewdata[index].message,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 14.0,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Text(reviewdata[index].reviewByName,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12.0,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ]),
+
+                      ),
+                    )
+                ),
+
+            Positioned(
+              left: 30.0,
+              top: 0,
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    width: 110.0,
+                    decoration: BoxDecoration(
+                        color:colors.purpals ,
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(color: colors.redthemenew)
+
+                    ),
+                    child: Padding(padding:const EdgeInsets.all(4.0),
+                      child: Text(commonAlert.dateFormateSQLServer(context,reviewdata[index].createdOn),textAlign: TextAlign.center,style:TextStyle(color: colors.redthemenew,fontSize: 14.0,fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600)),
+                    ),
+
+
+
+                  )
+              ),
+
+            ),
+            Positioned(
+              right: 30.0,
+              top: 0,
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: 50.0,
+                    child: Padding(padding:const EdgeInsets.all(1.0),
+                      child: SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: Image.asset('assets/quote.png'),
+                      ),
+                    ),
+
+
+
+                  )
+              ),
+
+            ),
+
+          ]);
+  }
 
 
 }
