@@ -159,7 +159,7 @@ class CommonAction{
 
   String dateFormateMM(BuildContext context,DateTime date){
     String formateDate;
-    final DateFormat formatter = DateFormat('dd-MMM-yyyy');
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
     formateDate= formatter.format(date);
     return formateDate;
   }

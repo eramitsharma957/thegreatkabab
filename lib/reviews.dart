@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -11,7 +12,12 @@ import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/models/reviewdata.dart';
 import 'package:thegreatkabab/network/api_service.dart';
+import 'package:thegreatkabab/postreviews.dart';
+import 'package:thegreatkabab/signup.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
+
+
+enum ConfirmAction { Cancel, Accept}
 
 class Reviews extends StatefulWidget {
   @override
@@ -35,10 +41,20 @@ class ReviewsState extends State<Reviews> {
   OtpFieldController otpController = OtpFieldController();
   List<ReviewList> reviewdata=<ReviewList>[];
   bool isLoader=false;
+  int _islogin=0;
 
 
   @override
   void initState() {
+    Future<int> ad = sfdata.getLogin(context);
+    ad.then((data) {
+      setState(() {
+        _islogin=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    EasyLoading.show(status: 'Loading');
     reviews();
     super.initState();
   }
@@ -47,7 +63,6 @@ class ReviewsState extends State<Reviews> {
 
   //////////////////  Get Menus Description //////////////////////
   Future<Null> reviews() async {
-    EasyLoading.show(status: 'Loading');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
@@ -67,10 +82,44 @@ class ReviewsState extends State<Reviews> {
 
 
 
+//////////////Logout dialog//////
+  Future<Future<ConfirmAction?>> _asyncloginAlert(BuildContext context) async {
+
+    return showDialog<ConfirmAction>(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Login'),
+          content: const Text(
+              'Login for post review'),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(ConfirmAction.Cancel);
+              },
+            ),
+            FlatButton(
+              child: const Text('Yes',style: TextStyle(color: Colors.green)),
+              onPressed: () {
+                Navigator.of(context).pop(ConfirmAction.Accept);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) => SignUp()),
+                  ModalRoute.withName('/'),
+                );
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       //backgroundColor: colors.yellowlight,
     appBar: AppBar(
@@ -109,7 +158,21 @@ class ReviewsState extends State<Reviews> {
     backgroundColor: Colors.transparent,
 
     ),
-      body: Builder(
+    floatingActionButton: FloatingActionButton(
+      child: const Icon(Icons.add),
+      backgroundColor: colors.redtheme,
+      onPressed: () {
+        setState(() {
+          if(_islogin==1){
+            Navigator.push(context,MaterialPageRoute(builder: (context) => PostReviews()),
+            );
+          }else{
+            _asyncloginAlert(context);
+          }
+        });
+      },
+    ),
+    body: Builder(
         builder: (context) =>
             GestureDetector(
               onTap: () {
@@ -158,7 +221,9 @@ class ReviewsState extends State<Reviews> {
                              ),
                            ),
 
-
+                           SizedBox(
+                             height: 100.0,
+                           ),
                          ],
                        ),
                       ),

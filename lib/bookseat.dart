@@ -1,14 +1,23 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cool_alert/cool_alert.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
+import 'package:thegreatkabab/models/slotsdata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
+
+import 'network/api_service.dart';
 
 class BookSeat extends StatefulWidget {
   @override
@@ -40,48 +49,73 @@ class BookSeatState extends State<BookSeat> {
   OtpFieldController otpController = OtpFieldController();
   var _Otp;
   bool _Islunch=true;
+  int _lunchTypeID=1;
   double value  = 0.0;
   double valuefinal  = 0.5;
   int _n = 0;
   int _v = 0;
   int _c = 0;
+  late String currentDate='';
+  List<SlotListdata> listslotdata=<SlotListdata>[];
+  SlotListdata? slotdata;
+  var _selectSlotCode;
 
 
   @override
   void initState() {
+
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    // setState(() {
+    currentDate = formatter.format(now);
+    timeSlots();
     super.initState();
     //downloadData();
   }
 
 
+  void displayCalendar(BuildContext context){
+    CupertinoRoundedDatePicker.show(
+      context,
+      fontFamily: "Montserrat",
+      textColor: Colors.white,
+      background: colors.redtheme,
+      borderRadius: 16,
+      initialDatePickerMode: CupertinoDatePickerMode.date,
+      minimumDate: DateTime.now().subtract(const Duration(days: 1)),
+      onDateTimeChanged: (newDate) {
+        // final DateTime now = DateTime.now();
+        // final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        setState(() {
+          currentDate=commonAlert.dateFormateMM(context, newDate);
+          print("formatted " + currentDate);
+          //print("formatted SERVER " + showdateServer);
+        });
+        // onChanged(result);
+      },
+    );
+  }
 
-  /* //////////////////  Get Class Link  //////////////////////
-  Future<Null> signUp() async {
-    // EasyLoading.show(status: 'Loading');
-    //  SharedPreferences preferences = await SharedPreferences.getInstance();
+  //////////////////  Get Menus Description //////////////////////
+  Future<Null> timeSlots() async {
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .signUp(emailController.text,mobileController.text,nameController.text,passwordController.text)
+        .getTimeSlot(colors.hotelId,_lunchTypeID)
         .then((result) {
       setState(() {
-        // EasyLoading.dismiss();
-        Navigator.of(context,rootNavigator: true).pop();
-        if(result.loginId==0){
-          commonAlert.messageAlertError(context,result.message,"Error");
-        }else{
-          sfdata.saveLoginDataToSF(context,result.loginId,nameController.text,"1",mobileController.text,emailController.text);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => OTPSave(result)));
-
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+        listslotdata=result.data;
+        slotdata=listslotdata[0];
         }
       });
     }).catchError((error) {
-
-      // EasyLoading.dismiss();
+      EasyLoading.dismiss();
       print(error);
     });
   }
-*/
 
 
   void downloadData(){
@@ -206,6 +240,8 @@ class BookSeatState extends State<BookSeat> {
                                         onPressed: () {
                                           setState(() {
                                             _Islunch=true;
+                                            _lunchTypeID=1;
+                                            timeSlots();
                                           });
                                         },
                                         icon: SizedBox(
@@ -239,6 +275,8 @@ class BookSeatState extends State<BookSeat> {
                                     onPressed: () {
                                       setState(() {
                                         _Islunch=false;
+                                        _lunchTypeID=2;
+                                        timeSlots();
                                       });
                                     },
                                     icon: SizedBox(
@@ -278,15 +316,21 @@ class BookSeatState extends State<BookSeat> {
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                "Select Date",maxLines: 2,textAlign: TextAlign.start,
-                                                style: TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w200,
-                                                  fontSize: 14.0,
-                                                  color: colors.black,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  displayCalendar(context);
+                                                },
+                                                child:Text(
+                                                  currentDate,maxLines: 2,textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 14.0,
+                                                    color: colors.black,
+                                                  ),
                                                 ),
                                               ),
+                                              //SizedBox(height: 5),
                                               Divider(
                                                 thickness: 1.0,
                                                 color: colors.redthemenew,
@@ -299,7 +343,14 @@ class BookSeatState extends State<BookSeat> {
                                           child: SizedBox(
                                             height: 25,
                                             width: 25,
-                                            child: Image.asset('assets/calendar.png'),
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                displayCalendar(context);
+                                              },
+                                              child:Image.asset('assets/calendar.png'),
+                                            ),
+
+
                                           ),
                                       ),
 
@@ -316,19 +367,48 @@ class BookSeatState extends State<BookSeat> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            "Select Time",maxLines: 2,textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w200,
-                                              fontSize: 14.0,
-                                              color: colors.black,
+                                          DropdownButton<SlotListdata>(
+                                            isExpanded: true,
+                                            value: slotdata,
+                                            icon: Icon(Icons.arrow_drop_down),
+                                            iconSize: 15,
+                                            elevation: 16,
+                                            style: TextStyle(color: Colors.black, fontSize: 18),
+                                            //underline: SizedBox(),
+                                            underline: Container(
+                                                    height: 1,
+                                                    color:colors.redthemenew,
+                                                                    ),
+                                            onChanged: (SlotListdata? data) {
+                                              setState(() {
+                                                slotdata = data!;
+                                                _selectSlotCode=slotdata!.slotsIdPk;
+                                              });
+                                            },
+                                            items:listslotdata.map((SlotListdata data){
+                                              return DropdownMenuItem<SlotListdata>(
+                                                child: Text(data.slotTime,style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w200,
+                                                  fontSize: 14.0,
+                                                  color: colors.black,
+                                                ),),
+                                                value: data,
+                                              );
+                                            }).toList(),
+
+                                            hint:Text(
+                                              "Select",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500),
                                             ),
                                           ),
-                                          Divider(
+                                         /* Divider(
                                             thickness: 1.0,
                                             color: colors.redthemenew,
-                                          ),
+                                          ),*/
                                         ],
                                       ),
                                     ),

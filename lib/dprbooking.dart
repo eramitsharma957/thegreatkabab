@@ -87,37 +87,6 @@ class DprBookingState extends State<DprBooking> {
     super.initState();
   }
 
-
-
- /* //////////////////  Get Class Link  //////////////////////
-  Future<Null> signUp() async {
-    // EasyLoading.show(status: 'Loading');
-    //  SharedPreferences preferences = await SharedPreferences.getInstance();
-    final api = Provider.of<ApiService>(context, listen: false);
-    return await api
-        .signUp(emailController.text,mobileController.text,nameController.text,passwordController.text)
-        .then((result) {
-      setState(() {
-        // EasyLoading.dismiss();
-        Navigator.of(context,rootNavigator: true).pop();
-        if(result.loginId==0){
-          commonAlert.messageAlertError(context,result.message,"Error");
-        }else{
-          sfdata.saveLoginDataToSF(context,result.loginId,nameController.text,"1",mobileController.text,emailController.text);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => OTPSave(result)));
-
-        }
-      });
-    }).catchError((error) {
-
-      // EasyLoading.dismiss();
-      print(error);
-    });
-  }
-*/
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -125,7 +94,7 @@ class DprBookingState extends State<DprBooking> {
       //backgroundColor: colors.yellowlight,
       appBar: AppBar(
         backgroundColor: colors.redtheme,
-        title: const Text("DPR Booking",textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 16.0,fontFamily: 'Montserrat',
+        title: const Text("PDR Booking",textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 16.0,fontFamily: 'Montserrat',
             fontWeight: FontWeight.w700)),
         leading: IconButton(
           // icon: Text('Back', textAlign: TextAlign.center,style: TextStyle(color: Colors.black),),
@@ -232,7 +201,7 @@ class DprBookingState extends State<DprBooking> {
                                                                  textAlign: TextAlign.start,
                                                                  style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
                                                                      fontWeight: FontWeight.w600)),
-                                                             Text("Prabhakar Kumar Sign",
+                                                             Text(_contactPerson,
                                                                  textAlign: TextAlign.start,
                                                                  style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
                                                                      fontWeight: FontWeight.w600)),
@@ -273,7 +242,7 @@ class DprBookingState extends State<DprBooking> {
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
                                                                        fontWeight: FontWeight.w600)),
-                                                               Text("8000000000",
+                                                               Text(_mobile,
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
                                                                        fontWeight: FontWeight.w600)),
@@ -314,7 +283,7 @@ class DprBookingState extends State<DprBooking> {
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
-                                                               Text("tgfk@gmail.com",
+                                                               Text(_email,
                                                                    textAlign: TextAlign.start,
                                                                    style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),

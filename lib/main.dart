@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:thegreatkabab/dasboard.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        builder: EasyLoading.init(),
       ),
 
     );

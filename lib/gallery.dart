@@ -134,178 +134,180 @@ class GalleryViewState extends State<GalleryView> {
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
-              child: SingleChildScrollView(
-                  child: Container(
-                    color: colors.white,
-                    height: MediaQuery.of(context).size.height,
-                    child: Padding(padding:const EdgeInsets.all(0.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                      Padding(padding:const EdgeInsets.all(10.0),
-                      child: Text(
-                        "Gallery",textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.0,
-                          color: colors.redthemenew,
-                        ),
-                      ),
-                      ),
+              child:SingleChildScrollView(
+               child:Container(
+                   color: colors.white,
+                   child:  Column(
+                     children: [
+                       Row(
+                         children: [
+                           Padding(padding:const EdgeInsets.all(10.0),
+                             child: Text(
+                               "Gallery",textAlign: TextAlign.start,
+                               style: TextStyle(
+                                 fontFamily: 'Poppins',
+                                 fontWeight: FontWeight.w600,
+                                 fontSize: 16.0,
+                                 color: colors.redthemenew,
+                               ),
+                             ),
+                           ),
 
-                            ],
-                          ),
-
-                          SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  setState(() {
-                                    gallerydata=[];
-                                    restu=true;
-                                    vegPic=false;
-                                    nonvegPicfalse=false;
-                                    gallerydata=restdata.toList();
-                                  });
+                         ],
+                       ),
+                       SizedBox(height: 5),
+                       Row(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           GestureDetector(
+                             onTap: (){
+                               setState(() {
+                                 gallerydata=[];
+                                 restu=true;
+                                 vegPic=false;
+                                 nonvegPicfalse=false;
+                                 gallerydata=restdata.toList();
+                               });
 
 
-                                },
-                                child:Container(
-                                  margin: EdgeInsets.all(0.0),
-                                  decoration: BoxDecoration(
-                                    color:restu==true?colors.purpals:colors.greylight,
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10.0),
-                                      topLeft: Radius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: Padding(padding:const EdgeInsets.all(10.0),
-                                    child:  Text(
-                                      "Restaurant",maxLines: 2,textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14.0,
-                                        color: restu==true?colors.redthemenew:colors.grey,
-                                      ),
-                                    ),
-                                  ),
+                             },
+                             child:Container(
+                               margin: EdgeInsets.all(0.0),
+                               decoration: BoxDecoration(
+                                 color:restu==true?colors.purpals:colors.greylight,
+                                 borderRadius: BorderRadius.only(
+                                   topRight: Radius.circular(10.0),
+                                   topLeft: Radius.circular(10.0),
+                                 ),
+                               ),
+                               child: Padding(padding:const EdgeInsets.all(10.0),
+                                 child:  Text(
+                                   "Restaurant",maxLines: 2,textAlign: TextAlign.center,
+                                   style: TextStyle(
+                                     fontFamily: 'Poppins',
+                                     fontWeight: FontWeight.w500,
+                                     fontSize: 14.0,
+                                     color: restu==true?colors.redthemenew:colors.grey,
+                                   ),
+                                 ),
+                               ),
 
 
 
-                                ),
-                              ),
-                              SizedBox(width: 5.0,),
-                              GestureDetector(
-                                onTap: (){
-                                  setState(() {
-                                    gallerydata=[];
-                                    restu=false;
-                                    vegPic=true;
-                                    nonvegPicfalse=false;
-                                    gallerydata=vegdata.toList();
-                                  });
+                             ),
+                           ),
+                           SizedBox(width: 5.0,),
+                           GestureDetector(
+                             onTap: (){
+                               setState(() {
+                                 gallerydata=[];
+                                 restu=false;
+                                 vegPic=true;
+                                 nonvegPicfalse=false;
+                                 gallerydata=vegdata.toList();
+                               });
 
-                                },
-                                child:Container(
-                                  margin: EdgeInsets.all(0.0),
-                                  decoration: BoxDecoration(
-                                    color: vegPic==true?colors.purpals:colors.greylight,
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10.0),
-                                      topLeft: Radius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: Padding(padding:const EdgeInsets.all(10.0),
-                                    child:  Text(
-                                      "Veg Food",maxLines: 2,textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14.0,
-                                        color: vegPic==true?colors.redthemenew:colors.grey,
-                                      ),
-                                    ),
-                                  ),
-
-
-
-                                ),
-                              ),
-                              SizedBox(width: 5.0,),
-                              GestureDetector(
-                                onTap: (){
-                                  setState(() {
-                                    gallerydata=[];
-                                    restu=false;
-                                    vegPic=false;
-                                    nonvegPicfalse=true;
-                                    gallerydata=nonvegdata.toList();
-                                  });
-
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.all(0.0),
-                                  decoration: BoxDecoration(
-                                    color: nonvegPicfalse==true?colors.purpals:colors.greylight,
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10.0),
-                                      topLeft: Radius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: Padding(padding:const EdgeInsets.all(10.0),
-                                    child:  Text(
-                                      "Non Veg Food",maxLines: 2,textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14.0,
-                                        color: nonvegPicfalse==true?colors.redthemenew:colors.grey,
-                                      ),
-                                    ),
-                                  ),
+                             },
+                             child:Container(
+                               margin: EdgeInsets.all(0.0),
+                               decoration: BoxDecoration(
+                                 color: vegPic==true?colors.purpals:colors.greylight,
+                                 borderRadius: BorderRadius.only(
+                                   topRight: Radius.circular(10.0),
+                                   topLeft: Radius.circular(10.0),
+                                 ),
+                               ),
+                               child: Padding(padding:const EdgeInsets.all(10.0),
+                                 child:  Text(
+                                   "Veg Food",maxLines: 2,textAlign: TextAlign.center,
+                                   style: TextStyle(
+                                     fontFamily: 'Poppins',
+                                     fontWeight: FontWeight.w500,
+                                     fontSize: 14.0,
+                                     color: vegPic==true?colors.redthemenew:colors.grey,
+                                   ),
+                                 ),
+                               ),
 
 
 
-                                ),
-                              ),
+                             ),
+                           ),
+                           SizedBox(width: 5.0,),
+                           GestureDetector(
+                             onTap: (){
+                               setState(() {
+                                 gallerydata=[];
+                                 restu=false;
+                                 vegPic=false;
+                                 nonvegPicfalse=true;
+                                 gallerydata=nonvegdata.toList();
+                               });
+
+                             },
+                             child: Container(
+                               margin: EdgeInsets.all(0.0),
+                               decoration: BoxDecoration(
+                                 color: nonvegPicfalse==true?colors.purpals:colors.greylight,
+                                 borderRadius: BorderRadius.only(
+                                   topRight: Radius.circular(10.0),
+                                   topLeft: Radius.circular(10.0),
+                                 ),
+                               ),
+                               child: Padding(padding:const EdgeInsets.all(10.0),
+                                 child:  Text(
+                                   "Non Veg Food",maxLines: 2,textAlign: TextAlign.center,
+                                   style: TextStyle(
+                                     fontFamily: 'Poppins',
+                                     fontWeight: FontWeight.w500,
+                                     fontSize: 14.0,
+                                     color: nonvegPicfalse==true?colors.redthemenew:colors.grey,
+                                   ),
+                                 ),
+                               ),
 
 
-                            ],
-                          ),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                color: colors.purpals,
-                                child: _gallerylayout(context)
-                              ),
-                            ],
-                          ),
+                             ),
+                           ),
 
 
+                         ],
+                       ),
+
+                       Row(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         crossAxisAlignment: CrossAxisAlignment.center,
+                         children: [
+                           Container(
+                             width: MediaQuery.of(context).size.width,
+                             height: MediaQuery.of(context).size.height,
+                             color: colors.purpals,
+                             child: Column(
+                               children: [
+                                 _gallerylayout(context),
+                               ],
+                             ),
+
+
+                           ),
+                         ],
+                       ),
+
+                       // _gallerylayout(context),
 
 
 
-
-
-                        ],
-                      ),
-                    ),
-
-
-                  )
+                     ],
+                   ),
+               ),
 
 
               ),
+
+
+
+
             ),
       ),
 
@@ -332,8 +334,11 @@ class GalleryViewState extends State<GalleryView> {
   Widget _gallerylayout(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
+      primary: false,
+     // scrollDirection: Axis.vertical,
+     // physics: NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
-      childAspectRatio: MediaQuery.of(context).size.height / 800,
+      childAspectRatio: MediaQuery.of(context).size.height / 700,
       children: List<Widget>.generate(gallerydata.length, (index) {
         return GridTile(
           child: Card(
@@ -345,25 +350,38 @@ class GalleryViewState extends State<GalleryView> {
             margin: EdgeInsets.all(8),
             child:InkWell(
              onTap: () => onEditGrid(index,context),
-              child:Padding(
-                padding: const EdgeInsets.all(5.0),
-                child:  Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      child:Image.network(gallerydata[index].url,
-                          errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
-                            return Image.asset("assets/logo.png", fit: BoxFit.contain);
-                          }
-
+              child: Stack(
+                fit: StackFit.expand,
+                alignment: Alignment.center,
+                children: [
+                  Image.network(
+                      gallerydata[index].url,
+                      width: double.infinity,
+                      fit: BoxFit.cover),
+                  Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child:Container(
+                          alignment: Alignment.center,
+                            width: 300,
+                            color: Colors.black54,
+                            padding: const EdgeInsets.all(5),
+                            child:Row(
+                              children: [
+                                Text(
+                                  gallerydata[index].name==null?"":gallerydata[index].name,textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                       ),
+                ],
 
-
-                      // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
-                    ),
-                    //SizedBox(height: 5),
-                  ],
-                ),
               ),
 
 

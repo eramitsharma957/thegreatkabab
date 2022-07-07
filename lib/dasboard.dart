@@ -102,6 +102,7 @@ class _MyHomePageState extends State<HomePage> {
         if(result.data.isNotEmpty){
         sfdata.saveHotelData(context,result.data[0].name, result.data[0].logo, result.data[0].address, result.data[0].phoneNumber, result.data[0].email, result.data[0].seatDiscountInPercent, result.data[0].itemDiscountInPercent, result.data[0].firstTimeDiscountInPercent, result.data[0].contactPerson);
         }else{
+
         }
 
       });
@@ -154,14 +155,12 @@ class _MyHomePageState extends State<HomePage> {
   //////////////////  Get Menus Description //////////////////////
   Future<Null> menuDescription(int selectmenuID) async {
     menuDescdata=[];
-    EasyLoading.show(status: 'Loading');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
         .getMenuDescription(colors.hotelId)
         .then((result) {
       setState(() {
-        EasyLoading.dismiss();
         if(result.data.isNotEmpty){
           for(int i=0;i<result.data.length;i++){
             if(result.data[i].menuItemCategoryIdPk==selectmenuID){
@@ -173,7 +172,6 @@ class _MyHomePageState extends State<HomePage> {
         }
       });
     }).catchError((error) {
-      EasyLoading.dismiss();
       print(error);
     });
   }
@@ -637,11 +635,11 @@ class _MyHomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              IconButton(
+              /*IconButton(
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(Icons.arrow_back, color: Colors.white),
-              ),
-              SizedBox(height: 28.0,)
+              ),*/
+              //SizedBox(height: 28.0,)
               // Your widgets here
             ],
           ),
@@ -1630,11 +1628,10 @@ class _MyHomePageState extends State<HomePage> {
     return SingleChildScrollView(
         child: Container(
           color: colors.white,
-          height: MediaQuery.of(context).size.height,
           child: Padding(padding:const EdgeInsets.all(0.0),
             child: Column(
               children: [
-                Row(
+              Row(
                   children: [
                     Padding(padding:const EdgeInsets.all(10.0),
                       child: Text(
@@ -1838,7 +1835,9 @@ class _MyHomePageState extends State<HomePage> {
                     child: Text("",style: TextStyle(color: colors.redtheme),),
                   ),
                 ),
-
+                SizedBox(
+                  height: 100.0,
+                ),
 
 
               ],
@@ -2019,8 +2018,9 @@ class _MyHomePageState extends State<HomePage> {
   Widget _gallerylayout(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
+      primary: false,
       crossAxisCount: 2,
-      childAspectRatio: MediaQuery.of(context).size.height / 800,
+      childAspectRatio: MediaQuery.of(context).size.height / 700,
       children: List<Widget>.generate(gallerydata.length, (index) {
         return GridTile(
           child: Card(
@@ -2032,25 +2032,39 @@ class _MyHomePageState extends State<HomePage> {
             margin: EdgeInsets.all(8),
             child:InkWell(
               onTap: () => onEditGalleryGrid(index,context),
-              child:Padding(
-                padding: const EdgeInsets.all(5.0),
-                child:  Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      child:Image.network(gallerydata[index].url,
-                          errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
-                            return Image.asset("assets/logo.png", fit: BoxFit.contain);
-                          }
-
+              child:Stack(
+                fit: StackFit.expand,
+                alignment: Alignment.center,
+                children: [
+                  Image.network(
+                      gallerydata[index].url,
+                      width: double.infinity,
+                     // height: 200,
+                      fit: BoxFit.cover),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child:Container(
+                      alignment: Alignment.center,
+                      width: 300,
+                      color: Colors.black54,
+                      padding: const EdgeInsets.all(5),
+                      child:Row(
+                        children: [
+                          Text(
+                            gallerydata[index].name==null?"":gallerydata[index].name,textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
-
-
-                      // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
                     ),
-                    //SizedBox(height: 5),
-                  ],
-                ),
+                  ),
+                ],
+
               ),
 
 

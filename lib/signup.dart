@@ -45,7 +45,7 @@ class SignUpState extends State<SignUp> {
   bool _timerresend=false;
   String serverOTP="";
   late Timer _timer;
-  int _start = 30;
+  int _start = 60;
 
   @override
   void initState() {
@@ -59,7 +59,7 @@ class SignUpState extends State<SignUp> {
   }
 
   void startTimer() {
-    const oneSec = Duration(seconds: 1);
+    const oneSec = Duration(seconds: 2);
     _timer = Timer.periodic(
       oneSec,
           (Timer timer) {

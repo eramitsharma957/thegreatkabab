@@ -170,7 +170,9 @@ class NotificationsState extends State<Notifications> {
                                child: Text("",style: TextStyle(color: colors.redtheme),),
                              ),
                            ),
-
+                           SizedBox(
+                             height: 100.0,
+                           ),
 
                          ],
                        ),

@@ -10,6 +10,7 @@ import 'package:thegreatkabab/models/menudata.dart';
 import 'package:thegreatkabab/models/menudescdata.dart';
 import 'package:thegreatkabab/models/notificatiodata.dart';
 import 'package:thegreatkabab/models/reviewdata.dart';
+import 'package:thegreatkabab/models/slotsdata.dart';
 import 'package:thegreatkabab/models/verifyotp.dart';
 
 part 'api_service.g.dart';
@@ -76,6 +77,28 @@ abstract class ApiService {
   Future<GalleryData> getGallery(
       @Field("HotelID_FK") hotelId,
       );
+
+  @POST("slots/SlotsByHotelandFoodTiming")
+  Future<SlotsData> getTimeSlot(
+      @Field("HotelID_FK") hotelId,
+      @Field("FoodTimingID_FK") foodTimingID_FK,
+      );
+
+
+  @POST("REview/ReviewCreateUpdate")
+  Future<String> sendReview(
+      @Field("HotelID_FK") hotelId,
+      @Field("Operation") pperation,
+      @Field("ReviewID_PK") reviewID_PK,
+      @Field("OrderID") orderID,
+      @Field("OrderTypeID_FK") orderTypeID_FK,
+      @Field("UsersID_FK") usersID_FK,
+      @Field("Message") message,
+      @Field("ReplyMessage") replyMessage,
+      @Field("UserID") userID,
+      );
+
+
 
   /*@POST("UserSignup")
   Future<SignupData> signUp(

@@ -147,6 +147,48 @@ class _ApiService implements ApiService {
     return value;
   }
 
+  @override
+  Future<SlotsData> getTimeSlot(hotelId, foodTimingID_FK) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId, 'FoodTimingID_FK': foodTimingID_FK};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<SlotsData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'slots/SlotsByHotelandFoodTiming',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = SlotsData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<String> sendReview(hotelId, pperation, reviewID_PK, orderID,
+      orderTypeID_FK, usersID_FK, message, replyMessage, userID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {
+      'HotelID_FK': hotelId,
+      'Operation': pperation,
+      'ReviewID_PK': reviewID_PK,
+      'OrderID': orderID,
+      'OrderTypeID_FK': orderTypeID_FK,
+      'UsersID_FK': usersID_FK,
+      'Message': message,
+      'ReplyMessage': replyMessage,
+      'UserID': userID
+    };
+    final _result = await _dio.fetch<String>(_setStreamType<String>(
+        Options(method: 'POST', headers: _headers, extra: _extra)
+            .compose(_dio.options, 'REview/ReviewCreateUpdate',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data!;
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||
