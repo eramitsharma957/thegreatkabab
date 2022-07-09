@@ -493,18 +493,28 @@ class BookSeatState extends State<BookSeat> {
                                   padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                   onPressed: () async {
                                     setState(() {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => FinalBookSeat()),
-                                      );
-
+                                      var fromDateSplit=currentDate.split('-');
+                                      var day=fromDateSplit[0];
+                                      var month=fromDateSplit[1];
+                                      var year=fromDateSplit[2];
+                                      var date1 = DateTime(int.parse(year), int.parse(month),int.parse(day));
+                                      DateTime now = new DateTime.now();
+                                      DateTime currentdate = new DateTime(now.year, now.month, now.day);
+                                      bool valDate=date1.isBefore(currentdate);
+                                      if(valDate==false){
+                                        if(nameController.text.isEmpty){
+                                          commonAlert.showToast(context,"Enter full name");  //
+                                        }else{
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => FinalBookSeat()),
+                                          );
+                                        }
+                                      }else{
+                                        commonAlert.showToast(context,"Selected date should be current or upcoming date");
+                                      }
                                     });
-                                    if(mobileController.text.isEmpty){
-                                      // commonAlert.showToast(context,"Enter Mobile");  //
-                                    }else{
-                                      // this.commonAlert.showLoadingDialog(context,_keyLoader);
 
-                                    }
                                   },
                                   child: Text("PROCEED",
                                       textAlign: TextAlign.center,
