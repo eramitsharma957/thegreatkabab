@@ -170,7 +170,7 @@ class DprBookingState extends State<DprBooking> {
                                                    children: [
 
                                                   SizedBox(
-                                                    height: 50.0,
+                                                    height: 30.0,
                                                   ),
                                                   Row(
                                                    mainAxisAlignment: MainAxisAlignment.center,
@@ -179,10 +179,10 @@ class DprBookingState extends State<DprBooking> {
                                                      Expanded(
                                                        flex:1,
                                                          child: Padding(
-                                                           padding: EdgeInsets.all(10.0),
+                                                           padding: EdgeInsets.all(8.0),
                                                            child: SizedBox(
-                                                             height: 50,
-                                                             width: 50,
+                                                             height: 40,
+                                                             width: 40,
                                                              child: Image.asset( "assets/contact1.png", fit: BoxFit.contain),
                                                            ),
                                                          ),
@@ -199,11 +199,11 @@ class DprBookingState extends State<DprBooking> {
                                                            children: [
                                                              Text("CONTACT PERSON",
                                                                  textAlign: TextAlign.start,
-                                                                 style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                 style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily: 'Poppins',
                                                                      fontWeight: FontWeight.w600)),
                                                              Text(_contactPerson,
                                                                  textAlign: TextAlign.start,
-                                                                 style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                 style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily: 'Poppins',
                                                                      fontWeight: FontWeight.w600)),
                                                            ],
                                                          ),
@@ -220,10 +220,10 @@ class DprBookingState extends State<DprBooking> {
                                                          Expanded(
                                                            flex:1,
                                                            child: Padding(
-                                                             padding: EdgeInsets.all(10.0),
+                                                             padding: EdgeInsets.all(8.0),
                                                              child: SizedBox(
-                                                               height: 50,
-                                                               width: 50,
+                                                               height: 40,
+                                                               width: 40,
                                                                child: Image.asset( "assets/contact2.png", fit: BoxFit.contain),
                                                              ),
                                                            ),
@@ -240,11 +240,11 @@ class DprBookingState extends State<DprBooking> {
                                                              children: [
                                                                Text("MOBILE",
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                   style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily: 'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                                Text(_mobile,
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                   style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily: 'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                              ],
                                                            ),
@@ -261,10 +261,10 @@ class DprBookingState extends State<DprBooking> {
                                                          Expanded(
                                                            flex:1,
                                                            child: Padding(
-                                                             padding: EdgeInsets.all(10.0),
+                                                             padding: EdgeInsets.all(8.0),
                                                              child: SizedBox(
-                                                               height: 50,
-                                                               width: 50,
+                                                               height: 40,
+                                                               width: 40,
                                                                child: Image.asset( "assets/contact3.png", fit: BoxFit.contain),
                                                              ),
                                                            ),
@@ -281,11 +281,11 @@ class DprBookingState extends State<DprBooking> {
                                                              children: [
                                                                Text("EMAIL",
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
+                                                                   style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                                Text(_email,
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
+                                                                   style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                              ],
                                                            ),
@@ -302,10 +302,10 @@ class DprBookingState extends State<DprBooking> {
                                                          Expanded(
                                                            flex:1,
                                                            child: Padding(
-                                                             padding: EdgeInsets.all(10.0),
+                                                             padding: EdgeInsets.all(8.0),
                                                              child: SizedBox(
-                                                               height: 50,
-                                                               width: 50,
+                                                               height: 40,
+                                                               width: 40,
                                                                child: Image.asset( "assets/contact3.png", fit: BoxFit.contain),
                                                              ),
                                                            ),
@@ -322,11 +322,11 @@ class DprBookingState extends State<DprBooking> {
                                                              children: [
                                                                Text("ADDRESS",
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
+                                                                   style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                                Text(_address,
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
+                                                                   style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                              ],
                                                            ),

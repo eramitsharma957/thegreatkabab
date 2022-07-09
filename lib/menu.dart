@@ -48,6 +48,7 @@ class MenuViewState extends State<MenuView> {
   bool _layoutlogin=true;
   List<Datamenu> menudata=<Datamenu>[];
   List<MenuDesc> menuDescdata=<MenuDesc>[];
+  List<MenuDesc> allmenuDescdata=<MenuDesc>[];
   var _selectmenu="Non Veg";
   var _selectmenuID=0;
 
@@ -83,7 +84,6 @@ class MenuViewState extends State<MenuView> {
 
   //////////////////  Get Menus Description //////////////////////
   Future<Null> menuDescription(int selectmenuID) async {
-    menuDescdata=[];
     EasyLoading.show(status: 'Loading');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
@@ -92,20 +92,24 @@ class MenuViewState extends State<MenuView> {
         .then((result) {
       setState(() {
         EasyLoading.dismiss();
-        if(result.data.isNotEmpty){
-          for(int i=0;i<result.data.length;i++){
-            if(result.data[i].menuItemCategoryIdPk==selectmenuID){
-              menuDescdata.add(MenuDesc(menuIdPk: result.data[i].menuIdPk, item: result.data[i].item, itemPrice: result.data[i].itemPrice, itemDescription: result.data[i].itemDescription, menuItemCategoryIdPk: result.data[i].menuItemCategoryIdPk, name: result.data[i].name));
-            }
+        if(result.data.isNotEmpty) {
+          allmenuDescdata = result.data.toList();
+          getmenuDescriptions(context,selectmenuID);
           }
-
-
-        }
       });
     }).catchError((error) {
       EasyLoading.dismiss();
       print(error);
     });
+  }
+
+  void getmenuDescriptions(BuildContext context,int selectmenuID){
+    menuDescdata=[];
+    for(int i=0;i<allmenuDescdata.length;i++){
+      if(allmenuDescdata[i].menuItemCategoryIdPk==selectmenuID){
+        menuDescdata.add(MenuDesc(menuIdPk: allmenuDescdata[i].menuIdPk, item: allmenuDescdata[i].item, itemPrice: allmenuDescdata[i].itemPrice, itemDescription:allmenuDescdata[i].itemDescription, menuItemCategoryIdPk:allmenuDescdata[i].menuItemCategoryIdPk, name:allmenuDescdata[i].name));
+      }
+    }
   }
 
 
@@ -240,7 +244,7 @@ class MenuViewState extends State<MenuView> {
     setState(() {
       _selectmenu=rowData.name;
       _selectmenuID=rowData.menuItemCategoryIdPk;
-      menuDescription(_selectmenuID);
+      getmenuDescriptions(context,_selectmenuID);
     });
   }
 

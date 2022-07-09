@@ -161,8 +161,8 @@ class ContactUsState extends State<ContactUs> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             SizedBox(
-                                              height: 220.0,
-                                              width: 220.0,
+                                              height: 200.0,
+                                              width: 200.0,
                                               child: Image.asset("assets/logo.png", fit: BoxFit.contain),
                                             ),
                                           ],
@@ -201,8 +201,8 @@ class ContactUsState extends State<ContactUs> {
                                                          child: Padding(
                                                            padding: EdgeInsets.all(10.0),
                                                            child: SizedBox(
-                                                             height: 50,
-                                                             width: 50,
+                                                             height: 40,
+                                                             width: 40,
                                                              child: Image.asset( "assets/contact1.png", fit: BoxFit.contain),
                                                            ),
                                                          ),
@@ -219,11 +219,11 @@ class ContactUsState extends State<ContactUs> {
                                                            children: [
                                                              Text("CONTACT PERSON",
                                                                  textAlign: TextAlign.start,
-                                                                 style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                 style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily: 'Poppins',
                                                                      fontWeight: FontWeight.w600)),
                                                              Text(_contactPerson,
                                                                  textAlign: TextAlign.start,
-                                                                 style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                 style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily: 'Poppins',
                                                                      fontWeight: FontWeight.w600)),
                                                            ],
                                                          ),
@@ -242,8 +242,8 @@ class ContactUsState extends State<ContactUs> {
                                                            child: Padding(
                                                              padding: EdgeInsets.all(10.0),
                                                              child: SizedBox(
-                                                               height: 50,
-                                                               width: 50,
+                                                               height: 40,
+                                                               width: 40,
                                                                child: Image.asset( "assets/contact2.png", fit: BoxFit.contain),
                                                              ),
                                                            ),
@@ -260,11 +260,11 @@ class ContactUsState extends State<ContactUs> {
                                                              children: [
                                                                Text("MOBILE",
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                   style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily: 'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                                Text(_mobile,
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Poppins',
+                                                                   style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily: 'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                              ],
                                                            ),
@@ -283,8 +283,8 @@ class ContactUsState extends State<ContactUs> {
                                                            child: Padding(
                                                              padding: EdgeInsets.all(10.0),
                                                              child: SizedBox(
-                                                               height: 50,
-                                                               width: 50,
+                                                               height: 40,
+                                                               width: 40,
                                                                child: Image.asset( "assets/contact3.png", fit: BoxFit.contain),
                                                              ),
                                                            ),
@@ -301,11 +301,11 @@ class ContactUsState extends State<ContactUs> {
                                                              children: [
                                                                Text("EMAIL",
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.redtheme,fontSize: 14.0,fontFamily:'Poppins',
+                                                                   style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                                Text(_email,
                                                                    textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily:'Poppins',
+                                                                   style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily:'Poppins',
                                                                        fontWeight: FontWeight.w600)),
                                                              ],
                                                            ),
