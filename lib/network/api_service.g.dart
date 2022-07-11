@@ -164,6 +164,44 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<SeatPrices> getTimeSlotPrice(
+      hotelId, foodTimingID_FK, bookingDate) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {
+      'HotelID_FK': hotelId,
+      'FoodTimingID_FK': foodTimingID_FK,
+      'BookingDate': bookingDate
+    };
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<SeatPrices>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(
+                    _dio.options, 'seatprice/SeatPriceByHotelFoodTimingDayName',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = SeatPrices.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<DiscountData> getDiscounts(hotelId, userID_FK) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId, 'UserID_FK': userID_FK};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DiscountData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'Discounts/DiscountsByHotelandUser',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DiscountData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<String> sendReview(hotelId, pperation, reviewID_PK, orderID,
       orderTypeID_FK, usersID_FK, message, replyMessage, userID) async {
     const _extra = <String, dynamic>{};

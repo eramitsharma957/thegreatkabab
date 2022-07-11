@@ -56,10 +56,11 @@ class BookSeatState extends State<BookSeat> {
   int _n = 0;
   int _v = 0;
   int _c = 0;
-  late String currentDate='';
+  late String currentDate='',serverDate;
   List<SlotListdata> listslotdata=<SlotListdata>[];
   SlotListdata? slotdata;
-  var _selectSlotCode;
+  var _selectSlotCode=0;
+  var _selectSlotTime="";
 
 
   @override
@@ -69,6 +70,7 @@ class BookSeatState extends State<BookSeat> {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     // setState(() {
     currentDate = formatter.format(now);
+    serverDate=commonAlert.dateFormateServer(context, now);
     timeSlots();
     super.initState();
     //downloadData();
@@ -89,6 +91,7 @@ class BookSeatState extends State<BookSeat> {
         // final DateFormat formatter = DateFormat('yyyy-MM-dd');
         setState(() {
           currentDate=commonAlert.dateFormateMM(context, newDate);
+          serverDate=commonAlert.dateFormateServer(context, newDate);
           print("formatted " + currentDate);
           //print("formatted SERVER " + showdateServer);
         });
@@ -109,6 +112,8 @@ class BookSeatState extends State<BookSeat> {
         EasyLoading.dismiss();
         if(result.data.isNotEmpty){
         listslotdata=result.data;
+        _selectSlotCode=listslotdata[0].slotsIdPk;
+        _selectSlotTime=listslotdata[0].slotTime;
         slotdata=listslotdata[0];
         }
       });
@@ -384,6 +389,7 @@ class BookSeatState extends State<BookSeat> {
                                               setState(() {
                                                 slotdata = data!;
                                                 _selectSlotCode=slotdata!.slotsIdPk;
+                                                _selectSlotTime=slotdata!.slotTime;
                                               });
                                             },
                                             items:listslotdata.map((SlotListdata data){
@@ -507,7 +513,7 @@ class BookSeatState extends State<BookSeat> {
                                         }else{
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => FinalBookSeat()),
+                                            MaterialPageRoute(builder: (context) => FinalBookSeat(serverDate,_selectSlotCode,_lunchTypeID,_selectSlotTime)),
                                           );
                                         }
                                       }else{
@@ -522,10 +528,6 @@ class BookSeatState extends State<BookSeat> {
                                 ),
                               )
                           ),
-
-
-
-
 
                         ],
                       ),

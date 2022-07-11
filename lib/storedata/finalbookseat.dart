@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:cool_alert/cool_alert.dart';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,12 +16,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
+import 'package:thegreatkabab/models/bookingdata.dart';
+import 'package:thegreatkabab/models/discountdata.dart';
+import 'package:thegreatkabab/models/seatprices.dart';
 import 'package:thegreatkabab/models/slotsdata.dart';
 import 'package:thegreatkabab/network/api_service.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 
 
 class FinalBookSeat extends StatefulWidget {
+  FinalBookSeat(this.currentDate, this.selectSlotCode,this.type,this.selectSlotTime);
+
+  String currentDate;
+  String selectSlotTime;
+  int selectSlotCode;
+  int type;
+
   @override
   State<StatefulWidget> createState() {
     return FinalBookSeatState();
@@ -56,23 +68,134 @@ class FinalBookSeatState extends State<FinalBookSeat> {
   int _v = 0;
   int _c = 0;
   late String currentDate='';
-  List<SlotListdata> listslotdata=<SlotListdata>[];
+  List<PriceData> listpricedata=<PriceData>[];
+  List<DiscountList> discountlist=<DiscountList>[];
+
   SlotListdata? slotdata;
-  var _selectSlotCode;
+  var _selectSlotCode,_userID;
+
+  var _seatpriceVeg=0.0,_seatpriceNonVeg=0.0,_seatpriceChild=0.0;
+  var _calculatedVegSeat=0.0,_calculatedNonVegSeat=0.0,_calculatedChildSeat=0.0;
+  var _totalamount=0.0,_totalpayableamount=0.0;
+  var _gst=2.5,_sgst=2.5,_totaldiscount=10;
+  late int _seatPriceID_PKVeg;
+  late int _seatPriceID_PKNonVeg;
+  late int _seatPriceID_PKChild;
+
+  List<BookingData> bookingdatalist=<BookingData>[];
 
 
   @override
   void initState() {
+    Future<String> userid = sfdata.getUserId(context);
+    userid.then((data) {
+      setState(() {
+        _userID=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
 
     super.initState();
+    seatPriceSlots();
+    getDiscount();
     //downloadData();
   }
 
+
+  //////////////////  Get Slot Price //////////////////////
+  Future<Null> seatPriceSlots() async {
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getTimeSlotPrice(colors.hotelId,widget.type,widget.currentDate)
+        .then((result) {
+      setState(() {
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+           listpricedata=result.data;
+           for(int i=0;i<listpricedata.length;i++){
+              if(listpricedata[i].seatType=='Veg'){
+                 _seatpriceVeg=listpricedata[i].price;
+                 _seatPriceID_PKVeg=listpricedata[i].seatPriceIdPk;
+              }else if(listpricedata[i].seatType=='Non-Veg'){
+                _seatpriceNonVeg=listpricedata[i].price;
+                _seatPriceID_PKNonVeg=listpricedata[i].seatPriceIdPk;
+              }else{
+                _seatpriceChild=listpricedata[i].price;
+                _seatPriceID_PKChild=listpricedata[i].seatPriceIdPk;
+              }
+
+           }
+
+           bookingdatalist.add(BookingData(operation: "insert", seatOrderIdPk: 0, hotelIdFk: colors.hotelId, bookingDate: widget.currentDate, bookingTime: widget.selectSlotTime, usersIdFk: _userID, seatPriceIdFk: _seatPriceID_PKVeg , noOfSeats: _v, pricePerSeat: _calculatedVegSeat, seatDiscount: 0, discountDetail: "discountDetail", couponDiscountInTotal: 0, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID));
+           bookingdatalist.add(BookingData(operation: "insert", seatOrderIdPk: 0, hotelIdFk: colors.hotelId, bookingDate: widget.currentDate, bookingTime: widget.selectSlotTime, usersIdFk: _userID, seatPriceIdFk: _seatPriceID_PKNonVeg , noOfSeats: _n, pricePerSeat: _calculatedNonVegSeat, seatDiscount: 0, discountDetail: "discountDetail", couponDiscountInTotal: 0, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID));
+           bookingdatalist.add(BookingData(operation: "insert", seatOrderIdPk: 0, hotelIdFk: colors.hotelId, bookingDate: widget.currentDate, bookingTime: widget.selectSlotTime, usersIdFk: _userID, seatPriceIdFk: _seatPriceID_PKChild , noOfSeats: _c, pricePerSeat: _calculatedChildSeat, seatDiscount: 0, discountDetail: "discountDetail", couponDiscountInTotal: 0, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID));
+
+
+           print(jsonEncode(bookingdatalist));
+        }
+      });
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
+  //////////////////  Get Slot Price //////////////////////
+  Future<Null> getDiscount() async {
+   // EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getDiscounts(colors.hotelId,_userID)
+        .then((result) {
+      setState(() {
+       // EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          discountlist=result.data;
+
+
+        }
+      });
+    }).catchError((error) {
+     // EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
+  void TaxCalculation(BuildContext context,String category){
+    setState(() {
+      _totalamount=_calculatedVegSeat+_calculatedNonVegSeat+_calculatedChildSeat;
+      double calculatedGst = _totalamount * _gst / 100.0;
+      double calculatedSGst = _totalamount * _sgst / 100.0;
+      double totalpayableamount=_totalamount+calculatedGst+calculatedSGst;
+      double _totaldiscountamount=totalpayableamount * _totaldiscount / 100.0;
+      _totalpayableamount=totalpayableamount - _totaldiscountamount;
+
+      for(int i=0;i<bookingdatalist.length;i++){
+        if(bookingdatalist[i].seatPriceIdFk==_seatPriceID_PKVeg){
+          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _v, pricePerSeat: _calculatedVegSeat, seatDiscount: 0, discountDetail: "discountDetail", couponDiscountInTotal: 0, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID);
+        }
+        if(bookingdatalist[i].seatPriceIdFk==_seatPriceID_PKNonVeg){
+          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _n, pricePerSeat: _calculatedNonVegSeat, seatDiscount: 0, discountDetail: "discountDetail", couponDiscountInTotal: 0, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID);
+        }
+        if(bookingdatalist[i].seatPriceIdFk==_seatPriceID_PKChild){
+          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _c, pricePerSeat: _calculatedChildSeat, seatDiscount: 0, discountDetail: "discountDetail", couponDiscountInTotal: 0, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID);
+        }
+
+      }
+      print(jsonEncode(bookingdatalist));
+      
+    });
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -133,7 +256,28 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                              ),
                            ),
 
-                          SizedBox(height: 30),
+                          SizedBox(height: 20),
+
+                          /*Container(
+                            child: MediaQuery.removePadding(
+                              context: context,
+                              removeTop: true,
+                              child:SingleChildScrollView(
+                                physics: ScrollPhysics(),
+                                child: Column(
+                                  children: <Widget>[
+                                    // Text('Hey'),
+                                    ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount:feeInstallmentlistStructur.length,
+                                        itemBuilder: _buildRow
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),*/
 
                           Card(
                         clipBehavior: Clip.antiAlias,
@@ -155,7 +299,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                   height: 45.0,
                                   width: 45.0,
                                   child: CircleAvatar(
-                                      backgroundImage: const AssetImage('assets/food_sample.png'),
+                                      backgroundImage: const AssetImage('assets/vegseat.png'),
                                       radius: 65.0,
                                       backgroundColor: Colors.white
                                   ),
@@ -175,7 +319,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                           fontSize: 12.0,
                                         ),),
 
-                                        Text("879/-",textAlign: TextAlign.center,style: TextStyle(
+                                        Text("₹ ${_seatpriceVeg}",textAlign: TextAlign.center,style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black,
@@ -233,14 +377,14 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Image.asset("assets/orange_menu_icon.png",
-                                      width: 35.0,
-                                      height: 35.0,
+                                      width: 25.0,
+                                      height: 25.0,
                                     ),
-                                    Text(" 880.0",style: TextStyle(
+                                    Text("₹ ${_calculatedVegSeat}",style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.w300,
                                       color: Colors.black,
-                                      fontSize: 18.0,
+                                      fontSize: 16.0,
                                     ),),
                                   ],
                                 ),
@@ -294,7 +438,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                               fontSize: 12.0,
                                             ),),
 
-                                            Text("979/-",style: TextStyle(
+                                            Text("₹ ${_seatpriceNonVeg}",style: TextStyle(
                                               fontFamily: 'Poppins',
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black,
@@ -352,14 +496,14 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Image.asset("assets/orange_menu_icon.png",
-                                          width: 35.0,
-                                          height: 35.0,
+                                          width: 25.0,
+                                          height: 25.0,
                                         ),
-                                        Text(" 880.0",style: TextStyle(
+                                        Text("₹ ${_calculatedNonVegSeat}",style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w300,
                                           color: Colors.black,
-                                          fontSize: 18.0,
+                                          fontSize: 16.0,
                                         ),),
                                       ],
                                     ),
@@ -393,7 +537,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                           height: 45.0,
                                           width: 45.0,
                                           child: CircleAvatar(
-                                              backgroundImage: const AssetImage('assets/food_sample.png'),
+                                              backgroundImage: const AssetImage('assets/childseat.jpeg'),
                                               radius: 65.0,
                                               backgroundColor: Colors.white
                                           ),
@@ -413,7 +557,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                               fontSize: 12.0,
                                             ),),
 
-                                            Text("469/-",style: TextStyle(
+                                            Text("₹ ${_seatpriceChild}",style: TextStyle(
                                               fontFamily: 'Poppins',
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black,
@@ -471,14 +615,14 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Image.asset("assets/orange_menu_icon.png",
-                                          width: 35.0,
-                                          height: 35.0,
+                                          width: 25.0,
+                                          height: 25.0,
                                         ),
-                                        Text(" 880.0",style: TextStyle(
+                                        Text("₹ ${_calculatedChildSeat}",style: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w300,
                                           color: Colors.black,
-                                          fontSize: 18.0,
+                                          fontSize: 16.0,
                                         ),),
                                       ],
                                     ),
@@ -491,8 +635,45 @@ class FinalBookSeatState extends State<FinalBookSeat> {
 
 
                           ),
+                          SizedBox(height: 20),
+                          Visibility(
+                              visible: true,
+                              child:Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Discounts & Offers",style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                    fontSize: 14.0,
+                                  ),),
 
-                          SizedBox(height: 30),
+                          Container(
+                            child: MediaQuery.removePadding(
+                              context: context,
+                              removeTop: true,
+                              child:SingleChildScrollView(
+                                physics: ScrollPhysics(),
+                                child: Column(
+                                  children: <Widget>[
+                                    // Text('Hey'),
+                                    ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount:2,
+                                        itemBuilder: _buildRow
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                                ],
+                              )
+                          ),
+
+                          SizedBox(height: 1),
                           Row(
                             children: [
                               Expanded(
@@ -504,7 +685,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                 ),),
                               ),
                               Expanded(
-                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                child: Text("",textAlign: TextAlign.end,style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
@@ -524,7 +705,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                 ),),
                               ),
                               Expanded(
-                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                child: Text("${_gst} %",textAlign: TextAlign.end,style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
@@ -544,7 +725,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                 ),),
                               ),
                               Expanded(
-                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                child: Text("${_sgst} %",textAlign: TextAlign.end,style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
@@ -570,7 +751,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                 ),),
                               ),
                               Expanded(
-                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                child: Text("₹ ${_totalamount}",textAlign: TextAlign.end,style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
@@ -590,7 +771,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                 ),),
                               ),
                               Expanded(
-                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                child: Text("${_totaldiscount} %",textAlign: TextAlign.end,style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
@@ -616,7 +797,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                 ),),
                               ),
                               Expanded(
-                                child: Text("0.0",textAlign: TextAlign.end,style: TextStyle(
+                                child: Text("₹ ${_totalpayableamount.toStringAsFixed(2)}",textAlign: TextAlign.end,style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
@@ -643,7 +824,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                 color: colors.redtheme,
                                 child: MaterialButton(
                                   minWidth: MediaQuery.of(context).size.width,
-                                  height: 60.0,
+                                  height: 50.0,
                                   padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                   onPressed: () async {
                                     setState(() {
@@ -699,42 +880,90 @@ class FinalBookSeatState extends State<FinalBookSeat> {
 
 
 
+
+
+  Widget _buildRow(BuildContext context, int index) {
+    var colors= AppColors();
+    return Padding(
+      padding:EdgeInsets.all(5),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("${discountlist[index].discountName} ${discountlist[index].discount} %",textAlign: TextAlign.end,style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: colors.green,
+            fontSize: 12.0,
+          ),),
+
+          Text("${discountlist[index].discountDescription}",textAlign: TextAlign.end,style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w500,
+            color: Colors.black45,
+            fontSize: 11.0,
+          ),),
+
+          SizedBox(height: 2),
+          DottedLine(),
+        ],
+      ),
+    );
+  }
+
+
+
   void minus() {
     setState(() {
-      if (_v != 0)
+      if (_v != 0){
         _v--;
+        _calculatedVegSeat=_seatpriceVeg * _v;
+      }
+      TaxCalculation(context,"V");
     });
   }
 
   void add() {
     setState(() {
       _v++;
+      _calculatedVegSeat=_seatpriceVeg * _v;
     });
+    TaxCalculation(context,"V");
   }
 
   void minusNon() {
     setState(() {
-      if (_n != 0)
+      if (_n != 0){
         _n--;
+        _calculatedNonVegSeat=_seatpriceNonVeg * _n;
+      }
+      TaxCalculation(context,"NV");
     });
   }
 
   void addNon() {
     setState(() {
       _n++;
+      _calculatedNonVegSeat=_seatpriceNonVeg * _n;
     });
+    TaxCalculation(context,"NV");
   }
 
   void minusChild() {
     setState(() {
-      if (_c != 0)
+      if (_c != 0){
         _c--;
+        _calculatedChildSeat=_seatpriceChild* _c;
+      }
+      TaxCalculation(context,"C");
     });
   }
 
   void addChild() {
     setState(() {
       _c++;
+      _calculatedChildSeat=_seatpriceChild* _c;
+      TaxCalculation(context,"C");
     });
   }
 

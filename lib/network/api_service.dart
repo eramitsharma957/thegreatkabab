@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:thegreatkabab/models/discountdata.dart';
 import 'package:thegreatkabab/models/gallerydata.dart';
 import 'package:thegreatkabab/models/hoteldata.dart';
 import 'dart:async';
@@ -10,6 +11,7 @@ import 'package:thegreatkabab/models/menudata.dart';
 import 'package:thegreatkabab/models/menudescdata.dart';
 import 'package:thegreatkabab/models/notificatiodata.dart';
 import 'package:thegreatkabab/models/reviewdata.dart';
+import 'package:thegreatkabab/models/seatprices.dart';
 import 'package:thegreatkabab/models/slotsdata.dart';
 import 'package:thegreatkabab/models/verifyotp.dart';
 
@@ -82,6 +84,19 @@ abstract class ApiService {
   Future<SlotsData> getTimeSlot(
       @Field("HotelID_FK") hotelId,
       @Field("FoodTimingID_FK") foodTimingID_FK,
+      );
+
+  @POST("seatprice/SeatPriceByHotelFoodTimingDayName")
+  Future<SeatPrices> getTimeSlotPrice(
+      @Field("HotelID_FK") hotelId,
+      @Field("FoodTimingID_FK") foodTimingID_FK,
+      @Field("BookingDate") bookingDate,
+      );
+
+  @POST("Discounts/DiscountsByHotelandUser")
+  Future<DiscountData> getDiscounts(
+      @Field("HotelID_FK") hotelId,
+      @Field("UserID_FK") userID_FK,
       );
 
 
