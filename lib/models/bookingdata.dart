@@ -25,6 +25,7 @@ class BookingData {
     required this.finalPrice,
     required this.orderStatus,
     required this.userId,
+    required this.userName,
   });
 
   String operation;
@@ -36,12 +37,13 @@ class BookingData {
   int seatPriceIdFk;
   int noOfSeats;
   double pricePerSeat;
-  int seatDiscount;
+  double seatDiscount;
   String discountDetail;
-  int couponDiscountInTotal;
+  double couponDiscountInTotal;
   double finalPrice;
   String orderStatus;
   String userId;
+  String userName;
 
   factory BookingData.fromJson(Map<String, dynamic> json) => BookingData(
     operation: json["Operation"],
@@ -59,6 +61,7 @@ class BookingData {
     finalPrice: json["FinalPrice"],
     orderStatus: json["OrderStatus"],
     userId: json["UserID"],
+    userName: json["Name"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -77,5 +80,6 @@ class BookingData {
     "FinalPrice": finalPrice,
     "OrderStatus": orderStatus,
     "UserID": userId,
+    "Name": userName,
   };
 }

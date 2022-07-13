@@ -83,6 +83,22 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<BookingStatusData> getbookingStatus(hotelId, userID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID': hotelId, 'UserID': userID};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<BookingStatusData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'seatorder/GetSeatBookingByUserandHotel',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = BookingStatusData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<MenuData> getMenuLsit(hotelId) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -198,6 +214,22 @@ class _ApiService implements ApiService {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = DiscountData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<BookingResponse> savebooking(list) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = list.map((e) => e.toJson()).toList();
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<BookingResponse>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'seatorder/SeatOrderCreateUpdate',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = BookingResponse.fromJson(_result.data!);
     return value;
   }
 

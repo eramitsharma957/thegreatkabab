@@ -61,10 +61,31 @@ class BookSeatState extends State<BookSeat> {
   SlotListdata? slotdata;
   var _selectSlotCode=0;
   var _selectSlotTime="";
+  late String _userID;
+  late String _userName;
 
 
   @override
   void initState() {
+    Future<String> userid = sfdata.getUserId(context);
+    userid.then((data) {
+      setState(() {
+        _userID=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+
+    Future<String> user = sfdata.getUserName(context);
+    user.then((data) {
+      setState(() {
+        _userName=data;
+        nameController.text=_userName;
+      });
+    },onError: (e) {
+      print(e);
+    });
+
 
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
@@ -138,6 +159,13 @@ class BookSeatState extends State<BookSeat> {
           });
         }
     );
+  }
+
+  String formatTimeOfDay(TimeOfDay tod) {
+    final now = new DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    final format = DateFormat.jm();  //"6:00 AM"
+    return format.format(dt);
   }
 
 
@@ -390,6 +418,9 @@ class BookSeatState extends State<BookSeat> {
                                                 slotdata = data!;
                                                 _selectSlotCode=slotdata!.slotsIdPk;
                                                 _selectSlotTime=slotdata!.slotTime;
+                                                /*final format = DateFormat.jm();
+                                                print(DateFormat.jm().format(DateFormat("hh:mm:ss").parse("14:15:00")));
+                                                print(TimeOfDay.now().format(context));*/
                                               });
                                             },
                                             items:listslotdata.map((SlotListdata data){
@@ -511,6 +542,7 @@ class BookSeatState extends State<BookSeat> {
                                         if(nameController.text.isEmpty){
                                           commonAlert.showToast(context,"Enter full name");  //
                                         }else{
+                                          sfdata.saveLoginDataToSF(context, _userID,nameController.text, 1);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: (context) => FinalBookSeat(serverDate,_selectSlotCode,_lunchTypeID,_selectSlotTime)),

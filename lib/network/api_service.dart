@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:thegreatkabab/models/bookingdata.dart';
+import 'package:thegreatkabab/models/bookingresponse.dart';
+import 'package:thegreatkabab/models/bookingstatusdata.dart';
 import 'package:thegreatkabab/models/discountdata.dart';
 import 'package:thegreatkabab/models/gallerydata.dart';
 import 'package:thegreatkabab/models/hoteldata.dart';
@@ -60,6 +63,12 @@ abstract class ApiService {
       @Field("HotelID_FK") hotelId,
       );
 
+  @POST("seatorder/GetSeatBookingByUserandHotel")
+  Future<BookingStatusData> getbookingStatus(
+      @Field("HotelID") hotelId,
+      @Field("UserID") userID,
+      );
+
   @POST("MenuItemCategory/MenuItemCategoryByHotel")
   Future<MenuData> getMenuLsit(
       @Field("HotelID_FK") hotelId,
@@ -98,6 +107,10 @@ abstract class ApiService {
       @Field("HotelID_FK") hotelId,
       @Field("UserID_FK") userID_FK,
       );
+
+
+  @POST("seatorder/SeatOrderCreateUpdate")
+  Future<BookingResponse> savebooking(@Body() List<BookingData> list);
 
 
   @POST("REview/ReviewCreateUpdate")

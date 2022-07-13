@@ -11,25 +11,29 @@ String discountDataToJson(DiscountData data) => json.encode(data.toJson());
 class DiscountData {
   DiscountData({
     required this.header,
-    required this.data,
+    required this.discount,
+    required this.tax,
   });
 
   List<Header> header;
-  List<DiscountList> data;
+  List<Discount> discount;
+  List<Discount> tax;
 
   factory DiscountData.fromJson(Map<String, dynamic> json) => DiscountData(
     header: List<Header>.from(json["Header"].map((x) => Header.fromJson(x))),
-    data: List<DiscountList>.from(json["Data"].map((x) => DiscountList.fromJson(x))),
+    discount: List<Discount>.from(json["Discount"].map((x) => Discount.fromJson(x))),
+    tax: List<Discount>.from(json["Tax"].map((x) => Discount.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "Header": List<dynamic>.from(header.map((x) => x.toJson())),
-    "Data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "Discount": List<dynamic>.from(discount.map((x) => x.toJson())),
+    "Tax": List<dynamic>.from(tax.map((x) => x.toJson())),
   };
 }
 
-class DiscountList {
-  DiscountList({
+class Discount {
+  Discount({
     required this.discountsIdPk,
     required this.hotelIdFk,
     required this.discountName,
@@ -61,7 +65,7 @@ class DiscountList {
   DateTime createdOn;
   dynamic createdBy;
 
-  factory DiscountList.fromJson(Map<String, dynamic> json) => DiscountList(
+  factory Discount.fromJson(Map<String, dynamic> json) => Discount(
     discountsIdPk: json["DiscountsID_PK"],
     hotelIdFk: json["HotelID_FK"],
     discountName: json["DiscountName"],
@@ -98,7 +102,7 @@ class DiscountList {
 
 class Header {
   Header({
-    required this.success,
+    required  this.success,
     required this.message,
   });
 

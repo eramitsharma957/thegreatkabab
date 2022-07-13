@@ -1,12 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
+import 'package:thegreatkabab/models/bookingstatusdata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
+
+import 'network/api_service.dart';
 
 class BookingStatus extends StatefulWidget {
   @override
@@ -20,51 +25,55 @@ class BookingStatusState extends State<BookingStatus> {
   static const colors= AppColors();
   TextStyle style = TextStyle(fontFamily: 'Poppins', fontSize: 14.0);
   bool _isObscure = true;
+  bool isLoader = false;
   CommonAction commonAlert= CommonAction();
   late File selectedFile;
-  String  _filePath="";
+  var  _userID;
   String  _fileName="";
   List<String> attachments = [];
   SFData sfdata= SFData();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
-  OtpFieldController otpController = OtpFieldController();
-  var _Otp;
-  bool _layoutlogin=true;
+  List<BookingList> bookinglist =<BookingList> [];
 
   @override
   void initState() {
+    Future<String> userid = sfdata.getUserId(context);
+    userid.then((data) {
+      setState(() {
+        _userID=data;
+        bookingList();
+      });
+    },onError: (e) {
+      print(e);
+    });
+
     super.initState();
   }
 
 
 
-  /* //////////////////  Get Class Link  //////////////////////
-  Future<Null> signUp() async {
-    // EasyLoading.show(status: 'Loading');
+   //////////////////  Get Booking  //////////////////////
+  Future<Null> bookingList() async {
+     EasyLoading.show(status: 'Loading');
     //  SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .signUp(emailController.text,mobileController.text,nameController.text,passwordController.text)
+        .getbookingStatus(colors.hotelId,_userID)
         .then((result) {
       setState(() {
-        // EasyLoading.dismiss();
-        Navigator.of(context,rootNavigator: true).pop();
-        if(result.loginId==0){
-          commonAlert.messageAlertError(context,result.message,"Error");
+         EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          bookinglist=result.data.toList();
         }else{
-          sfdata.saveLoginDataToSF(context,result.loginId,nameController.text,"1",mobileController.text,emailController.text);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => OTPSave(result)));
-
+          EasyLoading.dismiss();
         }
       });
     }).catchError((error) {
-
-      // EasyLoading.dismiss();
+       EasyLoading.dismiss();
       print(error);
     });
   }
-*/
+
 
 
   @override
@@ -130,127 +139,37 @@ class BookingStatusState extends State<BookingStatus> {
                                color: colors.redtheme,
                              ),
                            ),
-
                            SizedBox(
-                             height: 20.0,
+                             height: 10.0,
                            ),
-                           Container(
-                             margin: const EdgeInsets.all(10.0),
-                             padding: const EdgeInsets.all(3.0),
-                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.black12),
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             child: Padding(padding:const EdgeInsets.all(10.0),
-                               child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                 children: [
-                                   Expanded(
-                                     flex: 5,
-                                     child:Column(
-                                         mainAxisAlignment: MainAxisAlignment.start,
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           Text("01-02-2022",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                           Text("Adult-2,child-2.",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: Colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                         ]) ,
-                                   ),
-
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 22,
-                                       width: 22,
-                                       child: Image.asset('assets/i_con.png'),
-                                     ),
-                                   ),
-                                 ],
+                           MediaQuery.removePadding(
+                             context: context,
+                             removeTop: true,
+                             child:
+                             bookinglist.isNotEmpty
+                                 ? Container(
+                               child: Expanded(
+                                 child: ListView.builder(
+                                   itemCount: bookinglist.length,
+                                   itemBuilder: _buildRow,
+                                 ),
                                ),
+                             )
+                                 : isLoader == true
+                                 ? Container(
+                                 margin: const EdgeInsets.all(180.0),
+                                 child: const Center(child: CircularProgressIndicator()))
+                                 : Container(
+                               margin: const EdgeInsets.all(160.0),
+                               child: Text("",style: TextStyle(color: colors.redtheme),),
                              ),
                            ),
-                           Container(
-                             margin: const EdgeInsets.all(10.0),
-                             padding: const EdgeInsets.all(3.0),
-                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.black12),
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             child: Padding(padding:const EdgeInsets.all(10.0),
-                               child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                 children: [
-                                   Expanded(
-                                     flex: 5,
-                                     child:Column(
-                                         mainAxisAlignment: MainAxisAlignment.start,
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           Text("01-02-2022",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                           Text("Adult-2,child-2.",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: Colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                         ]) ,
-                                   ),
+                           SizedBox(
+                             height: 50.0,
+                           ),
 
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 22,
-                                       width: 22,
-                                       child: Image.asset('assets/i_con.png'),
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ),
-                           Container(
-                             margin: const EdgeInsets.all(10.0),
-                             padding: const EdgeInsets.all(3.0),
-                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.black12),
-                               borderRadius: BorderRadius.circular(15.0),
-                             ),
-                             child: Padding(padding:const EdgeInsets.all(10.0),
-                               child: Row(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                 children: [
-                                   Expanded(
-                                     flex: 5,
-                                     child:Column(
-                                         mainAxisAlignment: MainAxisAlignment.start,
-                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                         children: [
-                                           Text("01-02-2022",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                           Text("Adult-2,child-2.",
-                                               textAlign: TextAlign.start,
-                                               style: style.copyWith(color: Colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
-                                         ]) ,
-                                   ),
 
-                                   Expanded(
-                                     flex: 1,
-                                     child: SizedBox(
-                                       height: 22,
-                                       width: 22,
-                                       child: Image.asset('assets/i_icong.png'),
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ),
+
 
 
                          ],
@@ -272,6 +191,51 @@ class BookingStatusState extends State<BookingStatus> {
 
 
 
+  Widget _buildRow(BuildContext context, int index) {
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(3.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black12),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Padding(padding:const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 5,
+              child:Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(commonAlert.dateFormateSQLServer(context, bookinglist[index].bookingDate),
+                        textAlign: TextAlign.start,
+                        style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 14.0)),
+
+                    Text(bookinglist[index].bookingTime,
+                        textAlign: TextAlign.start,
+                        style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 12.0)),
+                    Text("No. of Seats- ${bookinglist[index].noOfSeats}",
+                        textAlign: TextAlign.start,
+                        style: style.copyWith(color: Colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
+                  ]) ,
+            ),
+
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 22,
+                width: 22,
+                child: Image.asset('assets/i_con.png'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
 
 }
