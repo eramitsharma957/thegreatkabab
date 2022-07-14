@@ -79,8 +79,10 @@ class FinalBookSeatState extends State<FinalBookSeat> {
 
   var _seatpriceVeg=0.0,_seatpriceNonVeg=0.0,_seatpriceChild=0.0;
   var _calculatedVegSeat=0.0,_calculatedNonVegSeat=0.0,_calculatedChildSeat=0.0;
+  var _calculatedVegSeatDiscount=0.0,_calculatedNonVegSeatDiscount=0.0,_calculatedChildSeatDiscount=0.0;
+  var vegFinalPrice=0.0,noNVegFinalPrice=0.0,childSeatFinalPrice=0.0;
   var _totalamount=0.0,_totalpayableamount=0.0;
-  var _gst=0.0,_sgst=0.0,_totaldiscount=0.0;
+  var _gst=0.0,_sgst=0.0,_totaldiscount=0.0,totaltaxesInPer=0.0;
 
   double _totaldiscountamount=0.0,totalpayableamountafter_Discount=0.0,calculatedGst=0.0,calculatedSGst=0.0;
   double totaltaxes=0.0;
@@ -207,6 +209,11 @@ class FinalBookSeatState extends State<FinalBookSeat> {
       _totalamount=_calculatedVegSeat+_calculatedNonVegSeat+_calculatedChildSeat;
       if(_totaldiscount!=0.0){
         _totaldiscountamount=_totalamount * _totaldiscount / 100.0;
+        _calculatedVegSeatDiscount=_calculatedVegSeat * _totaldiscount / 100.0;
+        _calculatedNonVegSeatDiscount=_calculatedNonVegSeat * _totaldiscount / 100.0;
+        _calculatedChildSeatDiscount=_calculatedChildSeat * _totaldiscount / 100.0;
+
+        print(_calculatedVegSeatDiscount);
       }
       totalpayableamountafter_Discount=_totalamount - _totaldiscountamount;
       calculatedGst = totalpayableamountafter_Discount * _gst / 100.0;
@@ -214,15 +221,33 @@ class FinalBookSeatState extends State<FinalBookSeat> {
       totaltaxes=calculatedGst+calculatedSGst;
       _totalpayableamount=_totalamount+calculatedGst+calculatedSGst;
 
+      /// Seat final amount
+      totaltaxesInPer=_gst + _sgst;
+      var vegFPrice=_calculatedVegSeat - _calculatedVegSeatDiscount;
+      var vegTaxFinalPrice=vegFPrice * totaltaxesInPer / 100.0;
+      vegFinalPrice=vegFPrice+vegTaxFinalPrice;
+      print(vegFPrice);
+      print(totaltaxesInPer);
+      print(vegFinalPrice);
+
+     var noNVegFPrice=_calculatedNonVegSeat - _calculatedNonVegSeatDiscount;
+      var nonvegTaxFinalPrice=noNVegFPrice * totaltaxesInPer / 100.0;
+      noNVegFinalPrice=noNVegFPrice+nonvegTaxFinalPrice;
+
+      var childSeatFPrice=_calculatedChildSeat - _calculatedChildSeatDiscount;
+      var childTaxSeatFinalPrice=childSeatFPrice * totaltaxesInPer / 100.0;
+      childSeatFinalPrice=childSeatFPrice+childTaxSeatFinalPrice;
+
+
       for(int i=0;i<bookingdatalist.length;i++){
         if(bookingdatalist[i].seatPriceIdFk==_seatPriceID_PKVeg){
-          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _v, pricePerSeat: _calculatedVegSeat, seatDiscount: 0.0, discountDetail: "discountDetail", couponDiscountInTotal: _totaldiscountamount, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID,userName: _userName);
+          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _v, pricePerSeat: _calculatedVegSeat, seatDiscount: _totaldiscount, discountDetail: "discountDetail", couponDiscountInTotal: _calculatedVegSeatDiscount, finalPrice: vegFinalPrice, orderStatus: "orderStatus", userId: _userID,userName: _userName);
         }
         if(bookingdatalist[i].seatPriceIdFk==_seatPriceID_PKNonVeg){
-          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _n, pricePerSeat: _calculatedNonVegSeat, seatDiscount: 0.0, discountDetail: "discountDetail", couponDiscountInTotal: _totaldiscountamount, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID,userName: _userName);
+          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _n, pricePerSeat: _calculatedNonVegSeat, seatDiscount: _totaldiscount, discountDetail: "discountDetail", couponDiscountInTotal: _calculatedNonVegSeatDiscount, finalPrice: noNVegFinalPrice, orderStatus: "orderStatus", userId: _userID,userName: _userName);
         }
         if(bookingdatalist[i].seatPriceIdFk==_seatPriceID_PKChild){
-          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _c, pricePerSeat: _calculatedChildSeat, seatDiscount: 0.0, discountDetail: "discountDetail", couponDiscountInTotal: _totaldiscountamount, finalPrice: _totalpayableamount, orderStatus: "orderStatus", userId: _userID,userName: _userName);
+          bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _c, pricePerSeat: _calculatedChildSeat, seatDiscount: _totaldiscount, discountDetail: "discountDetail", couponDiscountInTotal: _calculatedChildSeatDiscount, finalPrice: childSeatFinalPrice, orderStatus: "orderStatus", userId: _userID,userName: _userName);
         }
       }
       print(jsonEncode(bookingdatalist));
