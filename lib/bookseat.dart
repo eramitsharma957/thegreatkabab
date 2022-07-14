@@ -63,6 +63,7 @@ class BookSeatState extends State<BookSeat> {
   var _selectSlotTime="";
   late String _userID;
   late String _userName;
+  bool _Isavilable=false;
 
 
   @override
@@ -123,6 +124,7 @@ class BookSeatState extends State<BookSeat> {
 
   //////////////////  Get Menus Description //////////////////////
   Future<Null> timeSlots() async {
+    listslotdata=[];
     EasyLoading.show(status: 'Loading');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
@@ -132,9 +134,11 @@ class BookSeatState extends State<BookSeat> {
       setState(() {
         EasyLoading.dismiss();
         if(result.data.isNotEmpty){
-        listslotdata=result.data;
-        _selectSlotCode=listslotdata[0].slotsIdPk;
-        _selectSlotTime=listslotdata[0].slotTime;
+          listslotdata.clear();
+          listslotdata.add(SlotListdata(slotsIdPk: 0, hotelIdFk: "hotelIdFk", foodTimingIdFk: 0, slotName: "Select", slotTime: "Select Slot"));
+          listslotdata.addAll(result.data);
+       // _selectSlotCode=listslotdata[0].slotsIdPk;
+       // _selectSlotTime=listslotdata[0].slotTime;
         slotdata=listslotdata[0];
         }
       });
@@ -418,9 +422,23 @@ class BookSeatState extends State<BookSeat> {
                                                 slotdata = data!;
                                                 _selectSlotCode=slotdata!.slotsIdPk;
                                                 _selectSlotTime=slotdata!.slotTime;
-                                                /*final format = DateFormat.jm();
-                                                print(DateFormat.jm().format(DateFormat("hh:mm:ss").parse("14:15:00")));
-                                                print(TimeOfDay.now().format(context));*/
+                                                if(_selectSlotTime != "Select Slot"){
+                                                  DateTime date= DateFormat.jm().parse(_selectSlotTime);
+                                                  print(DateFormat("HH:mm").format(date));
+
+                                                  print(TimeOfDay.now().format(context));
+                                                  DateTime date2=DateFormat.jm().parse(TimeOfDay.now().format(context));
+                                                  print(DateFormat("HH:mm").format(date2));
+
+                                                  if (date2.isAfter(date)) {
+                                                    _Isavilable=false;
+                                                  }else{
+                                                    _Isavilable=true;
+                                                  }
+                                                }else{
+                                                  _Isavilable=false;
+                                                }
+
                                               });
                                             },
                                             items:listslotdata.map((SlotListdata data){
@@ -535,12 +553,14 @@ class BookSeatState extends State<BookSeat> {
                                       var month=fromDateSplit[1];
                                       var year=fromDateSplit[2];
                                       var date1 = DateTime(int.parse(year), int.parse(month),int.parse(day));
-                                      DateTime now = new DateTime.now();
+                                      DateTime now = DateTime.now();
                                       DateTime currentdate = new DateTime(now.year, now.month, now.day);
                                       bool valDate=date1.isBefore(currentdate);
                                       if(valDate==false){
                                         if(nameController.text.isEmpty){
                                           commonAlert.showToast(context,"Enter full name");  //
+                                        }else if(_Isavilable==false){
+                                          commonAlert.showToast(context,"Time Slot not available Now!! Select another Slot.");
                                         }else{
                                           sfdata.saveLoginDataToSF(context, _userID,nameController.text, 1);
                                           Navigator.push(

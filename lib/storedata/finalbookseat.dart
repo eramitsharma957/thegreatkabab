@@ -226,11 +226,8 @@ class FinalBookSeatState extends State<FinalBookSeat> {
       var vegFPrice=_calculatedVegSeat - _calculatedVegSeatDiscount;
       var vegTaxFinalPrice=vegFPrice * totaltaxesInPer / 100.0;
       vegFinalPrice=vegFPrice+vegTaxFinalPrice;
-      print(vegFPrice);
-      print(totaltaxesInPer);
-      print(vegFinalPrice);
 
-     var noNVegFPrice=_calculatedNonVegSeat - _calculatedNonVegSeatDiscount;
+      var noNVegFPrice=_calculatedNonVegSeat - _calculatedNonVegSeatDiscount;
       var nonvegTaxFinalPrice=noNVegFPrice * totaltaxesInPer / 100.0;
       noNVegFinalPrice=noNVegFPrice+nonvegTaxFinalPrice;
 
