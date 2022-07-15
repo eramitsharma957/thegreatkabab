@@ -51,7 +51,7 @@ class BookingList {
   });
 
   int seatOrderIdPk;
-  double seatOrderId;
+  int seatOrderId;
   String hotelIdFk;
   DateTime bookingDate;
   String bookingTime;
@@ -71,7 +71,7 @@ class BookingList {
 
   factory BookingList.fromJson(Map<String, dynamic> json) => BookingList(
     seatOrderIdPk: json["SeatOrderID_PK"],
-    seatOrderId: json["SeatOrderID"].toDouble(),
+    seatOrderId: json["SeatOrderID"],
     hotelIdFk: json["HotelID_FK"],
     bookingDate: DateTime.parse(json["BookingDate"]),
     bookingTime: json["BookingTime"],

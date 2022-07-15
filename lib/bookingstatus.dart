@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/intl.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
@@ -211,11 +212,20 @@ class BookingStatusState extends State<BookingStatus> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(commonAlert.dateFormateSQLServer(context, bookinglist[index].bookingDate),
+                    Text(
+                      "Booking ID- ${bookinglist[index].seatOrderId}",maxLines: 1,textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12.0,
+                        color: colors.green,
+                      ),
+                    ),
+                    Text(commonAlert.dateFormateSQLServer(context,bookinglist[index].bookingDate),
                         textAlign: TextAlign.start,
                         style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 14.0)),
 
-                    Text(bookinglist[index].bookingTime,
+                    Text(commonAlert.dateFormate24to12hour(context,bookinglist[index].bookingTime),
                         textAlign: TextAlign.start,
                         style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 12.0)),
                     Text("No. of Seats- ${bookinglist[index].noOfSeats}",

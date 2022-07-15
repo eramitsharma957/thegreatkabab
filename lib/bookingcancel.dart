@@ -181,26 +181,56 @@ class BookingCancelState extends State<BookingCancel> {
                            SizedBox(
                              height: 10.0,
                            ),
-                           Container(
-                             child: MediaQuery.removePadding(
-                               context: context,
-                               removeTop: true,
-                               child:SingleChildScrollView(
-                                 physics: ScrollPhysics(),
-                                 child: Column(
-                                   children: <Widget>[
-                                     // Text('Hey'),
-                                     ListView.builder(
-                                         physics: NeverScrollableScrollPhysics(),
-                                         shrinkWrap: true,
-                                         itemCount:widget.bookinglist.length,
-                                         itemBuilder: _buildRow
-                                     )
-                                   ],
-                                 ),
-                               ),
-                             ),
-                           ),
+                        Card(
+                          clipBehavior: Clip.antiAlias,
+                          semanticContainer: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7.0),
+                          ),
+                          elevation: 5,
+                          margin: const EdgeInsets.all(5),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              Text(
+                                "Booking ID- ",maxLines: 1,textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.0,
+                                  color: colors.green,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Container(
+                                child: MediaQuery.removePadding(
+                                  context: context,
+                                  removeTop: true,
+                                  child:SingleChildScrollView(
+                                    physics: ScrollPhysics(),
+                                    child: Column(
+                                      children: <Widget>[
+                                        // Text('Hey'),
+                                        ListView.builder(
+                                            physics: NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount:widget.bookinglist.length,
+                                            itemBuilder: _buildRow
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+
+                        ),
 
 
                            SizedBox(
@@ -272,7 +302,7 @@ class BookingCancelState extends State<BookingCancel> {
       padding: const EdgeInsets.all(3.0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black12),
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
       child: Padding(padding:const EdgeInsets.all(10.0),
         child: Row(

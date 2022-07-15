@@ -269,7 +269,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
       Navigator.of(context,rootNavigator: true).pop();
       setState(() {
         // EasyLoading.dismiss();
-        if(result.header[0].success==true){
+        if(result.header[0].success=="True"){
           if(result.data.isNotEmpty){
             bookingresponse=result.data.toList();
             CoolAlert.show(

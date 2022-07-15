@@ -158,6 +158,13 @@ class CommonAction{
     return formateDate;
   }
 
+  String dateFormate24to12hour(BuildContext context,String date){
+    String formateDate;
+    var st=date.split(":");
+    formateDate=TimeOfDay(hour:int.parse(st[0]),minute:int.parse(st[0])).format(context);
+    return formateDate;
+  }
+
   String dateFormateMM(BuildContext context,DateTime date){
     String formateDate;
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
