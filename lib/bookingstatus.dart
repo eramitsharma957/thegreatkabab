@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
+import 'package:thegreatkabab/bookingcancel.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
@@ -228,7 +229,16 @@ class BookingStatusState extends State<BookingStatus> {
               child: SizedBox(
                 height: 22,
                 width: 22,
-                child: Image.asset('assets/i_con.png'),
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BookingCancel(bookinglist)),
+                    );
+                  },
+                  child: Image.asset('assets/i_con.png'),
+                ),
+
               ),
             ),
           ],

@@ -26,6 +26,9 @@ class BookingData {
     required this.orderStatus,
     required this.userId,
     required this.userName,
+    required this.totalTax,
+    required this.taxBreakUp,
+    required this.taxBreakUpDetails,
   });
 
   String operation;
@@ -44,6 +47,9 @@ class BookingData {
   String orderStatus;
   String userId;
   String userName;
+  double totalTax;
+  String taxBreakUp;
+  String taxBreakUpDetails;
 
   factory BookingData.fromJson(Map<String, dynamic> json) => BookingData(
     operation: json["Operation"],
@@ -62,6 +68,9 @@ class BookingData {
     orderStatus: json["OrderStatus"],
     userId: json["UserID"],
     userName: json["Name"],
+    totalTax: json["TotalTax"],
+    taxBreakUp: json["TaxBreakUp"],
+    taxBreakUpDetails: json["TaxBreakUpDetails"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -81,5 +90,8 @@ class BookingData {
     "OrderStatus": orderStatus,
     "UserID": userId,
     "Name": userName,
+    "TotalTax": totalTax,
+    "TaxBreakUp": taxBreakUp,
+    "TaxBreakUpDetails": taxBreakUpDetails,
   };
 }
