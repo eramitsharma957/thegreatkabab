@@ -3,6 +3,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/bookingstatus.dart';
@@ -36,7 +37,7 @@ class HomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  var bottomNotification=4;
+  var bottomNotification=2;
   final _pageController = PageController();
   final _currentPageNotifier = ValueNotifier<int>(0);
   var emojiRegexp =
@@ -57,6 +58,10 @@ class _MyHomePageState extends State<HomePage> {
   List<MenuDesc> menuDescdata=<MenuDesc>[];
   var _selectmenu="Non Veg";
   var _selectmenuID=0;
+  var logoUrl="";
+
+
+  List<String> bannerlist=["assets/offerone.jpeg","assets/offertwo.jpeg"];
 
   List<GalleryList> gallerydata=<GalleryList>[];
   List<GalleryList> restdata=<GalleryList>[];
@@ -67,7 +72,7 @@ class _MyHomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    WidgetsBinding.instance?.addPostFrameCallback((_) => _animateSlider());
     Future<int> getpay = sfdata.getLogin(context);
     getpay.then((data) {
       setState(() {
@@ -101,6 +106,7 @@ class _MyHomePageState extends State<HomePage> {
       setState(() {
         if(result.data.isNotEmpty){
         sfdata.saveHotelData(context,result.data[0].name, result.data[0].logo, result.data[0].address, result.data[0].phoneNumber, result.data[0].email, result.data[0].seatDiscountInPercent, result.data[0].itemDiscountInPercent, result.data[0].firstTimeDiscountInPercent, result.data[0].contactPerson);
+        logoUrl=result.data[0].logo;
         }else{
 
         }
@@ -297,6 +303,70 @@ class _MyHomePageState extends State<HomePage> {
     );
   }
 
+
+
+  _buildPageViewMessage() {
+    return Container(
+      height: 100.0,
+      child: PageView.builder(
+          itemCount: bannerlist.length,
+          controller: _pageController,
+          itemBuilder: _buildRowNotices,
+          onPageChanged: (int index) {
+            _currentPageNotifier.value = index;
+          }),
+    );
+  }
+
+  /////////////////////////////////// BANNERS PAGE ///////////////////////////
+  Widget _buildRowNotices(BuildContext context, int index) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(7.0),
+      ),
+      elevation: 5,
+      margin: const EdgeInsets.all(2),
+      child: InkWell(
+        //onTap: () => onTapdetails(index),
+        child: Image.asset(bannerlist[index],fit: BoxFit.fitWidth),
+      ),
+    );
+  }
+
+  _buildCircleIndicator() {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(0.0),
+        child: CirclePageIndicator(
+          selectedDotColor: Colors.deepPurple,
+          dotColor: Colors.grey,
+          itemCount: bannerlist.length,
+          currentPageNotifier: _currentPageNotifier,
+        ),
+      ),
+    );
+  }
+
+  void _animateSlider() {
+    Future.delayed(const Duration(seconds: 3)).then((_) {
+      int? nextPage = _pageController.page?.round();
+      nextPage=nextPage!+1;
+      if (nextPage == bannerlist.length) {
+        nextPage = 0;
+      }
+      if(nextPage > 0){
+        _pageController
+            .animateToPage(nextPage, duration: const Duration(seconds: 1), curve: Curves.linear)
+            .then((_) => _animateSlider());
+      }else{
+        _pageController.jumpToPage(nextPage);//.then((_) => _animateSlider());
+        _animateSlider();
+      }
+
+    });
+  }
+
   _drawerMenus(){
     return Column(
       children: <Widget>[
@@ -309,10 +379,26 @@ class _MyHomePageState extends State<HomePage> {
             children: [
               Expanded(
                 flex:1,
-                child: Image.asset("assets/logo.png",
+                child: SizedBox(
+                  height: 55,
+                  width: 55,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 300,
+                    child: CircleAvatar(
+                      // backgroundImage: const AssetImage('assets/logo.png'),
+                        foregroundImage: NetworkImage(logoUrl == "" ? "https://templates.joomla-monster.com/joomla30/jm-news-portal/components/com_djclassifieds/assets/images/default_profile.png":logoUrl),
+                        radius: 26,
+                        backgroundColor: Colors.white),
+                  ),
+                ),
+
+
+
+                /*Image.asset("assets/logo.png",
                   width: 50.0,
                   height: 50.0,
-                ),
+                ),*/
               ),
               Expanded(
                 flex:3,
@@ -525,7 +611,7 @@ class _MyHomePageState extends State<HomePage> {
         ),
          Divider(color: colors.purpals,),
                 ListTile(
-                  leading:Image.asset("assets/menu_dnine.png",
+                  leading:Image.asset("assets/logout.png",
                     width: 30.0,
                     height: 30.0,
                   ),
@@ -797,14 +883,14 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 170,
+                        height: 160,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
                               if(_IsLogin==1){
@@ -836,7 +922,7 @@ class _MyHomePageState extends State<HomePage> {
 
                             },
                             child:Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(14.0),
                               child:  Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -871,14 +957,14 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 170,
+                        height: 160,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
                               Navigator.push(
@@ -886,7 +972,7 @@ class _MyHomePageState extends State<HomePage> {
 
                             },
                             child:Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(14.0),
                               child:  Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -921,21 +1007,21 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child:SizedBox(
                         width: 100,
-                        height: 170,
+                        height: 160,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
                               Navigator.push(
                                   context, MaterialPageRoute(builder: (context) => MenuView()));
                             },
                             child:Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(14.0),
                               child:  Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -977,41 +1063,21 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 170,
+                        height: 160,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
                               Navigator.push(
                                   context, MaterialPageRoute(builder: (context) => GalleryView()));
-
-                              /* if(_IsPay==1){
-                              CoolAlert.show(
-                                barrierDismissible: true,
-                                context: context,
-                                type: CoolAlertType.warning,
-                                backgroundColor: colors.redtheme,
-                                text: 'Already submit you profile',
-                                // autoCloseDuration: Duration(seconds: 2),
-                                onConfirmBtnTap: () {
-                                  Navigator.pop(context);
-
-
-                                },
-                                confirmBtnText: 'Submit again your CV',
-                              );
-                            }else{
-
-                            }*/
-
                             },
                             child:Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(14.0),
                               child:  Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -1046,21 +1112,21 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child: SizedBox(
                         width: 100,
-                        height: 170,
+                        height: 160,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
                               Navigator.push(
                                   context, MaterialPageRoute(builder: (context) => Notifications()));
                             },
                             child:Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(14.0),
                               child:  Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -1095,21 +1161,21 @@ class _MyHomePageState extends State<HomePage> {
                     Expanded(
                       child:SizedBox(
                         width: 100,
-                        height: 170,
+                        height: 160,
                         child:  Card(
                           clipBehavior: Clip.antiAlias,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           elevation: 5,
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
                               Navigator.push(
                                   context, MaterialPageRoute(builder: (context) => BookingStatus()));
                             },
                             child:Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(14.0),
                               child:  Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -1246,8 +1312,12 @@ class _MyHomePageState extends State<HomePage> {
                   ],
                 ),
 
-
-                Container(
+                const SizedBox(height: 10.0),
+                /////////////////// SLIDER ///////////////
+                _buildPageViewMessage(),
+                const SizedBox(height: 5.0),
+                _buildCircleIndicator(),
+                /*Container(
                   height: 150.0,
 
                   child: ListView(
@@ -1327,7 +1397,7 @@ class _MyHomePageState extends State<HomePage> {
 
                     ],
                   ),
-                ),
+                ),*/
 
 
 
@@ -1558,66 +1628,168 @@ class _MyHomePageState extends State<HomePage> {
 
   /////////////////////////////////// MENU PAGE ///////////////////////////
   Widget getMenuPage(){
-    return SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Padding(padding:const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Text("Menu Items",maxLines: 2,textAlign: TextAlign.center,
-                             style: TextStyle(
-                               fontFamily: 'Poppins',
-                               fontWeight: FontWeight.w600,
-                               fontSize: 16.0,
-                               color: colors.redthemenew,
-                             ),
-                           ),
-                SizedBox(height: 10),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxHeight: 240
-                  ),
-                  child:_menulayout(context),
-                ),
-                Container(
-                  color: colors.redtheme,
-                  margin: const EdgeInsets.symmetric(horizontal: 9),
-                  child:  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(padding:const EdgeInsets.all(5.0),
-                          child: Text(_selectmenu,
-                              textAlign: TextAlign.center,
-                              style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
-                        ),
-
-                      ]
-                  ),
-
-
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 0.0),
-                  child:ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: 600
-                    ),
-                    child:ListView.builder(
-                      primary: false,
-                      shrinkWrap: true,
-                      itemCount: menuDescdata.length,
-                      itemBuilder: _buildRowMenuDesc,
-                    ),
-
-                  ),
-                ),
-
-              ],
+    return  SingleChildScrollView(
+      child: Padding(padding:const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Text(
+              "Menu Items",maxLines: 2,textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 16.0,
+                color: colors.redtheme,
+              ),
             ),
-          ),
+            SizedBox(height: 10),
+            Container(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child:SingleChildScrollView(
+                  physics: ScrollPhysics(),
+                  child: Column(
+                    children: <Widget>[
+                      // Text('Hey'),
+                      GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount:menudata.length,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                        ),
+                        itemBuilder:(BuildContext context, int index) {
+                          return  Card(
+                            clipBehavior: Clip.antiAlias,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            elevation: 5,
+                            margin: EdgeInsets.all(5),
+                            child:InkWell(
+                              onTap: () => onEditGrid(index,context),
+                              child:Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child:  Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 45,
+                                      width: 45,
+                                      child:Image.network(menudata[index].iconImage,
+                                          errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
+                                            return Image.asset("assets/logo.png", fit: BoxFit.contain);
+                                          }
+
+                                      ),
 
 
-        )
+                                      // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
+                                    ),
+                                    //SizedBox(height: 5),
+                                    Text(menudata[index].name,maxLines: 2,textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12.0,
+                                        color: colors.redthemenew,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+
+
+                            ),
+
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            /* ConstrainedBox(
+                             constraints: BoxConstraints(
+                                 maxHeight: 300
+                             ),
+                             child:_periodlayout(context),
+
+                           ),*/
+            // const SizedBox(height: 10.0),
+
+            Container(
+              color: colors.redtheme,
+              margin: const EdgeInsets.symmetric(horizontal: 9),
+              child:  Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(padding:const EdgeInsets.all(2.0),
+                      child: Text(_selectmenu,
+                          textAlign: TextAlign.center,
+                          style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
+                    ),
+
+                  ]
+              ),
+
+
+            ),
+
+            Container(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child:SingleChildScrollView(
+                  physics: ScrollPhysics(),
+                  child: Column(
+                    children: <Widget>[
+                      // Text('Hey'),
+                      ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount:menuDescdata.length,
+                          itemBuilder: _buildRowMenuDesc
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            /*ListView.builder(
+                               physics: NeverScrollableScrollPhysics(),
+                               shrinkWrap: true,
+                               itemCount:menuDescdata.length,
+                               itemBuilder: _buildRow
+                           ),*/
+            /*Padding(
+                               padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 0.0),
+                               child:ConstrainedBox(
+                                 constraints: BoxConstraints(
+                                     maxHeight: 600
+                                 ),
+                                 child:ListView.builder(
+                                   primary: false,
+                                   shrinkWrap: true,
+                                   itemCount: menuDescdata.length,
+                                   itemBuilder: _buildRow,
+                                 ),
+
+                               ),
+                           ),*/
+
+
+          ],
+        ),
+      ),
+
+
+
+
+
     );
   }
 

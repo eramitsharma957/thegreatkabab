@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,6 +37,7 @@ class BookingStatusState extends State<BookingStatus> {
   SFData sfdata= SFData();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   List<BookingList> bookinglist =<BookingList> [];
+  List<BookingList> uniquebookinglist =<BookingList> [];
 
   @override
   void initState() {
@@ -66,6 +68,21 @@ class BookingStatusState extends State<BookingStatus> {
          EasyLoading.dismiss();
         if(result.data.isNotEmpty){
           bookinglist=result.data.toList();
+          var seen = Set<String>();
+          uniquebookinglist = bookinglist.where((student) => seen.add(student.seatOrderId.toString())).toList();
+         // print("not ${uniquebookinglist.length}");
+         // print("not ${jsonEncode(uniquebookinglist)}");
+          /*for ( var item in bookinglist){
+            // ignore: iterable_contains_unrelated_type
+            if (!(uniquebookinglist.contains(item.seatOrderId))){
+                 uniquebookinglist.add(BookingList(seatOrderIdPk: item.seatPriceIdFk, seatOrderId:item.seatOrderId, hotelIdFk:item.hotelIdFk, bookingDate:item.bookingDate, bookingTime:item.bookingTime, usersIdFk:item.usersIdFk, seatPriceIdFk: item.seatPriceIdFk, noOfSeats: item.noOfSeats, pricePerSeat: item.pricePerSeat, seatDiscount: item.seatDiscount, discountDetail: item.discountDetail, couponDiscountInTotal: item.couponDiscountInTotal, finalPrice: item.finalPrice, orderStatus: item.orderStatus, updatedOn: item.updatedOn, updatedBy: item.updatedBy, createdOn: item.createdOn, createdBy: item.createdBy));
+              print("not ${uniquebookinglist.length}");
+            }else{
+              print("Yes");
+            }
+          }*/
+
+
         }else{
           EasyLoading.dismiss();
         }
@@ -152,7 +169,7 @@ class BookingStatusState extends State<BookingStatus> {
                                  ? Container(
                                child: Expanded(
                                  child: ListView.builder(
-                                   itemCount: bookinglist.length,
+                                   itemCount: uniquebookinglist.length,
                                    itemBuilder: _buildRow,
                                  ),
                                ),
@@ -167,7 +184,7 @@ class BookingStatusState extends State<BookingStatus> {
                              ),
                            ),
                            SizedBox(
-                             height: 50.0,
+                             height: 150.0,
                            ),
 
 
@@ -192,6 +209,15 @@ class BookingStatusState extends State<BookingStatus> {
   }
 
 
+  _navigateAndDisplaySelection(BuildContext context, BookingList bookingCancel) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => BookingCancel(bookingCancel)),
+    );
+    bookingList();
+  }
+
+
 
   Widget _buildRow(BuildContext context, int index) {
     return Container(
@@ -213,7 +239,7 @@ class BookingStatusState extends State<BookingStatus> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Booking ID- ${bookinglist[index].seatOrderId}",maxLines: 1,textAlign: TextAlign.start,
+                      "Booking ID- ${uniquebookinglist[index].seatOrderId}",maxLines: 1,textAlign: TextAlign.start,
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w400,
@@ -221,16 +247,26 @@ class BookingStatusState extends State<BookingStatus> {
                         color: colors.green,
                       ),
                     ),
-                    Text(commonAlert.dateFormateSQLServer(context,bookinglist[index].bookingDate),
+                    Text(commonAlert.dateFormateSQLServer(context,uniquebookinglist[index].bookingDate),
                         textAlign: TextAlign.start,
                         style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 14.0)),
 
-                    Text(commonAlert.dateFormate24to12hour(context,bookinglist[index].bookingTime),
+                    Text(commonAlert.dateFormate24to12hour(context,uniquebookinglist[index].bookingTime),
                         textAlign: TextAlign.start,
                         style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 12.0)),
-                    Text("No. of Seats- ${bookinglist[index].noOfSeats}",
+                    Text("${uniquebookinglist[index].foodtimeName}",
                         textAlign: TextAlign.start,
                         style: style.copyWith(color: Colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text("${uniquebookinglist[index].orderStatus}",
+                            textAlign: TextAlign.end,
+                            style: style.copyWith(color:uniquebookinglist[index].orderStatus=="Cancelled"?Colors.red:Colors.green,fontWeight: FontWeight.w400,fontSize: 10.0)),
+                      ],
+                    ),
+
                   ]) ,
             ),
 
@@ -241,10 +277,11 @@ class BookingStatusState extends State<BookingStatus> {
                 width: 22,
                 child: GestureDetector(
                   onTap: (){
-                    Navigator.push(
+                    _navigateAndDisplaySelection(context,uniquebookinglist[index]);
+                   /* Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => BookingCancel(bookinglist)),
-                    );
+                      MaterialPageRoute(builder: (context) => BookingCancel(uniquebookinglist[index])),
+                    );*/
                   },
                   child: Image.asset('assets/i_con.png'),
                 ),

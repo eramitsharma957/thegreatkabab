@@ -131,7 +131,7 @@ class SignUpState extends State<SignUp> {
         Navigator.of(context,rootNavigator: true).pop();
         if(result.data.isNotEmpty){
           if(result.data[0].successStatus=="True"){
-            sfdata.saveLoginDataToSF(context, result.data[0].userID.toString(), "", 1);
+            sfdata.saveLoginDataToSF(context, result.data[0].userID.toString(), result.data[0].name, 1);
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => HomePage()));
             //commonAlert.messageAlertError(context,result.message,"Error");
@@ -320,6 +320,8 @@ class SignUpState extends State<SignUp> {
                                                              onPressed: () async {
                                                                if(mobileController.text.isEmpty){
                                                                 commonAlert.showToast(context,"Enter Mobile");  //
+                                                               }else if(mobileController.text.length<10){
+                                                                 commonAlert.showToast(context,"Enter 10 digit Mobile number");
                                                                }else{
                                                                  commonAlert.showLoadingDialog(context,_keyLoader);
                                                                  // startTimer();
@@ -417,14 +419,8 @@ class SignUpState extends State<SignUp> {
                                                                     fontWeight: FontWeight.w400)),
                                                             GestureDetector(
                                                               onTap: (){
-                                                                if(mobileController.text.isEmpty){
-                                                                  commonAlert.showToast(context,"Enter Mobile");  //
-                                                                }else if(mobileController.text.length==10){
-                                                                  commonAlert.showToast(context,"Enter 10 digit mobile number");  //
-                                                                }else{
-                                                                  commonAlert.showLoadingDialog(context,_keyLoader);
-                                                                  signUp();
-                                                                }
+                                                                commonAlert.showLoadingDialog(context,_keyLoader);
+                                                                signUp();
                                                               },
                                                               child: Text("Resend OTP",
                                                                   textAlign: TextAlign.start,

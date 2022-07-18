@@ -1,15 +1,15 @@
 // To parse this JSON data, do
 //
-//     final verifyOtp = verifyOtpFromJson(jsonString);
+//     final bookingCancelData = bookingCancelDataFromJson(jsonString);
 
 import 'dart:convert';
 
-VerifyOtp verifyOtpFromJson(String str) => VerifyOtp.fromJson(json.decode(str));
+BookingCancelData bookingCancelDataFromJson(String str) => BookingCancelData.fromJson(json.decode(str));
 
-String verifyOtpToJson(VerifyOtp data) => json.encode(data.toJson());
+String bookingCancelDataToJson(BookingCancelData data) => json.encode(data.toJson());
 
-class VerifyOtp {
-  VerifyOtp({
+class BookingCancelData {
+  BookingCancelData({
     required this.header,
     required this.data,
   });
@@ -17,7 +17,7 @@ class VerifyOtp {
   List<Header> header;
   List<Datum> data;
 
-  factory VerifyOtp.fromJson(Map<String, dynamic> json) => VerifyOtp(
+  factory BookingCancelData.fromJson(Map<String, dynamic> json) => BookingCancelData(
     header: List<Header>.from(json["Header"].map((x) => Header.fromJson(x))),
     data: List<Datum>.from(json["Data"].map((x) => Datum.fromJson(x))),
   );
@@ -30,29 +30,21 @@ class VerifyOtp {
 
 class Datum {
   Datum({
-    required this.successStatus,
-    required  this.message,
-    required this.userID,
-    required this.name,
+    required this.bookingStatus,
+    required this.column1,
   });
 
-  String successStatus;
-  String message;
-  int userID;
-  String name;
+  int bookingStatus;
+  String column1;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    successStatus: json["SuccessStatus"],
-    message: json["Message"],
-    userID: json["UserID"]??0,
-    name: json["name"]??"",
+    bookingStatus: json["BookingStatus"],
+    column1: json["Column1"],
   );
 
   Map<String, dynamic> toJson() => {
-    "SuccessStatus": successStatus,
-    "Message": message,
-    "UserID": userID,
-    "name": name,
+    "BookingStatus": bookingStatus,
+    "Column1": column1,
   };
 }
 
@@ -65,16 +57,13 @@ class Header {
   String success;
   String message;
 
-
   factory Header.fromJson(Map<String, dynamic> json) => Header(
     success: json["Success"],
     message: json["Message"],
-
   );
 
   Map<String, dynamic> toJson() => {
     "Success": success,
     "Message": message,
-
   };
 }

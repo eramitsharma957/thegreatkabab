@@ -132,6 +132,7 @@ class NotificationsState extends State<Notifications> {
                   child: Container(
                     color: Colors.white,
                       height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
                       child: Padding(padding:const EdgeInsets.all(10.0),
                        child: Column(
                          children: [
@@ -171,7 +172,7 @@ class NotificationsState extends State<Notifications> {
                              ),
                            ),
                            SizedBox(
-                             height: 100.0,
+                             height: 150.0,
                            ),
 
                          ],

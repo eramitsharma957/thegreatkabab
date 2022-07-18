@@ -48,6 +48,8 @@ class BookingList {
     required this.updatedBy,
     required this.createdOn,
     required this.createdBy,
+    required this.seattimename,
+    required this.foodtimeName,
   });
 
   int seatOrderIdPk;
@@ -68,6 +70,8 @@ class BookingList {
   int updatedBy;
   DateTime createdOn;
   int createdBy;
+  String seattimename;
+  String foodtimeName;
 
   factory BookingList.fromJson(Map<String, dynamic> json) => BookingList(
     seatOrderIdPk: json["SeatOrderID_PK"],
@@ -88,6 +92,8 @@ class BookingList {
     updatedBy: json["UpdatedBy"],
     createdOn: DateTime.parse(json["CreatedOn"]),
     createdBy: json["CreatedBy"],
+    seattimename: json["SeatTypeName"],
+    foodtimeName: json["FoodTimeName"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -109,6 +115,8 @@ class BookingList {
     "UpdatedBy": updatedBy,
     "CreatedOn": createdOn.toIso8601String(),
     "CreatedBy": createdBy,
+    "SeatTypeName": seattimename,
+    "FoodTimeName": foodtimeName,
   };
 }
 

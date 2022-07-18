@@ -143,7 +143,7 @@ class CommonAction{
     // ignore: deprecated_member_use
     scaffold.showSnackBar(
       SnackBar(
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: Colors.redAccent,
         content: Text(message,style: TextStyle(color: Colors.white,fontFamily: 'Montserrat',fontWeight: FontWeight.bold)),
          // duration: Duration(seconds: 3)
       ),

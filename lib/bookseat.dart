@@ -64,6 +64,7 @@ class BookSeatState extends State<BookSeat> {
   late String _userID;
   late String _userName;
   bool _Isavilable=false;
+  DateTime dateCalendar=DateTime.now();
 
 
   @override
@@ -87,7 +88,7 @@ class BookSeatState extends State<BookSeat> {
       print(e);
     });
 
-
+    dateCalendar= DateTime.now();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     // setState(() {
@@ -109,12 +110,14 @@ class BookSeatState extends State<BookSeat> {
       initialDatePickerMode: CupertinoDatePickerMode.date,
       minimumDate: DateTime.now().subtract(const Duration(days: 1)),
       onDateTimeChanged: (newDate) {
-        // final DateTime now = DateTime.now();
+        //final DateTime now = DateTime.now();
         // final DateFormat formatter = DateFormat('yyyy-MM-dd');
         setState(() {
+          dateCalendar=newDate;
           currentDate=commonAlert.dateFormateMM(context, newDate);
           serverDate=commonAlert.dateFormateServer(context, newDate);
           print("formatted " + currentDate);
+          timeSlots();
           //print("formatted SERVER " + showdateServer);
         });
         // onChanged(result);
@@ -125,14 +128,14 @@ class BookSeatState extends State<BookSeat> {
   //////////////////  Get Menus Description //////////////////////
   Future<Null> timeSlots() async {
     listslotdata=[];
-    EasyLoading.show(status: 'Loading');
+   // EasyLoading.show(status: 'Loading');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
         .getTimeSlot(colors.hotelId,_lunchTypeID)
         .then((result) {
       setState(() {
-        EasyLoading.dismiss();
+       // EasyLoading.dismiss();
         if(result.data.isNotEmpty){
           listslotdata.clear();
           listslotdata.add(SlotListdata(slotsIdPk: 0, hotelIdFk: "hotelIdFk", foodTimingIdFk: 0, slotName: "Select", slotTime: "Select Slot"));
@@ -143,7 +146,7 @@ class BookSeatState extends State<BookSeat> {
         }
       });
     }).catchError((error) {
-      EasyLoading.dismiss();
+     // EasyLoading.dismiss();
       print(error);
     });
   }
@@ -428,12 +431,17 @@ class BookSeatState extends State<BookSeat> {
 
                                                   print(TimeOfDay.now().format(context));
                                                   DateTime date2=DateFormat.jm().parse(TimeOfDay.now().format(context));
-                                                  print(DateFormat("HH:mm").format(date2));
 
-                                                  if (date2.isAfter(date)) {
-                                                    _Isavilable=false;
-                                                  }else{
+
+                                                  if(dateCalendar.isAfter(DateTime.now())){
+                                                    print("DATE AFTER");
                                                     _Isavilable=true;
+                                                  }else{
+                                                    if (date2.isAfter(date)) {
+                                                      _Isavilable=false;
+                                                    }else{
+                                                      _Isavilable=true;
+                                                    }
                                                   }
                                                 }else{
                                                   _Isavilable=false;
@@ -562,8 +570,8 @@ class BookSeatState extends State<BookSeat> {
                                         }else if(_Isavilable==false){
                                           commonAlert.showToast(context,"Time Slot not available Now!! Select another Slot.");
                                         }else{
-                                          sfdata.saveLoginDataToSF(context, _userID,nameController.text, 1);
-                                          Navigator.push(
+                                          sfdata.saveLoginDataToSF(context, _userID,nameController.text,1);
+                                          Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(builder: (context) => FinalBookSeat(serverDate,_selectSlotCode,_lunchTypeID,_selectSlotTime)),
                                           );

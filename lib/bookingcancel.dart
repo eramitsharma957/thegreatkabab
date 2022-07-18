@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,9 +17,9 @@ import 'network/api_service.dart';
 
 
 class BookingCancel extends StatefulWidget {
-  BookingCancel(this.bookinglist);
+  BookingCancel(this.bookingdata);
 
-  List<BookingList> bookinglist;
+  BookingList bookingdata;
 
   @override
   State<StatefulWidget> createState() {
@@ -40,6 +41,8 @@ class BookingCancelState extends State<BookingCancel> {
   SFData sfdata= SFData();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   List<BookingList> bookinglist =<BookingList> [];
+  double totalpricepfbooking=0.0;
+  bool isCancel=false;
 
   @override
   void initState() {
@@ -69,7 +72,20 @@ class BookingCancelState extends State<BookingCancel> {
       setState(() {
          EasyLoading.dismiss();
         if(result.data.isNotEmpty){
-          bookinglist=result.data.toList();
+          for(int i=0;i<result.data.length;i++){
+            if(result.data[i].seatOrderId==widget.bookingdata.seatOrderId){
+              bookinglist.add(BookingList(seatOrderIdPk: result.data[i].seatPriceIdFk, seatOrderId:result.data[i].seatOrderId, hotelIdFk:result.data[i].hotelIdFk, bookingDate:result.data[i].bookingDate, bookingTime:result.data[i].bookingTime, usersIdFk:result.data[i].usersIdFk, seatPriceIdFk: result.data[i].seatPriceIdFk, noOfSeats: result.data[i].noOfSeats, pricePerSeat: result.data[i].pricePerSeat, seatDiscount: result.data[i].seatDiscount, discountDetail: result.data[i].discountDetail, couponDiscountInTotal: result.data[i].couponDiscountInTotal, finalPrice: result.data[i].finalPrice, orderStatus: result.data[i].orderStatus, updatedOn: result.data[i].updatedOn, updatedBy: result.data[i].updatedBy, createdOn: result.data[i].createdOn, createdBy: result.data[i].createdBy,seattimename: result.data[i].seattimename,foodtimeName: result.data[i].foodtimeName));
+             // bookinglist=result.data[i];
+              totalpricepfbooking+=result.data[i].finalPrice;
+              if(result.data[i].orderStatus=="Booked"){
+                isCancel=true;
+              }else{
+                isCancel=false;
+              }
+
+            }
+          }
+
         }else{
           EasyLoading.dismiss();
         }
@@ -80,6 +96,54 @@ class BookingCancelState extends State<BookingCancel> {
     });
   }
 
+  //////////////////  Get Booking  //////////////////////
+  Future<Null> bookingCancel() async {
+    EasyLoading.show(status: 'Loading');
+    //  SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getbookingCancel(_userID,widget.bookingdata.seatOrderId)
+        .then((result) {
+      setState(() {
+        EasyLoading.dismiss();
+        if(result.header.isNotEmpty){
+          if(result.header[0].success=="True"){
+            CoolAlert.show(
+              barrierDismissible: false,
+              context: context,
+              type: CoolAlertType.success,
+              backgroundColor: colors.redtheme,
+              text: result.header[0].message,
+              // autoCloseDuration: Duration(seconds: 2),
+              onConfirmBtnTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).pop();
+              },
+              confirmBtnText: 'Done',
+            );
+          }else{
+            CoolAlert.show(
+              barrierDismissible: false,
+              context: context,
+              type: CoolAlertType.error,
+              backgroundColor: colors.redtheme,
+              text: "Process not completed.Please try again!",
+              // autoCloseDuration: Duration(seconds: 2),
+              onConfirmBtnTap: () {
+                Navigator.pop(context);
+              },
+              confirmBtnText: 'Done',
+            );
+          }
+        }else{
+          EasyLoading.dismiss();
+        }
+      });
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      print(error);
+    });
+  }
 
   ////////////// Approve Dialog //////
   Future<Future<ConfirmAction?>> _updateDialogCancel(BuildContext context, String message) async {
@@ -101,9 +165,7 @@ class BookingCancelState extends State<BookingCancel> {
               child: const Text('Yes'),
               onPressed: () async {
                 Navigator.pop(context);
-                setState(() {
-
-                });
+                bookingCancel();
 
               },
             )
@@ -126,7 +188,7 @@ class BookingCancelState extends State<BookingCancel> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pop(context, 'Yep!'),
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         SizedBox(height: 28.0,)
@@ -195,7 +257,7 @@ class BookingCancelState extends State<BookingCancel> {
                                 height: 15.0,
                               ),
                               Text(
-                                "Booking ID- ",maxLines: 1,textAlign: TextAlign.start,
+                                "Booking ID- ${widget.bookingdata.seatOrderId}",maxLines: 1,textAlign: TextAlign.start,
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w600,
@@ -203,8 +265,17 @@ class BookingCancelState extends State<BookingCancel> {
                                   color: colors.green,
                                 ),
                               ),
+                              Text(
+                                "${widget.bookingdata.foodtimeName}",maxLines: 1,textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16.0,
+                                  color: colors.black,
+                                ),
+                              ),
                               SizedBox(
-                                height: 10.0,
+                                height: 5.0,
                               ),
                               Container(
                                 child: MediaQuery.removePadding(
@@ -218,7 +289,7 @@ class BookingCancelState extends State<BookingCancel> {
                                         ListView.builder(
                                             physics: NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
-                                            itemCount:widget.bookinglist.length,
+                                            itemCount:bookinglist.length,
                                             itemBuilder: _buildRow
                                         )
                                       ],
@@ -226,6 +297,36 @@ class BookingCancelState extends State<BookingCancel> {
                                   ),
                                 ),
                               ),
+
+                          Padding(padding:const EdgeInsets.all(15.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    "Total",maxLines: 1,textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                      color: colors.black,
+                                    ),
+                                  ),),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    "₹ ${totalpricepfbooking.toStringAsFixed(2)}",maxLines: 1,textAlign: TextAlign.end,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                      color: colors.black,
+                                    ),
+                                  ),),
+                              ],
+                            ),
+                          ),
+
                             ],
                           ),
 
@@ -234,45 +335,49 @@ class BookingCancelState extends State<BookingCancel> {
 
 
                            SizedBox(
-                             height:5.0,
+                             height:10.0,
                            ),
 
-                           Row(
-                             mainAxisAlignment: MainAxisAlignment.center,
-                             crossAxisAlignment: CrossAxisAlignment.center,
-                             children: [
-                               GestureDetector(
-                                 onTap: (){
-                                   _updateDialogCancel(context,"Do you really want to cancel booking?");
-                                 },
-                                 child: Container(
-                                   margin: const EdgeInsets.all(5.0),
-                                   padding: const EdgeInsets.all(3.0),
-                                   decoration: BoxDecoration(
-                                     border: Border.all(color: Colors.black26),
-                                     borderRadius: BorderRadius.circular(15.0),
-                                   ),
-                                   child:Padding(padding:const EdgeInsets.all(10.0),
-                                     child: const Text("CANCEL BOOKING",textAlign: TextAlign.center,style: TextStyle(
-                                       fontFamily: 'Poppins',
-                                       fontWeight: FontWeight.w600,
-                                       color: Colors.red,
-                                       fontSize: 14.0,
-                                     ),),
+                           Visibility(
+                               visible: isCancel,
+                               child: Row(
+                                 mainAxisAlignment: MainAxisAlignment.center,
+                                 crossAxisAlignment: CrossAxisAlignment.center,
+                                 children: [
+                                   GestureDetector(
+                                     onTap: (){
+                                       _updateDialogCancel(context,"Do you really want to cancel booking?");
+                                     },
+                                     child: Container(
+                                       margin: const EdgeInsets.all(5.0),
+                                       padding: const EdgeInsets.all(3.0),
+                                       decoration: BoxDecoration(
+                                         border: Border.all(color: Colors.black26),
+                                         borderRadius: BorderRadius.circular(15.0),
+                                       ),
+                                       child:Padding(padding:const EdgeInsets.all(10.0),
+                                         child: const Text("CANCEL BOOKING",textAlign: TextAlign.center,style: TextStyle(
+                                           fontFamily: 'Poppins',
+                                           fontWeight: FontWeight.w600,
+                                           color: Colors.red,
+                                           fontSize: 14.0,
+                                         ),),
+
+                                       ),
+
+                                     ),
+
+
+
+
+
 
                                    ),
 
-                                 ),
+                                 ],
+                               )
+                           ),
 
-
-
-
-
-
-                               ),
-
-                             ],
-                           )
 
 
 
@@ -317,14 +422,14 @@ class BookingCancelState extends State<BookingCancel> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("${widget.bookinglist[index].seatPriceIdFk}",style: TextStyle(
+                      Text("${bookinglist[index].seattimename}",style: TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
                         fontSize: 12.0,
                       ),),
 
-                      Text("₹ ${widget.bookinglist[index].pricePerSeat}",textAlign: TextAlign.center,style: TextStyle(
+                      Text("₹ ${bookinglist[index].pricePerSeat}",textAlign: TextAlign.center,style: TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w400,
                         color: Colors.black,
@@ -346,7 +451,7 @@ class BookingCancelState extends State<BookingCancel> {
                 child: Center(
                   child: Column(
                     children: <Widget>[
-                      Text('${widget.bookinglist[index].noOfSeats}',style: TextStyle(
+                      Text('${bookinglist[index].noOfSeats}',style: TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
@@ -369,15 +474,15 @@ class BookingCancelState extends State<BookingCancel> {
               child:Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset("assets/orange_menu_icon.png",
+                  /*Image.asset("assets/orange_menu_icon.png",
                     width: 20.0,
                     height: 20.0,
-                  ),
-                  Text("₹ ${widget.bookinglist[index].finalPrice}",style: TextStyle(
+                  ),*/
+                  Text("₹ ${bookinglist[index].finalPrice.toStringAsFixed(2)}",style: TextStyle(
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w300,
                     color: Colors.black,
-                    fontSize: 16.0,
+                    fontSize: 14.0,
                   ),),
                 ],
               ),
