@@ -298,14 +298,28 @@ class FinalBookSeatState extends State<FinalBookSeat> {
             );
           }
         }else{
-          commonAlert.showToast(context,result.header[0].message);
+          CoolAlert.show(
+            barrierDismissible: false,
+            context: context,
+            type: CoolAlertType.error,
+            backgroundColor: colors.red,
+            text: '${result.header[0].message}',
+            // autoCloseDuration: Duration(seconds: 2),
+            onConfirmBtnTap: () {
+              Navigator.pop(context);
+            },
+            confirmBtnText: 'Booking Not Completed',
+          );
+          print("FALSEEE");
+         // commonAlert.showToast(context,"Time Slot not available Now!! Select another Slot.");
+         // commonAlert.showToast(context,"${result.header[0].message}");
         }
 
       });
 
     }).catchError((error) {
-      Navigator.of(context,rootNavigator: true).pop();
-      commonAlert.showToast(context,error);
+     // Navigator.of(context,rootNavigator: true).pop();
+     // commonAlert.showToast(context,error);
       print(error);
     });
   }
