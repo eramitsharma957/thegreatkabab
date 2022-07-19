@@ -42,6 +42,7 @@ class BookingCancelState extends State<BookingCancel> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   List<BookingList> bookinglist =<BookingList> [];
   double totalpricepfbooking=0.0;
+  double totalfinalpricepfbooking=0.0;
   bool isCancel=false;
 
   @override
@@ -74,7 +75,7 @@ class BookingCancelState extends State<BookingCancel> {
         if(result.data.isNotEmpty){
           for(int i=0;i<result.data.length;i++){
             if(result.data[i].seatOrderId==widget.bookingdata.seatOrderId){
-              bookinglist.add(BookingList(seatOrderIdPk: result.data[i].seatPriceIdFk, seatOrderId:result.data[i].seatOrderId, hotelIdFk:result.data[i].hotelIdFk, bookingDate:result.data[i].bookingDate, bookingTime:result.data[i].bookingTime, usersIdFk:result.data[i].usersIdFk, seatPriceIdFk: result.data[i].seatPriceIdFk, noOfSeats: result.data[i].noOfSeats, pricePerSeat: result.data[i].pricePerSeat, seatDiscount: result.data[i].seatDiscount, discountDetail: result.data[i].discountDetail, couponDiscountInTotal: result.data[i].couponDiscountInTotal, finalPrice: result.data[i].finalPrice, orderStatus: result.data[i].orderStatus, updatedOn: result.data[i].updatedOn, updatedBy: result.data[i].updatedBy, createdOn: result.data[i].createdOn, createdBy: result.data[i].createdBy,seattimename: result.data[i].seattimename,foodtimeName: result.data[i].foodtimeName));
+              bookinglist.add(BookingList(seatOrderIdPk: result.data[i].seatPriceIdFk, seatOrderId:result.data[i].seatOrderId, hotelIdFk:result.data[i].hotelIdFk, bookingDate:result.data[i].bookingDate, bookingTime:result.data[i].bookingTime, usersIdFk:result.data[i].usersIdFk, seatPriceIdFk: result.data[i].seatPriceIdFk, noOfSeats: result.data[i].noOfSeats, pricePerSeat: result.data[i].pricePerSeat, seatDiscount: result.data[i].seatDiscount, discountDetail: result.data[i].discountDetail, couponDiscountInTotal: result.data[i].couponDiscountInTotal, finalPrice: result.data[i].finalPrice, orderStatus: result.data[i].orderStatus, updatedOn: result.data[i].updatedOn, updatedBy: result.data[i].updatedBy, createdOn: result.data[i].createdOn, createdBy: result.data[i].createdBy,seattimename: result.data[i].seattimename,foodtimeName: result.data[i].foodtimeName,totaltax:result.data[i].totaltax));
              // bookinglist=result.data[i];
               totalpricepfbooking+=result.data[i].finalPrice;
               if(result.data[i].orderStatus=="Booked"){
@@ -82,9 +83,12 @@ class BookingCancelState extends State<BookingCancel> {
               }else{
                 isCancel=false;
               }
-
+             // double tFinalpricepfbooking=totalpricepfbooking-result.data[i].couponDiscountInTotal;
+             // totalfinalpricepfbooking=tFinalpricepfbooking+result.data[i].totaltax;
             }
           }
+
+
 
         }else{
           EasyLoading.dismiss();
@@ -298,20 +302,38 @@ class BookingCancelState extends State<BookingCancel> {
                                 ),
                               ),
 
-                          Padding(padding:const EdgeInsets.all(15.0),
+                          Padding(padding:const EdgeInsets.all(10.0),
                             child: Row(
                               children: [
                                 Expanded(
                                   flex: 1,
-                                  child: Text(
-                                    "Total",maxLines: 1,textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15.0,
-                                      color: colors.black,
-                                    ),
-                                  ),),
+                                  child:Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Total",maxLines: 1,textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 15.0,
+                                          color: colors.black,
+                                        ),
+                                      ),
+
+                                      Text(
+                                        "(Tax included)",maxLines: 1,textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 9.0,
+                                          color: Colors.black45,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  ),
                                 Expanded(
                                   flex: 1,
                                   child: Text(

@@ -16,6 +16,7 @@ import 'package:thegreatkabab/dprbooking.dart';
 import 'package:thegreatkabab/gallery.dart';
 import 'package:thegreatkabab/gallery_view.dart';
 import 'package:thegreatkabab/menu.dart';
+import 'package:thegreatkabab/models/bannerdata.dart';
 import 'package:thegreatkabab/models/gallerydata.dart';
 import 'package:thegreatkabab/models/menudescdata.dart';
 import 'package:thegreatkabab/network/api_service.dart';
@@ -55,6 +56,7 @@ class _MyHomePageState extends State<HomePage> {
   CommonAction commonAlert= CommonAction();
 
   List<Datamenu> menudata=<Datamenu>[];
+  List<BannerList> bannerdata=<BannerList>[];
   List<MenuDesc> menuDescdata=<MenuDesc>[];
   var _selectmenu="Non Veg";
   var _selectmenuID=0;
@@ -90,7 +92,7 @@ class _MyHomePageState extends State<HomePage> {
     },onError: (e) {
       print(e);
     });
-
+    bannerList();
     hotelData();
     notificationList();
     menuList();
@@ -136,16 +138,38 @@ class _MyHomePageState extends State<HomePage> {
     });
   }
 
+
+  //////////////////  Offers Banners //////////////////////
+  Future<Null> bannerList() async {
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getbannerLsit(colors.hotelId)
+        .then((result) {
+      setState(() {
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          bannerdata=result.data.toList();
+        }
+      });
+    }).catchError((error) {
+
+      EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
   //////////////////  Get Menus //////////////////////
   Future<Null> menuList() async {
-    EasyLoading.show(status: 'Loading');
+    //EasyLoading.show(status: 'Loading');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
         .getMenuLsit(colors.hotelId)
         .then((result) {
       setState(() {
-        EasyLoading.dismiss();
+       // EasyLoading.dismiss();
         if(result.data.isNotEmpty){
           menudata=result.data.toList();
           menuDescription(menudata[0].menuItemCategoryIdPk);
@@ -153,7 +177,7 @@ class _MyHomePageState extends State<HomePage> {
       });
     }).catchError((error) {
 
-      EasyLoading.dismiss();
+     // EasyLoading.dismiss();
       print(error);
     });
   }
@@ -307,9 +331,9 @@ class _MyHomePageState extends State<HomePage> {
 
   _buildPageViewMessage() {
     return Container(
-      height: 100.0,
+      height: 103.0,
       child: PageView.builder(
-          itemCount: bannerlist.length,
+          itemCount: bannerdata.length,
           controller: _pageController,
           itemBuilder: _buildRowNotices,
           onPageChanged: (int index) {
@@ -329,7 +353,13 @@ class _MyHomePageState extends State<HomePage> {
       margin: const EdgeInsets.all(2),
       child: InkWell(
         //onTap: () => onTapdetails(index),
-        child: Image.asset(bannerlist[index],fit: BoxFit.fitWidth),
+        child: Image.network(bannerdata[index].url,
+            errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
+              return Image.asset("assets/logo.png", fit: BoxFit.contain);
+            }
+
+        ),
+        //Image.asset(bannerlist[index],fit: BoxFit.fitWidth),
       ),
     );
   }
@@ -341,7 +371,7 @@ class _MyHomePageState extends State<HomePage> {
         child: CirclePageIndicator(
           selectedDotColor: Colors.deepPurple,
           dotColor: Colors.grey,
-          itemCount: bannerlist.length,
+          itemCount: bannerdata.length,
           currentPageNotifier: _currentPageNotifier,
         ),
       ),
@@ -352,7 +382,7 @@ class _MyHomePageState extends State<HomePage> {
     Future.delayed(const Duration(seconds: 3)).then((_) {
       int? nextPage = _pageController.page?.round();
       nextPage=nextPage!+1;
-      if (nextPage == bannerlist.length) {
+      if (nextPage == bannerdata.length) {
         nextPage = 0;
       }
       if(nextPage > 0){

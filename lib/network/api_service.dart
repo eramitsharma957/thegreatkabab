@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:thegreatkabab/models/bannerdata.dart';
 import 'package:thegreatkabab/models/bookingcanceldata.dart';
 import 'package:thegreatkabab/models/bookingdata.dart';
 import 'package:thegreatkabab/models/bookingresponse.dart';
@@ -78,6 +79,11 @@ abstract class ApiService {
 
   @POST("MenuItemCategory/MenuItemCategoryByHotel")
   Future<MenuData> getMenuLsit(
+      @Field("HotelID_FK") hotelId,
+      );
+
+  @POST("photogallery/GetPhotoGalleryOfOfferByHotel")
+  Future<BannerData> getbannerLsit(
       @Field("HotelID_FK") hotelId,
       );
 

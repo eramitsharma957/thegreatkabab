@@ -50,6 +50,7 @@ class BookingList {
     required this.createdBy,
     required this.seattimename,
     required this.foodtimeName,
+    required this.totaltax,
   });
 
   int seatOrderIdPk;
@@ -65,6 +66,7 @@ class BookingList {
   String discountDetail;
   double couponDiscountInTotal;
   double finalPrice;
+  double totaltax;
   String orderStatus;
   DateTime updatedOn;
   int updatedBy;
@@ -94,6 +96,7 @@ class BookingList {
     createdBy: json["CreatedBy"],
     seattimename: json["SeatTypeName"],
     foodtimeName: json["FoodTimeName"],
+    totaltax: json["TotalTax"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -117,6 +120,7 @@ class BookingList {
     "CreatedBy": createdBy,
     "SeatTypeName": seattimename,
     "FoodTimeName": foodtimeName,
+    "TotalTax": totaltax,
   };
 }
 

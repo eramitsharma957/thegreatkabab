@@ -161,7 +161,7 @@ class CommonAction{
   String dateFormate24to12hour(BuildContext context,String date){
     String formateDate;
     var st=date.split(":");
-    formateDate=TimeOfDay(hour:int.parse(st[0]),minute:int.parse(st[0])).format(context);
+    formateDate=TimeOfDay(hour:int.parse(st[0]),minute:int.parse(st[1])).format(context);
     return formateDate;
   }
 

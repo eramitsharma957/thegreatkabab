@@ -132,6 +132,23 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<BannerData> getbannerLsit(hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<BannerData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(
+                    _dio.options, 'photogallery/GetPhotoGalleryOfOfferByHotel',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = BannerData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<MenuDescData> getMenuDescription(hotelId) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
