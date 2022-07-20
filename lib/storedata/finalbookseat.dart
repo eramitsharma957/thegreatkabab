@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/bookingstatus.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
+import 'package:thegreatkabab/contact.dart';
 import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/models/bookingdata.dart';
 import 'package:thegreatkabab/models/bookingresponse.dart';
@@ -90,8 +91,9 @@ class FinalBookSeatState extends State<FinalBookSeat> {
    int _seatPriceID_PKNonVeg=0;
    int _seatPriceID_PKChild=0;
   late String _userName;
+  String _hotalName="";
   late String _seatTypeIdFk_PKVeg,_seatTypeIdFk_PKNonVeg,_seatTypeIdFk_PKChild,_discountDetail;
-
+  int _maxseat=0,_maxseatBook=0;
 
   List<BookingData> bookingdatalist=<BookingData>[];
   List<Datum> bookingresponse=<Datum>[];
@@ -117,6 +119,24 @@ class FinalBookSeatState extends State<FinalBookSeat> {
       print(e);
     });
 
+    Future<int> seats = sfdata.getMaxSeat(context);
+    seats.then((data) {
+      setState(() {
+        _maxseat=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+
+    Future<String> hotel = sfdata.getHotelName(context);
+    hotel.then((data) {
+      setState(() {
+        _hotalName=data;
+        print("HOTEL--  ${_hotalName}");
+      });
+    },onError: (e) {
+      print(e);
+    });
     super.initState();
     seatPriceSlots();
     getDiscount();
@@ -261,7 +281,9 @@ class FinalBookSeatState extends State<FinalBookSeat> {
           bookingdatalist[i]=BookingData(operation: bookingdatalist[i].operation, seatOrderIdPk: bookingdatalist[i].seatOrderIdPk, hotelIdFk:  bookingdatalist[i].hotelIdFk, bookingDate: bookingdatalist[i].bookingDate, bookingTime: bookingdatalist[i].bookingTime, usersIdFk: bookingdatalist[i].usersIdFk, seatPriceIdFk: bookingdatalist[i].seatPriceIdFk, noOfSeats: _c, pricePerSeat: _seatpriceChild, seatDiscount: _totaldiscount, discountDetail:_discountDetail, couponDiscountInTotal: _calculatedChildSeatDiscount, finalPrice: childSeatFinalPrice, orderStatus: "Booked", userId: _userID,userName: _userName,totalTax: childTaxSeatFinalPrice,taxBreakUp: "${childgstValue},${childSgstValue}",taxBreakUpDetails:"${_gst}:CGST %, ${_sgst}:SGST %");
         }
       }
-      print(jsonEncode(bookingdatalist));
+      _maxseatBook=_v+_n+_c;
+      print(jsonEncode(_maxseatBook));
+
       
     });
 
@@ -285,14 +307,13 @@ class FinalBookSeatState extends State<FinalBookSeat> {
               barrierDismissible: false,
               context: context,
               type: CoolAlertType.success,
-              backgroundColor: colors.redtheme,
-              text: 'Thanks! your booing\n ID- ${bookingresponse[0].retValue}',
+              backgroundColor: colors.white,
+              text: 'Thanks! your booking\n ID- ${bookingresponse[0].retValue}',
               // autoCloseDuration: Duration(seconds: 2),
               onConfirmBtnTap: () {
                 Navigator.pop(context);
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (context) => BookingStatus()));
-
               },
               confirmBtnText: 'Booking Status',
             );
@@ -310,7 +331,6 @@ class FinalBookSeatState extends State<FinalBookSeat> {
             },
             confirmBtnText: 'Booking Not Completed',
           );
-          print("FALSEEE");
          // commonAlert.showToast(context,"Time Slot not available Now!! Select another Slot.");
          // commonAlert.showToast(context,"${result.header[0].message}");
         }
@@ -942,8 +962,26 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                       if(bookingdatalist.isEmpty){
                                         commonAlert.showToast(context,"Select Seats for complete your booking");
                                       }else{
-                                        this.commonAlert.showLoadingDialog(context,_keyLoader);
-                                        saveBookingData();
+                                        if(_maxseatBook>_maxseat){
+                                          CoolAlert.show(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            type: CoolAlertType.warning,
+                                            backgroundColor: colors.white,
+                                            text: 'if you want to book more than ${_maxseat} seats. Please contact to "${_hotalName}" for special offers and hospitality.',
+                                            // autoCloseDuration: Duration(seconds: 2),
+                                            onConfirmBtnTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.pushReplacement(
+                                                  context, MaterialPageRoute(builder: (context) => ContactUs()));
+                                            },
+                                            confirmBtnText: 'Contact me',
+                                          );
+                                        }else{
+                                          this.commonAlert.showLoadingDialog(context,_keyLoader);
+                                          saveBookingData();
+                                        }
+
                                       }
 
                                     });

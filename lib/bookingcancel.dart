@@ -2,9 +2,12 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:modern_form_esys_flutter_share/modern_form_esys_flutter_share.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +17,7 @@ import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/models/bookingstatusdata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 import 'network/api_service.dart';
+import 'dart:ui' as ui;
 
 
 class BookingCancel extends StatefulWidget {
@@ -35,7 +39,7 @@ class BookingCancelState extends State<BookingCancel> {
   bool isLoader = false;
   CommonAction commonAlert= CommonAction();
   late File selectedFile;
-  var  _userID;
+  var  _userID,_logoUrl;
   String  _fileName="";
   List<String> attachments = [];
   SFData sfdata= SFData();
@@ -44,6 +48,7 @@ class BookingCancelState extends State<BookingCancel> {
   double totalpricepfbooking=0.0;
   double totalfinalpricepfbooking=0.0;
   bool isCancel=false;
+  final GlobalKey _key = GlobalKey();
 //  ScreenshotController screenshotController = ScreenshotController();
   late File _imageFile;
   @override
@@ -53,6 +58,14 @@ class BookingCancelState extends State<BookingCancel> {
       setState(() {
         _userID=data;
         bookingList();
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> logo = sfdata.getLogo(context);
+    logo.then((data) {
+      setState(() {
+        _logoUrl=data;
       });
     },onError: (e) {
       print(e);
@@ -180,7 +193,30 @@ class BookingCancelState extends State<BookingCancel> {
     );
   }
 
+  void _takeScreenshot() async {
+    RenderRepaintBoundary boundary =
+    _key.currentContext!.findRenderObject() as RenderRepaintBoundary;
 
+    ui.Image image = await boundary.toImage();
+    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    if (byteData != null) {
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      // Saving the screenshot to the gallery
+     /* final result = await ImageGallerySaver.saveImage(
+          Uint8List.fromList(pngBytes),
+          quality: 90,
+          name: 'screenshot-${DateTime.now()}.png');*/
+
+      if (kDebugMode) {
+       // print(result);
+        await Share.file('Receipt', 'bookingReceipt.png', pngBytes, 'image/png');
+      }
+      setState(() {
+        var _message = 'New screenshot successfully saved!';
+      });
+    }
+  }
  /* _takeScreenshotandShare() async {
     //_imageFile=null;
     screenshotController
@@ -206,13 +242,13 @@ class BookingCancelState extends State<BookingCancel> {
 
     return Scaffold(
       //backgroundColor: colors.yellowlight,
-      /*floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          _takeScreenshotandShare();
+          _takeScreenshot();
         },
         tooltip: 'Increment',
         child: Icon(Icons.share),
-      ),*/
+      ),
      appBar: AppBar(
      title: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -255,195 +291,209 @@ class BookingCancelState extends State<BookingCancel> {
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
-              child: SingleChildScrollView(
-                  child: Container(
-                          color: Colors.white,
-                          height: MediaQuery.of(context).size.height,
-                          child: Padding(padding:const EdgeInsets.all(10.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Booking Details",maxLines: 2,textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16.0,
-                                    color: colors.redtheme,
+              child:SingleChildScrollView(
+                    child: Container(
+                      color: Colors.white,
+                      height: MediaQuery.of(context).size.height,
+                      child: Padding(padding:const EdgeInsets.all(10.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Booking Details",maxLines: 2,textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.0,
+                                color: colors.redtheme,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                        RepaintBoundary(
+                          key: _key,
+                          child:Card(
+                              clipBehavior: Clip.antiAlias,
+                              semanticContainer: true,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(7.0),
+                              ),
+                              elevation: 5,
+                              margin: const EdgeInsets.all(5),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 80,
+                                    width: 80,
+                                    child:CircleAvatar(
+                                      // backgroundImage: const AssetImage('assets/logo.png'),
+                                        foregroundImage: NetworkImage(_logoUrl == "" ? "https://templates.joomla-monster.com/joomla30/jm-news-portal/components/com_djclassifieds/assets/images/default_profile.png":_logoUrl),
+                                        radius: 26,
+                                        backgroundColor: Colors.white),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Card(
-                                  clipBehavior: Clip.antiAlias,
-                                  semanticContainer: true,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(7.0),
+                                  SizedBox(
+                                    height: 10.0,
                                   ),
-                                  elevation: 5,
-                                  margin: const EdgeInsets.all(5),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 15.0,
-                                      ),
-                                      Text(
-                                        "Booking ID- ${widget.bookingdata.seatOrderId}",maxLines: 1,textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14.0,
-                                          color: colors.green,
+                                  Text(
+                                    "Booking ID- ${widget.bookingdata.seatOrderId}",maxLines: 1,textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14.0,
+                                      color: colors.green,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${widget.bookingdata.foodtimeName}",maxLines: 1,textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                      color: colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Container(
+                                    child: MediaQuery.removePadding(
+                                      context: context,
+                                      removeTop: true,
+                                      child:SingleChildScrollView(
+                                        physics: ScrollPhysics(),
+                                        child: Column(
+                                          children: <Widget>[
+                                            // Text('Hey'),
+                                            ListView.builder(
+                                                physics: NeverScrollableScrollPhysics(),
+                                                shrinkWrap: true,
+                                                itemCount:bookinglist.length,
+                                                itemBuilder: _buildRow
+                                            )
+                                          ],
                                         ),
                                       ),
-                                      Text(
-                                        "${widget.bookingdata.foodtimeName}",maxLines: 1,textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16.0,
-                                          color: colors.black,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Container(
-                                        child: MediaQuery.removePadding(
-                                          context: context,
-                                          removeTop: true,
-                                          child:SingleChildScrollView(
-                                            physics: ScrollPhysics(),
-                                            child: Column(
-                                              children: <Widget>[
-                                                // Text('Hey'),
-                                                ListView.builder(
-                                                    physics: NeverScrollableScrollPhysics(),
-                                                    shrinkWrap: true,
-                                                    itemCount:bookinglist.length,
-                                                    itemBuilder: _buildRow
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                    ),
+                                  ),
 
-                                      Padding(padding:const EdgeInsets.all(10.0),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child:Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Total",maxLines: 1,textAlign: TextAlign.start,
-                                                    style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 15.0,
-                                                      color: colors.black,
-                                                    ),
-                                                  ),
-
-                                                  Text(
-                                                    "(Tax included)",maxLines: 1,textAlign: TextAlign.start,
-                                                    style: TextStyle(
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 9.0,
-                                                      color: Colors.black45,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Text(
-                                                "₹ ${totalpricepfbooking.toStringAsFixed(2)}",maxLines: 1,textAlign: TextAlign.end,
+                                  Padding(padding:const EdgeInsets.all(10.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child:Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Total",maxLines: 1,textAlign: TextAlign.start,
                                                 style: TextStyle(
                                                   fontFamily: 'Poppins',
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 15.0,
                                                   color: colors.black,
                                                 ),
-                                              ),),
-                                          ],
-                                        ),
-                                      ),
+                                              ),
 
-                                    ],
-                                  ),
-
-
-                                ),
-
-
-                                SizedBox(
-                                  height:10.0,
-                                ),
-
-                                Visibility(
-                                    visible: isCancel,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: (){
-                                            _updateDialogCancel(context,"Do you really want to cancel booking?");
-                                          },
-                                          child: Container(
-                                            margin: const EdgeInsets.all(5.0),
-                                            padding: const EdgeInsets.all(3.0),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(color: Colors.black26),
-                                              borderRadius: BorderRadius.circular(15.0),
-                                            ),
-                                            child:Padding(padding:const EdgeInsets.all(10.0),
-                                              child: const Text("CANCEL BOOKING",textAlign: TextAlign.center,style: TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.red,
-                                                fontSize: 14.0,
-                                              ),),
-
-                                            ),
-
+                                              Text(
+                                                "(Tax included)",maxLines: 1,textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 9.0,
+                                                  color: Colors.black45,
+                                                ),
+                                              ),
+                                            ],
                                           ),
 
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Text(
+                                            "₹ ${totalpricepfbooking.toStringAsFixed(2)}",maxLines: 1,textAlign: TextAlign.end,
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15.0,
+                                              color: colors.black,
+                                            ),
+                                          ),),
+                                      ],
+                                    ),
+                                  ),
+
+                                ],
+                              ),
 
 
+                            ),
+                        ),
+                            SizedBox(
+                              height:10.0,
+                            ),
 
-
+                            Visibility(
+                                visible: isCancel,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: (){
+                                        _updateDialogCancel(context,"Do you really want to cancel booking?");
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.all(5.0),
+                                        padding: const EdgeInsets.all(3.0),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.black26),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        child:Padding(padding:const EdgeInsets.all(10.0),
+                                          child: const Text("CANCEL BOOKING",textAlign: TextAlign.center,style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.red,
+                                            fontSize: 14.0,
+                                          ),),
 
                                         ),
 
-                                      ],
-                                    )
-                                ),
+                                      ),
 
 
 
 
 
-                              ],
+
+                                    ),
+
+                                  ],
+                                )
                             ),
-                          ),
-
-
-                        )
-
-                  
 
 
 
 
-              ),
+
+                          ],
+                        ),
+                      ),
+
+
+                    )
+
+
+
+
+
+
+                ),
+
+
+
+
             ),
       ),
 

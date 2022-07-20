@@ -107,7 +107,7 @@ class _MyHomePageState extends State<HomePage> {
         .then((result) {
       setState(() {
         if(result.data.isNotEmpty){
-        sfdata.saveHotelData(context,result.data[0].name, result.data[0].logo, result.data[0].address, result.data[0].phoneNumber, result.data[0].email, result.data[0].seatDiscountInPercent, result.data[0].itemDiscountInPercent, result.data[0].firstTimeDiscountInPercent, result.data[0].contactPerson);
+        sfdata.saveHotelData(context,result.data[0].name, result.data[0].logo, result.data[0].address, result.data[0].phoneNumber, result.data[0].email, result.data[0].seatDiscountInPercent, result.data[0].itemDiscountInPercent, result.data[0].firstTimeDiscountInPercent, result.data[0].contactPerson,result.data[0].oneTimeBookingSeatNo);
         logoUrl=result.data[0].logo;
         }else{
 
@@ -331,7 +331,7 @@ class _MyHomePageState extends State<HomePage> {
 
   _buildPageViewMessage() {
     return Container(
-      height: 103.0,
+      height: 130.0,
       child: PageView.builder(
           itemCount: bannerdata.length,
           controller: _pageController,
@@ -353,9 +353,9 @@ class _MyHomePageState extends State<HomePage> {
       margin: const EdgeInsets.all(2),
       child: InkWell(
         //onTap: () => onTapdetails(index),
-        child: Image.network(bannerdata[index].url,
+        child: Image.network(bannerdata[index].url,fit: BoxFit.fill,
             errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
-              return Image.asset("assets/logo.png", fit: BoxFit.contain);
+              return Image.asset("assets/logeeo.png", fit: BoxFit.fill);
             }
 
         ),
@@ -461,7 +461,7 @@ class _MyHomePageState extends State<HomePage> {
             removeTop: true,
              child: ListView(
               children: <Widget>[
-                 ListTile(
+                /* ListTile(
           leading:Image.asset("assets/menu_done.png",
             width: 30.0,
             height: 30.0,
@@ -474,10 +474,11 @@ class _MyHomePageState extends State<HomePage> {
           ),),
           trailing: Icon(Icons.keyboard_arrow_right_sharp),
           onTap: (){
+
             Navigator.of(context).pop();
           },
         ),
-                 Divider(color: colors.purpals,),
+                 Divider(color: colors.purpals,),*/
                  ListTile(
           leading:Image.asset("assets/menu_dtwo.png",
             width: 30.0,

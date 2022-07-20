@@ -31,7 +31,7 @@ class SFData{
     return (preferences.getString('UserName')?? "");
   }
 
-  Future<void> saveHotelData(BuildContext context,String Name,String Logo,String Address,String PhoneNumber,String Email,double SeatDiscountInPercent,double ItemDiscountInPercent,double FirstTimeDiscountInPercent,String ContactPerson) async {
+  Future<void> saveHotelData(BuildContext context,String Name,String Logo,String Address,String PhoneNumber,String Email,double SeatDiscountInPercent,double ItemDiscountInPercent,double FirstTimeDiscountInPercent,String ContactPerson,int oneTimeBookingSeatNo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('Name', Name);
     prefs.setString('Logo', Logo);
@@ -42,6 +42,12 @@ class SFData{
     prefs.setDouble('ItemDiscountInPercent', ItemDiscountInPercent);
     prefs.setDouble('FirstTimeDiscountInPercent', FirstTimeDiscountInPercent);
     prefs.setString('ContactPerson', ContactPerson);
+    prefs.setInt('OneTimeBookingSeatNo', oneTimeBookingSeatNo);
+  }
+
+  Future<int> getMaxSeat(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return (preferences.getInt('OneTimeBookingSeatNo')?? 0);
   }
 
   Future<double> getSeatDiscount(BuildContext context) async {

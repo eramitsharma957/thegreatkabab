@@ -146,6 +146,7 @@ class BookingStatusState extends State<BookingStatus> {
                   child: Container(
                     color: Colors.white,
                       height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
                       child: Padding(padding:const EdgeInsets.all(10.0),
                        child: Column(
                          children: [
@@ -244,12 +245,12 @@ class BookingStatusState extends State<BookingStatus> {
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w400,
                         fontSize: 12.0,
-                        color: colors.green,
+                        color: Colors.black87,
                       ),
                     ),
                     Text(commonAlert.dateFormateSQLServer(context,uniquebookinglist[index].bookingDate),
                         textAlign: TextAlign.start,
-                        style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 14.0)),
+                        style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 12.0)),
 
                     Text(commonAlert.dateFormate24to12hour(context,uniquebookinglist[index].bookingTime),
                         textAlign: TextAlign.start,
