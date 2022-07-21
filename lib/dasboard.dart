@@ -92,11 +92,12 @@ class _MyHomePageState extends State<HomePage> {
     },onError: (e) {
       print(e);
     });
+    gallery();
     bannerList();
-    hotelData();
     notificationList();
     menuList();
-    gallery();
+    hotelData();
+
   }
 
   //////////////////  Hotel Details  //////////////////////
@@ -154,7 +155,6 @@ class _MyHomePageState extends State<HomePage> {
         }
       });
     }).catchError((error) {
-
       EasyLoading.dismiss();
       print(error);
     });
@@ -176,7 +176,6 @@ class _MyHomePageState extends State<HomePage> {
         }
       });
     }).catchError((error) {
-
      // EasyLoading.dismiss();
       print(error);
     });
@@ -2003,6 +2002,7 @@ class _MyHomePageState extends State<HomePage> {
     return SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           child: Padding(padding:const EdgeInsets.all(10.0),
             child: Column(
               children: [

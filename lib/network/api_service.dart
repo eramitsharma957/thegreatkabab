@@ -7,6 +7,7 @@ import 'package:thegreatkabab/models/bookingdata.dart';
 import 'package:thegreatkabab/models/bookingresponse.dart';
 import 'package:thegreatkabab/models/bookingstatusdata.dart';
 import 'package:thegreatkabab/models/discountdata.dart';
+import 'package:thegreatkabab/models/foodcategory.dart';
 import 'package:thegreatkabab/models/gallerydata.dart';
 import 'package:thegreatkabab/models/hoteldata.dart';
 import 'dart:async';
@@ -106,6 +107,11 @@ abstract class ApiService {
   Future<SlotsData> getTimeSlot(
       @Field("HotelID_FK") hotelId,
       @Field("FoodTimingID_FK") foodTimingID_FK,
+      );
+
+  @POST("foodtiming/FoodTimingByHotel")
+  Future<FoodCategory> getFoodCategory(
+      @Field("HotelID_FK") hotelId,
       );
 
   @POST("seatprice/SeatPriceByHotelFoodTimingDayName")

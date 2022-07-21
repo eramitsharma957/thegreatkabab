@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
+import 'package:thegreatkabab/models/foodcategory.dart';
 import 'package:thegreatkabab/models/slotsdata.dart';
 import 'package:thegreatkabab/storedata/finalbookseat.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
@@ -58,6 +59,7 @@ class BookSeatState extends State<BookSeat> {
   int _c = 0;
   late String currentDate='',serverDate;
   List<SlotListdata> listslotdata=<SlotListdata>[];
+  List<FoodTypeList> foodTypeList=<FoodTypeList>[];
   SlotListdata? slotdata;
   var _selectSlotCode=0;
   var _selectSlotTime="";
@@ -65,6 +67,7 @@ class BookSeatState extends State<BookSeat> {
   late String _userName;
   bool _Isavilable=false;
   DateTime dateCalendar=DateTime.now();
+  int selectedIndex=0;
 
 
   @override
@@ -94,7 +97,8 @@ class BookSeatState extends State<BookSeat> {
     // setState(() {
     currentDate = formatter.format(now);
     serverDate=commonAlert.dateFormateServer(context, now);
-    timeSlots();
+    foodCategory();
+
     super.initState();
     //downloadData();
   }
@@ -150,6 +154,30 @@ class BookSeatState extends State<BookSeat> {
       print(error);
     });
   }
+
+
+  //////////////////  Get Menus Description //////////////////////
+  Future<Null> foodCategory() async {
+    EasyLoading.show(status: 'Loading');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getFoodCategory(colors.hotelId)
+        .then((result) {
+      setState(() {
+        EasyLoading.dismiss();
+        if(result.data.isNotEmpty){
+          foodTypeList=result.data.toList();
+          _lunchTypeID=foodTypeList[0].foodTimingIdPk;
+          timeSlots();
+        }
+      });
+    }).catchError((error) {
+       EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
 
 
   void downloadData(){
@@ -274,8 +302,30 @@ class BookSeatState extends State<BookSeat> {
                               ),
                             ],
                           ),
-                          Row(
+
+
+
+                          SizedBox(
+                            height: 55.0,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: foodTypeList.length,
+                                    itemBuilder: _buildRowOptions,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                         /* Row(
                             children: [
+
                               Expanded(
                                   child: OutlinedButton.icon( // <-- OutlinedButton
                                         onPressed: () {
@@ -344,7 +394,9 @@ class BookSeatState extends State<BookSeat> {
                                   )
                               ),
                             ],
-                          ),
+                          ),*/
+
+
                           SizedBox(height: 30),
                           Row(
                             children: [
@@ -562,7 +614,7 @@ class BookSeatState extends State<BookSeat> {
                                       var year=fromDateSplit[2];
                                       var date1 = DateTime(int.parse(year), int.parse(month),int.parse(day));
                                       DateTime now = DateTime.now();
-                                      DateTime currentdate = new DateTime(now.year, now.month, now.day);
+                                      DateTime currentdate = DateTime(now.year, now.month, now.day);
                                       bool valDate=date1.isBefore(currentdate);
                                       if(valDate==false){
                                         if(nameController.text.isEmpty){
@@ -645,6 +697,52 @@ class BookSeatState extends State<BookSeat> {
     setState(() {
       _c++;
     });
+  }
+
+  onEditClass(index) {
+    var rowData = foodTypeList[index];
+    setState(() {
+      selectedIndex = index;
+      _lunchTypeID=rowData.foodTimingIdPk;
+       timeSlots();
+    });
+
+  }
+
+  Widget _buildRowOptions(BuildContext context, int index){
+    return  Padding(padding:const EdgeInsets.all(10.0),
+    child: OutlinedButton.icon( // <-- OutlinedButton
+      onPressed: () {
+        setState(() {
+          onEditClass(index);
+        });
+      },
+      icon: SizedBox(
+        height: 25,
+        width: 25,
+        child: Image.asset(selectedIndex==index?'assets/tick_icongreen.png':'assets/tick_icongrey.png'),
+      ),
+      label: Text(
+        "         ${foodTypeList[index].name}",maxLines: 2,textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w400,
+          fontSize: 14.0,
+          color: colors.redthemenew,
+        ),
+      ),
+      style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          ),
+          side: BorderSide(width: 1, color:colors.redthemenew),backgroundColor:selectedIndex==index?colors.purpals:colors.white
+      ),
+
+    )
+
+    );
+
+
   }
 
 }

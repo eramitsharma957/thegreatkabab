@@ -702,7 +702,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Text("Kid(6-10)",style: TextStyle(
+                                            Text("Kids(6-10)",style: TextStyle(
                                               fontFamily: 'Poppins',
                                               fontWeight: FontWeight.w500,
                                               color: Colors.black,

@@ -213,6 +213,22 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<FoodCategory> getFoodCategory(hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<FoodCategory>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'foodtiming/FoodTimingByHotel',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = FoodCategory.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<SeatPrices> getTimeSlotPrice(
       hotelId, foodTimingID_FK, bookingDate) async {
     const _extra = <String, dynamic>{};
