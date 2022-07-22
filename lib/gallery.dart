@@ -45,6 +45,10 @@ class GalleryViewState extends State<GalleryView> {
   List<GalleryList> vegdata=<GalleryList>[];
   List<GalleryList> nonvegdata=<GalleryList>[];
 
+  List<GalleryList> topCategories=<GalleryList>[];
+  int _photoGalleryCategoryIdPk=0;
+  int selectedIndex=0;
+
   @override
   void initState() {
     gallery();
@@ -66,7 +70,16 @@ class GalleryViewState extends State<GalleryView> {
       setState(() {
         EasyLoading.dismiss();
         if(result.data.isNotEmpty){
-          for(int i=0;i<result.data.length;i++){
+          gallerydata=result.data.toList();
+          var seen = Set<String>();
+          topCategories = gallerydata.where((item) => seen.add(item.catName.toString())).toList();
+
+          for(int i=0;i<gallerydata.length;i++){
+            if(topCategories[0].photoGalleryCategoryIdPk==gallerydata[i].photoGalleryCategoryIdPk){
+              vegdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
+            }
+          }
+          /*for(int i=0;i<result.data.length;i++){
             if(result.data[i].photoGalleryCategoryIdPk==1){
               vegdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
             }
@@ -77,7 +90,7 @@ class GalleryViewState extends State<GalleryView> {
               restdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
             }
           }
-          gallerydata=restdata.toList();
+          gallerydata=restdata.toList();*/
         }
       });
     }).catchError((error) {
@@ -156,7 +169,26 @@ class GalleryViewState extends State<GalleryView> {
                          ],
                        ),
                        SizedBox(height: 5),
-                       Row(
+
+                       SizedBox(
+                         height: 45.0,
+                         child: Column(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           children: [
+                             Expanded(
+                               child: ListView.builder(
+                                 shrinkWrap: true,
+                                 scrollDirection: Axis.horizontal,
+                                 itemCount: topCategories.length,
+                                 itemBuilder: _buildRowOptions,
+                               ),
+                             ),
+                           ],
+                         ),
+                       ),
+
+                       /*Row(
                          mainAxisAlignment: MainAxisAlignment.center,
                          children: [
                            GestureDetector(
@@ -273,7 +305,7 @@ class GalleryViewState extends State<GalleryView> {
 
 
                          ],
-                       ),
+                       ),*/
 
                        Row(
                          mainAxisAlignment: MainAxisAlignment.center,
@@ -288,47 +320,29 @@ class GalleryViewState extends State<GalleryView> {
                                  _gallerylayout(context),
                                ],
                              ),
-
-
                            ),
                          ],
                        ),
-
-                       // _gallerylayout(context),
-
-
-
                      ],
                    ),
                ),
-
-
               ),
-
-
-
-
             ),
       ),
-
-
 
     );
   }
 
 
   onEditGrid(index,BuildContext context) async{
-    print("GRIDDD");
-    var rowData = gallerydata[index];
-   // _buildPopupDialog(context,rowData.url);
+    var rowData = vegdata[index];
+   //_buildPopupDialog(context,rowData.url);
     setState(() {
     });
    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => GalleryViewPage(rowData.url)),
     );
-
-
   }
 
   Widget _gallerylayout(BuildContext context) {
@@ -339,7 +353,7 @@ class GalleryViewState extends State<GalleryView> {
      // physics: NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
       childAspectRatio: MediaQuery.of(context).size.height / 700,
-      children: List<Widget>.generate(gallerydata.length, (index) {
+      children: List<Widget>.generate(vegdata.length, (index) {
         return GridTile(
           child: Card(
             clipBehavior: Clip.antiAlias,
@@ -355,7 +369,7 @@ class GalleryViewState extends State<GalleryView> {
                 alignment: Alignment.center,
                 children: [
                   Image.network(
-                      gallerydata[index].url,
+                      vegdata[index].url,
                       width: double.infinity,
                       fit: BoxFit.cover),
                   Positioned(
@@ -369,7 +383,7 @@ class GalleryViewState extends State<GalleryView> {
                             child:Row(
                               children: [
                                 Text(
-                                  gallerydata[index].name==null?"":gallerydata[index].name,textAlign: TextAlign.center,
+                                  vegdata[index].name==null?"":vegdata[index].name,textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -392,46 +406,61 @@ class GalleryViewState extends State<GalleryView> {
         );
       }),
     );
-
-
   }
 
-  Widget _buildPopupDialog(BuildContext context, String url) {
-    return new AlertDialog(
-      title: const Text('Hiiiii'),
-      content: new Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          PhotoView(
-            imageProvider: NetworkImage(
-              "http://tgkfexpresspatna.com/images/Gallery/rest1.jpg",
-            ),
-            // Contained = the smallest possible size to fit one dimension of the screen
-            minScale: PhotoViewComputedScale.contained * 0.8,
-            // Covered = the smallest possible size to fit the whole screen
-            maxScale: PhotoViewComputedScale.covered * 2,
-            enableRotation: true,
-            // Set the background color to the "classic white"
-            backgroundDecoration: BoxDecoration(
-              color: Theme.of(context).canvasColor,
-            ),
-            /*loadingChild: Center(
-          child: CircularProgressIndicator(),
-        ),*/
-          ),
-        ],
-      ),
-      actions: <Widget>[
-        new FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
+
+  onEditClass(index){
+    var rowData = topCategories[index];
+    setState(() {
+      vegdata=[];
+      selectedIndex = index;
+      _photoGalleryCategoryIdPk=rowData.photoGalleryCategoryIdPk;
+      for(int i=0;i<gallerydata.length;i++){
+        if(_photoGalleryCategoryIdPk==gallerydata[i].photoGalleryCategoryIdPk){
+          vegdata.add(GalleryList(photoGalleryIdPk: gallerydata[i].photoGalleryIdPk, name:gallerydata[i].name, description:gallerydata[i].description, url:gallerydata[i].url, photoGalleryCategoryIdPk:gallerydata[i].photoGalleryCategoryIdPk, catName:gallerydata[i].catName, catDescription:gallerydata[i].catDescription));
+        }
+      }
+    });
+  }
+
+  Widget _buildRowOptions(BuildContext context, int index){
+    return  Padding(padding:const EdgeInsets.symmetric(vertical: 0.0,horizontal: 2.0),
+        child: GestureDetector(
+          onTap: (){
+            setState(() {
+              onEditClass(index);
+            });
           },
-          textColor: Theme.of(context).primaryColor,
-          child: const Text('Close'),
+          child:Container(
+            width: 100.0,
+            margin: EdgeInsets.all(0.0),
+            decoration: BoxDecoration(
+              color:selectedIndex==index?colors.purpals:colors.greylight,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(10.0),
+                topLeft: Radius.circular(10.0),
+              ),
+            ),
+            child: Padding(padding:const EdgeInsets.all(10.0),
+              child:  Text(
+                topCategories[index].catName,maxLines: 2,textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12.0,
+                  color: selectedIndex==index?colors.redthemenew:colors.grey,
+                ),
+              ),
+            ),
+
+
+
+          ),
         ),
-      ],
+
     );
+
+
   }
 
 

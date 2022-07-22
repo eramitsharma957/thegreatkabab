@@ -24,6 +24,7 @@ import 'package:thegreatkabab/notification.dart';
 import 'package:thegreatkabab/reviews.dart';
 import 'package:thegreatkabab/signup.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
+import 'package:thegreatkabab/winners.dart';
 
 import 'models/menudata.dart';
 import 'models/notificatiodata.dart';
@@ -66,9 +67,11 @@ class _MyHomePageState extends State<HomePage> {
   List<String> bannerlist=["assets/offerone.jpeg","assets/offertwo.jpeg"];
 
   List<GalleryList> gallerydata=<GalleryList>[];
-  List<GalleryList> restdata=<GalleryList>[];
   List<GalleryList> vegdata=<GalleryList>[];
-  List<GalleryList> nonvegdata=<GalleryList>[];
+
+  List<GalleryList> topCategories=<GalleryList>[];
+  int _photoGalleryCategoryIdPk=0;
+  int selectedIndex=0;
 
   @override
   void initState() {
@@ -219,18 +222,16 @@ class _MyHomePageState extends State<HomePage> {
       setState(() {
         EasyLoading.dismiss();
         if(result.data.isNotEmpty){
-          for(int i=0;i<result.data.length;i++){
-            if(result.data[i].photoGalleryCategoryIdPk==1){
+          gallerydata=result.data.toList();
+          var seen = Set<String>();
+          topCategories = gallerydata.where((item) => seen.add(item.catName.toString())).toList();
+
+          for(int i=0;i<gallerydata.length;i++){
+            if(topCategories[0].photoGalleryCategoryIdPk==gallerydata[i].photoGalleryCategoryIdPk){
               vegdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
             }
-            if(result.data[i].photoGalleryCategoryIdPk==2){
-              nonvegdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
-            }
-            if(result.data[i].photoGalleryCategoryIdPk==3){
-              restdata.add(GalleryList(photoGalleryIdPk: result.data[i].photoGalleryIdPk, name: result.data[i].name, description: result.data[i].description, url: result.data[i].url, photoGalleryCategoryIdPk: result.data[i].photoGalleryCategoryIdPk, catName: result.data[i].catName, catDescription: result.data[i].catDescription));
-            }
           }
-          gallerydata=restdata.toList();
+
         }
       });
     }).catchError((error) {
@@ -639,7 +640,30 @@ class _MyHomePageState extends State<HomePage> {
 
           },
         ),
-         Divider(color: colors.purpals,),
+                Divider(color: colors.purpals,),
+                ListTile(
+                  leading:Image.asset("assets/winner.png",
+                    width: 30.0,
+                    height: 30.0,
+                  ),
+                  title: Text("Winners",style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 14.0,
+                  ),),
+                  trailing: Icon(Icons.keyboard_arrow_right_sharp),
+                  onTap: () async {
+                    ///  Comment //////
+                    Navigator.of(context).pop();
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Winners()),
+                    );
+
+                  },
+                ),
+                Divider(color: colors.purpals,),
                 ListTile(
                   leading:Image.asset("assets/logout.png",
                     width: 30.0,
@@ -1850,124 +1874,23 @@ class _MyHomePageState extends State<HomePage> {
                 ),
 
               SizedBox(height: 20),
-              Row(
-               mainAxisAlignment: MainAxisAlignment.center,
-               children: [
-                 GestureDetector(
-                   onTap: (){
-                     setState(() {
-                       gallerydata=[];
-                       restu=true;
-                       vegPic=false;
-                       nonvegPicfalse=false;
-                       gallerydata=restdata.toList();
-                     });
-
-
-                   },
-                   child:Container(
-                     margin: EdgeInsets.all(0.0),
-                     decoration: BoxDecoration(
-                       color:restu==true?colors.purpals:colors.greylight,
-                       borderRadius: BorderRadius.only(
-                         topRight: Radius.circular(10.0),
-                         topLeft: Radius.circular(10.0),
-                       ),
-                     ),
-                     child: Padding(padding:const EdgeInsets.all(10.0),
-                       child:  Text(
-                         "Restaurant",maxLines: 2,textAlign: TextAlign.center,
-                         style: TextStyle(
-                           fontFamily: 'Poppins',
-                           fontWeight: FontWeight.w500,
-                           fontSize: 14.0,
-                           color: restu==true?colors.redthemenew:colors.grey,
-                         ),
-                       ),
-                     ),
-
-
-
-                   ),
-                 ),
-                 SizedBox(width: 5.0,),
-                 GestureDetector(
-                   onTap: (){
-                     setState(() {
-                       gallerydata=[];
-                       restu=false;
-                       vegPic=true;
-                       nonvegPicfalse=false;
-                       gallerydata=vegdata.toList();
-                     });
-
-                   },
-                   child:Container(
-                     margin: EdgeInsets.all(0.0),
-                     decoration: BoxDecoration(
-                       color: vegPic==true?colors.purpals:colors.greylight,
-                       borderRadius: BorderRadius.only(
-                         topRight: Radius.circular(10.0),
-                         topLeft: Radius.circular(10.0),
-                       ),
-                     ),
-                     child: Padding(padding:const EdgeInsets.all(10.0),
-                       child:  Text(
-                         "Veg Food",maxLines: 2,textAlign: TextAlign.center,
-                         style: TextStyle(
-                           fontFamily: 'Poppins',
-                           fontWeight: FontWeight.w500,
-                           fontSize: 14.0,
-                           color: vegPic==true?colors.redthemenew:colors.grey,
-                         ),
-                       ),
-                     ),
-
-
-
-                   ),
-                 ),
-                 SizedBox(width: 5.0,),
-                 GestureDetector(
-                   onTap: (){
-                     setState(() {
-                       gallerydata=[];
-                       restu=false;
-                       vegPic=false;
-                       nonvegPicfalse=true;
-                       gallerydata=nonvegdata.toList();
-                     });
-
-                   },
-                   child: Container(
-                     margin: EdgeInsets.all(0.0),
-                     decoration: BoxDecoration(
-                       color: nonvegPicfalse==true?colors.purpals:colors.greylight,
-                       borderRadius: BorderRadius.only(
-                         topRight: Radius.circular(10.0),
-                         topLeft: Radius.circular(10.0),
-                       ),
-                     ),
-                     child: Padding(padding:const EdgeInsets.all(10.0),
-                       child:  Text(
-                         "Non Veg Food",maxLines: 2,textAlign: TextAlign.center,
-                         style: TextStyle(
-                           fontFamily: 'Poppins',
-                           fontWeight: FontWeight.w500,
-                           fontSize: 14.0,
-                           color: nonvegPicfalse==true?colors.redthemenew:colors.grey,
-                         ),
-                       ),
-                     ),
-
-
-
-                   ),
-                 ),
-
-
-               ],
-             ),
+                SizedBox(
+                  height: 45.0,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: topCategories.length,
+                          itemBuilder: _buildRowOptions,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -2208,7 +2131,7 @@ class _MyHomePageState extends State<HomePage> {
 
   onEditGalleryGrid(index,BuildContext context) async{
     print("GRIDDD");
-    var rowData = gallerydata[index];
+    var rowData = vegdata[index];
     // _buildPopupDialog(context,rowData.url);
     setState(() {
     });
@@ -2224,7 +2147,7 @@ class _MyHomePageState extends State<HomePage> {
       primary: false,
       crossAxisCount: 2,
       childAspectRatio: MediaQuery.of(context).size.height / 700,
-      children: List<Widget>.generate(gallerydata.length, (index) {
+      children: List<Widget>.generate(vegdata.length, (index) {
         return GridTile(
           child: Card(
             clipBehavior: Clip.antiAlias,
@@ -2240,7 +2163,7 @@ class _MyHomePageState extends State<HomePage> {
                 alignment: Alignment.center,
                 children: [
                   Image.network(
-                      gallerydata[index].url,
+                      vegdata[index].url,
                       width: double.infinity,
                      // height: 200,
                       fit: BoxFit.cover),
@@ -2255,7 +2178,7 @@ class _MyHomePageState extends State<HomePage> {
                       child:Row(
                         children: [
                           Text(
-                            gallerydata[index].name==null?"":gallerydata[index].name,textAlign: TextAlign.center,
+                            vegdata[index].name==null?"":vegdata[index].name,textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -2277,6 +2200,60 @@ class _MyHomePageState extends State<HomePage> {
           ),
         );
       }),
+    );
+
+
+  }
+
+  onEditClass(index){
+    var rowData = topCategories[index];
+    setState(() {
+      vegdata=[];
+      selectedIndex = index;
+      _photoGalleryCategoryIdPk=rowData.photoGalleryCategoryIdPk;
+      for(int i=0;i<gallerydata.length;i++){
+        if(_photoGalleryCategoryIdPk==gallerydata[i].photoGalleryCategoryIdPk){
+          vegdata.add(GalleryList(photoGalleryIdPk: gallerydata[i].photoGalleryIdPk, name:gallerydata[i].name, description:gallerydata[i].description, url:gallerydata[i].url, photoGalleryCategoryIdPk:gallerydata[i].photoGalleryCategoryIdPk, catName:gallerydata[i].catName, catDescription:gallerydata[i].catDescription));
+        }
+      }
+    });
+  }
+
+  Widget _buildRowOptions(BuildContext context, int index){
+    return  Padding(padding:const EdgeInsets.symmetric(vertical: 0.0,horizontal: 2.0),
+      child: GestureDetector(
+        onTap: (){
+          setState(() {
+            onEditClass(index);
+          });
+        },
+        child:Container(
+          width: 100.0,
+          margin: EdgeInsets.all(0.0),
+          decoration: BoxDecoration(
+            color:selectedIndex==index?colors.purpals:colors.greylight,
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(10.0),
+              topLeft: Radius.circular(10.0),
+            ),
+          ),
+          child: Padding(padding:const EdgeInsets.all(10.0),
+            child:  Text(
+              topCategories[index].catName,maxLines: 2,textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500,
+                fontSize: 12.0,
+                color: selectedIndex==index?colors.redthemenew:colors.grey,
+              ),
+            ),
+          ),
+
+
+
+        ),
+      ),
+
     );
 
 
