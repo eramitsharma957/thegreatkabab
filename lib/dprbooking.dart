@@ -309,9 +309,6 @@ class DprBookingState extends State<DprBooking> {
                                                                child: Image.asset( "assets/pinmap.png", fit: BoxFit.contain),
                                                              ),
                                                            ),
-
-
-
                                                          ),
 
                                                          Expanded(

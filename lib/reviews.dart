@@ -262,17 +262,13 @@ class ReviewsState extends State<Reviews> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children:<Widget>[
-                              Row(
-                                children: [
-                                  Text(reviewdata[index].message,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 14.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
+                              Text(reviewdata[index].message,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 14.0,
+                                  color: Colors.black,
+                                ),
                               ),
 
                               SizedBox(

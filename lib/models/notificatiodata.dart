@@ -45,7 +45,7 @@ class Datum {
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     seatOrderNotificationsIdPk: json["SeatOrderNotificationsID_PK"],
-    seatOrderIdFk: json["SeatOrderID_FK"],
+    seatOrderIdFk: json["SeatOrderID"],
     notificationsMessage: json["NotificationsMessage"],
     readStatus: json["ReadStatus"],
     createdOn: DateTime.parse(json["CreatedOn"]),
@@ -53,7 +53,7 @@ class Datum {
 
   Map<String, dynamic> toJson() => {
     "SeatOrderNotificationsID_PK": seatOrderNotificationsIdPk,
-    "SeatOrderID_FK": seatOrderIdFk,
+    "SeatOrderID": seatOrderIdFk,
     "NotificationsMessage": notificationsMessage,
     "ReadStatus": readStatus,
     "CreatedOn": createdOn.toIso8601String(),

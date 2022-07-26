@@ -227,7 +227,7 @@ class NotificationsState extends State<Notifications> {
                         style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
                     Text(datalist[index].notificationsMessage,
                         textAlign: TextAlign.start,
-                        style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 13.0)),
+                        style: style.copyWith(color: Colors.black54, fontWeight: FontWeight.w400,fontSize: 13.0)),
                   ]) ,
             ),
 
