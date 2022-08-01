@@ -58,7 +58,7 @@ class NotificationsState extends State<Notifications> {
 
 
 
-   //////////////////  Get Class Link  //////////////////////
+   //////////////////  Get notification //////////////////////
   Future<Null> notificationList() async {
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -67,14 +67,34 @@ class NotificationsState extends State<Notifications> {
         .getnotification(_UserID,colors.hotelId)
         .then((result) {
       setState(() {
-        EasyLoading.dismiss();
         if(result.data.isNotEmpty){
           datalist=result.data.toList();
+          for(int i=0;i<datalist.length;i++){
+            if(datalist[i].readStatus==0){
+              updateNotificationList(datalist[i].seatOrderNotificationsIdPk);
+            }
+          }
         }
+        EasyLoading.dismiss();
       });
     }).catchError((error) {
-
        EasyLoading.dismiss();
+      print(error);
+    });
+  }
+
+
+  //////////////////  Update notification  //////////////////////
+  Future<Null> updateNotificationList(int seatOrderIdFk) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .updatenotification("insert",_UserID,seatOrderIdFk)
+        .then((result) {
+      setState(() {
+
+      });
+    }).catchError((error) {
       print(error);
     });
   }
@@ -92,7 +112,7 @@ class NotificationsState extends State<Notifications> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pop(context,'Yep!'),
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         SizedBox(height: 28.0,)

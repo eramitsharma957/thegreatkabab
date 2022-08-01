@@ -60,6 +60,10 @@ dependencies:
   #image_gallery_saver: ^1.7.1
   #esys_flutter_share: ^1.0.2
   modern_form_esys_flutter_share: ^1.1.2
+  badges: ^2.0.1
+  in_app_update: ^3.0.0
+  package_info_plus: ^1.4.2
+  new_version: ^0.3.1
 
 dev_dependencies:
   flutter_test:

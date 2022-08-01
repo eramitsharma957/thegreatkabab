@@ -66,6 +66,13 @@ abstract class ApiService {
       @Field("HotelID_FK") hotelId,
       );
 
+  @POST("SeatOrderNotificationsReadStatus/SeatOrderNotificationsReadStatusByUser")
+  Future<NotificationData> updatenotification(
+      @Field("Operation") operation,
+      @Field("UsersID_FK") userid,
+      @Field("SeatOrderNotificationsID_FK") id,
+      );
+
   @POST("seatorder/GetSeatBookingByUserandHotel")
   Future<BookingStatusData> getbookingStatus(
       @Field("HotelID") hotelId,

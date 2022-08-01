@@ -1,8 +1,13 @@
+import 'package:badges/badges.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:in_app_update/in_app_update.dart';
+import 'package:new_version/new_version.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,6 +55,8 @@ class _MyHomePageState extends State<HomePage> {
   var _IsLogin,_UserID;
   SFData sfdata= SFData();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   bool restu=true,vegPic=false,nonvegPicfalse=false;
   static const colors= AppColors();
   bool isLoader = false;
@@ -62,6 +69,10 @@ class _MyHomePageState extends State<HomePage> {
   var _selectmenu="Non Veg";
   var _selectmenuID=0;
   var logoUrl="";
+  var _userName="";
+  bool _updatevisible=false;
+  GlobalKey keyButton = GlobalKey();
+  AppUpdateInfo? _updateInfo;
 
 
   List<String> bannerlist=["assets/offerone.jpeg","assets/offertwo.jpeg"];
@@ -72,6 +83,8 @@ class _MyHomePageState extends State<HomePage> {
   List<GalleryList> topCategories=<GalleryList>[];
   int _photoGalleryCategoryIdPk=0;
   int selectedIndex=0;
+  int isNotifyTrue=0;
+  int isUpdate=0;
 
   @override
   void initState() {
@@ -95,13 +108,97 @@ class _MyHomePageState extends State<HomePage> {
     },onError: (e) {
       print(e);
     });
+    Future<String> user = sfdata.getUserName(context);
+    user.then((data) {
+      setState(() {
+        _userName=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
     gallery();
     bannerList();
     notificationList();
     menuList();
     hotelData();
 
+    if(defaultTargetPlatform != TargetPlatform.iOS){
+      checkForUpdate();
+    }
+    //_checkVersion();
+
   }
+
+  Future<void> checkForUpdate() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    print('Update infoVERSION:${packageInfo.buildNumber}');
+    InAppUpdate.checkForUpdate().then((info) {
+      setState(() {
+        _updateInfo = info;
+        if(_updateInfo?.updateAvailability == UpdateAvailability.updateAvailable){
+          setState(() {
+            _updatevisible=true;
+            displayBottomSheet(context);
+          });
+        }
+      });
+    }).catchError((e) {
+      print("ERROR-  ${e}");
+      showSnack(e.toString());
+    });
+  }
+
+  void showSnack(String text) {
+    if (_keyLoader.currentContext != null) {
+      ScaffoldMessenger.of(_keyLoader.currentContext!)
+          .showSnackBar(SnackBar(content: Text(text)));
+    }
+  }
+  ///////////// App update ////////////
+  void _checkVersion() async {
+    final newVersion = NewVersion(
+      androidId: "com.archieadmin.educareadmin",
+      iOSId: 'com.archie.allencare',
+      iOSAppStoreCountry: "IN",
+    );
+    final status = await newVersion.getVersionStatus();
+    var localversion = int.parse(status!.localVersion.substring(4));
+    var storeversion = int.parse(status.storeVersion.substring(4));
+    if(localversion<storeversion){
+      if(defaultTargetPlatform == TargetPlatform.iOS){
+        setState(() {
+          _updatevisible=false;
+        });
+        newVersion.showUpdateDialog(
+          context: context,
+          versionStatus: status,
+          dialogTitle: "Update App?",
+          dismissButtonText: "Skip",
+          dialogText: "A newer version available!. Please update the app from version " + "${status.localVersion}" + " to " + "${status.storeVersion}",
+          dismissAction: () {
+            Navigator.of(context).pop(ConfirmAction.Cancel);
+            // SystemNavigator.pop();
+          },
+          updateButtonText: "Lets Update",
+        );
+      }else{
+        /*setState(() {
+          _updatevisible=true;
+        });*/
+      }
+
+
+    }else{
+      setState(() {
+        _updatevisible=false;
+      });
+
+    }
+  }
+
+
+
+
 
   //////////////////  Hotel Details  //////////////////////
   Future<Null> hotelData() async {
@@ -127,6 +224,7 @@ class _MyHomePageState extends State<HomePage> {
 
   //////////////////  Get Class Link  //////////////////////
   Future<Null> notificationList() async {
+    isNotifyTrue=0;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
@@ -135,7 +233,12 @@ class _MyHomePageState extends State<HomePage> {
       setState(() {
         if(result.data.isNotEmpty){
           datalist=result.data.toList();
-        }
+          for(int i=0;i<datalist.length;i++){
+               if(datalist[i].readStatus==0){
+                 isNotifyTrue++;
+               }
+          }
+         }
       });
     }).catchError((error) {
       print(error);
@@ -208,8 +311,6 @@ class _MyHomePageState extends State<HomePage> {
     });
   }
 
-
-
   //////////////////  Get Menus Description //////////////////////
   Future<Null> gallery() async {
     gallerydata=[];
@@ -240,6 +341,60 @@ class _MyHomePageState extends State<HomePage> {
     });
   }
 
+
+
+  displayBottomSheet(BuildContext context){
+    showModalBottomSheet(
+        context: context,
+        shape : RoundedRectangleBorder(
+            borderRadius : BorderRadius.circular(10)
+        ),
+        builder: (ctx) {
+          return Container(
+            height: 120,
+            child: AnimatedContainer(
+              // curve: Curves.fastOutSlowIn,
+              duration: const Duration(seconds: 10),
+              // child: new Center(
+              child:Row(
+                children: <Widget>[
+                  Expanded(
+                      flex: 1,
+                      child: Padding(
+                      padding:const EdgeInsets.all(15),
+                      child: Text('Update Available on PlayStore',style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        fontSize: 14.0,
+                      ),)
+                  ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Center(
+                      child: ElevatedButton(
+                        child: const Text('Update Now'),
+                        onPressed: () {
+                          InAppUpdate.performImmediateUpdate();
+                        },
+                      ),
+                    )
+                  ),
+
+
+
+
+
+                ],
+              ),
+
+
+              //),
+            ),
+          );
+        });
+  }
 
 
 
@@ -352,7 +507,7 @@ class _MyHomePageState extends State<HomePage> {
       elevation: 5,
       margin: const EdgeInsets.all(2),
       child: InkWell(
-        //onTap: () => onTapdetails(index),
+        //onTap: () => displayBottomSheet(context),
         child: Image.network(bannerdata[index].url,fit: BoxFit.fill,
             errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
               return Image.asset("assets/logeeo.png", fit: BoxFit.fill);
@@ -432,7 +587,12 @@ class _MyHomePageState extends State<HomePage> {
               ),
               Expanded(
                 flex:3,
-                child:Text(""),
+                child:Text("Hi ${_userName}",style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  fontSize: 14.0,
+                ),),
               ),
               Expanded(
                   flex:1,
@@ -923,6 +1083,16 @@ class _MyHomePageState extends State<HomePage> {
 
   /////////////////////////////////// HOME PAGE ///////////////////////////
   Widget getHomePage(){
+
+    _navigateAndDisplaySelection(BuildContext context) async {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Notifications()),
+      );
+      notificationList();
+
+    }
+
     return SingleChildScrollView(
       child:  Container(
         child: Padding(padding:const EdgeInsets.all(7.0),
@@ -1176,19 +1346,36 @@ class _MyHomePageState extends State<HomePage> {
                           margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
-                              Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => Notifications()));
+                              _navigateAndDisplaySelection(context);
+
                             },
                             child:Padding(
                               padding: const EdgeInsets.all(14.0),
                               child:  Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    height: 55,
-                                    width: 55,
-                                    child: Image.asset( "assets/notid.png", fit: BoxFit.cover),
+                                  Badge(
+                                    badgeColor:isNotifyTrue==0?colors.white:Colors.teal ,
+                                    position: BadgePosition.topEnd(top: -18, end: -2),
+                                    // animationDuration: Duration(milliseconds: 100),
+                                    //animationType: BadgeAnimationType.slide,
+                                    elevation: isNotifyTrue==0?0.0:5.0,
+                                    badgeContent:Padding(
+                                      padding: const EdgeInsets.all(1.0),
+                                      child: Text("${isNotifyTrue}",
+                                        style: TextStyle(color: Colors.white,fontSize: 12.0,fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    ),
+
+
+                                    child: SizedBox(
+                                      height: 55,
+                                      width: 55,
+                                      child: Image.asset( "assets/notid.png", fit: BoxFit.cover),
+                                    ),
                                   ),
+
                                   SizedBox(height: 5),
                                   Text(
                                     "Notification",maxLines: 2,textAlign: TextAlign.center,
