@@ -17,6 +17,7 @@ import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/contact.dart';
 import 'package:thegreatkabab/custom_animated_bottom_bar.dart';
+import 'package:thegreatkabab/dailymenu.dart';
 import 'package:thegreatkabab/dprbooking.dart';
 import 'package:thegreatkabab/gallery.dart';
 import 'package:thegreatkabab/gallery_view.dart';
@@ -727,7 +728,7 @@ class _MyHomePageState extends State<HomePage> {
             Navigator.of(context).pop();
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MenuView()),
+              MaterialPageRoute(builder: (context) => DailyMenuView()),
             );
 
           },
@@ -1962,8 +1963,8 @@ class _MyHomePageState extends State<HomePage> {
       ),
       child: Padding(padding:const EdgeInsets.all(5.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               flex: 1,
