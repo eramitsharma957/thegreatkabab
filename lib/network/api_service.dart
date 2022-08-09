@@ -20,6 +20,7 @@ import 'package:thegreatkabab/models/reviewdata.dart';
 import 'package:thegreatkabab/models/seatprices.dart';
 import 'package:thegreatkabab/models/slotsdata.dart';
 import 'package:thegreatkabab/models/verifyotp.dart';
+import 'package:thegreatkabab/models/winnerdata.dart';
 
 part 'api_service.g.dart';
 
@@ -65,6 +66,12 @@ abstract class ApiService {
       @Field("UsersID_FK") mobileNo,
       @Field("HotelID_FK") hotelId,
       );
+
+  @POST("userwinner/UserWinnerByHotelID")
+  Future<WinnerData> getWinners(
+      @Field("HotelID_FK") hotelId,
+      );
+
 
   @POST("SeatOrderNotificationsReadStatus/SeatOrderNotificationsReadStatusByUser")
   Future<NotificationData> updatenotification(

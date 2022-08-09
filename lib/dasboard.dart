@@ -728,7 +728,7 @@ class _MyHomePageState extends State<HomePage> {
             Navigator.of(context).pop();
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DailyMenuView()),
+              MaterialPageRoute(builder: (context) => MenuView()),
             );
 
           },
@@ -2091,10 +2091,10 @@ class _MyHomePageState extends State<HomePage> {
             Text(menuDescdata[index].itemDescription,
                 textAlign: TextAlign.start,
                 style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 12.0)),
-
-            Text("₹ ${menuDescdata[index].itemPrice}",
+            const SizedBox(height: 2.0),
+           /* Text("₹ ${menuDescdata[index].itemPrice}",
                 textAlign: TextAlign.start,
-                style: style.copyWith(color: colors.redtheme, fontWeight: FontWeight.w400,fontSize: 14.0)),
+                style: style.copyWith(color: colors.redtheme, fontWeight: FontWeight.w400,fontSize: 14.0)),*/
             DottedLine(),
           ],
         ),

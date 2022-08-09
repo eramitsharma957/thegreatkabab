@@ -15,6 +15,7 @@ import 'package:thegreatkabab/gallery_view.dart';
 import 'package:thegreatkabab/models/gallerydata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 
+import 'models/winnerdata.dart';
 import 'network/api_service.dart';
 
 class Winners extends StatefulWidget {
@@ -40,25 +41,40 @@ class WinnersState extends State<Winners> {
   var _Otp;
   bool _layoutlogin=true;
   bool restu=true,vegPic=false,nonvegPicfalse=false;
-  List<GalleryList> gallerydata=<GalleryList>[];
-  List<GalleryList> restdata=<GalleryList>[];
-  List<GalleryList> vegdata=<GalleryList>[];
-  List<GalleryList> nonvegdata=<GalleryList>[];
-  int _youareWinner=0;
+  List<WinnerList> list=<WinnerList>[];
+  int _youareWinner=1;
+  bool isLoader = false;
 
   @override
   void initState() {
-
+    winnersList();
     super.initState();
   }
 
 
-
-
+  //////////////////  Class API //////////////////////
+  Future<Null> winnersList() async {
+    EasyLoading.show(status: 'loading...');
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getWinners(colors.hotelId)
+        .then((result) {
+      if(result.data.isNotEmpty){
+        EasyLoading.dismiss();
+        setState(() {
+          list=result.data.toList();
+        });
+      }else{
+        EasyLoading.dismiss();
+      }
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      print(error);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       //backgroundColor: colors.yellowlight,
       appBar: AppBar(
@@ -103,77 +119,15 @@ class WinnersState extends State<Winners> {
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
-              child:SingleChildScrollView(
-                child:Column(
-                  children: [
-                    Container(
-                      color: colors.white,
-                      height: 80.0,
-                      child:  Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(padding:const EdgeInsets.all(10.0),
-                            child: Text( _youareWinner==0? "Winner announced on\n25 August 2022":"Whooo!! Congratulations!!"
-                              ,textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16.0,
-                                color: colors.green,
-                              ),
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    ),
-                    Container(
-                      color: _youareWinner==0?colors.white:colors.black,
-                      child:  Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(_youareWinner==0?
-                              "assets/waiting.gif":"assets/congratulations.gif",
-                                height: 400.0,
-                                width: 300.0,
-                              ),
-
-                              Padding(padding:const EdgeInsets.all(10.0),
-                                child:
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text( _youareWinner==0? "":"Mr/Mrs Amit Sharma\nYou Won dinner with us"
-                                      ,textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18.0,
-                                        color: Colors.lime,
-                                      ),
-                                    ),
-                                  ]),
-
-                              ),
-
-
-
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  ]),
-
-
-
-
+              child:MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child:Expanded(
+                  child: ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: _buildRow,
+                  ),
+                ),
               ),
 
 
@@ -188,20 +142,91 @@ class WinnersState extends State<Winners> {
   }
 
 
-  onEditGrid(index,BuildContext context) async{
-    print("GRIDDD");
-    var rowData = gallerydata[index];
-    // _buildPopupDialog(context,rowData.url);
-    setState(() {
-    });
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GalleryViewPage(rowData.url)),
+
+
+
+  Widget _buildRow(BuildContext context, int index) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(7.0),
+      ),
+      elevation: 5,
+      margin: EdgeInsets.all(10),
+      child: InkWell(
+      //  onTap: () => onEdit(index),
+        child: Column(
+          children: <Widget>[
+            Row(
+              // mainAxisSize: MainAxisSize.max,
+              //crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      color: colors.redtheme,
+                      width: 100.0,
+                      height: 160.0,
+                      child: Center(
+                          child: RotatedBox(
+                            quarterTurns: 4,
+                            child: RichText(
+                              text: TextSpan(
+                                text:list[index].winnerRank,
+                                style: TextStyle(color: colors.white,fontSize: 18.0,fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                          )
+                      )
+                  ),
+
+                  Expanded(
+                      child:Padding(padding:const EdgeInsets.all(0.0),
+                          child:  Container(
+                              height: 160.0,
+                              padding: const EdgeInsets.all(5.0),
+                              color: Colors.white,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  //  mainAxisAlignment: MainAxisAlignment.start,
+                                  children:<Widget>[
+                                    Text(list[index].title,
+                                        maxLines: 2,
+                                        //textAlign: TextAlign.justify,
+                                        style: TextStyle(color: colors.black,fontSize: 14.0,fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w700)),
+                                    const SizedBox(height: 2.0),
+
+                                    Text(list[index].description,
+                                        // textAlign: TextAlign.justify,
+                                        maxLines: 5,
+                                        style:TextStyle(color: colors.greydark,fontSize: 11.0,fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w700)),
+
+                                  ])
+
+                          )
+                      ),
+
+
+
+                  ),
+
+
+
+                ])
+
+          ],
+        ),
+      ),
     );
-
-
   }
 
+
+
+
+/*
   Widget _gallerylayout(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
@@ -287,9 +312,9 @@ class WinnersState extends State<Winners> {
             backgroundDecoration: BoxDecoration(
               color: Theme.of(context).canvasColor,
             ),
-            /*loadingChild: Center(
+            *//*loadingChild: Center(
           child: CircularProgressIndicator(),
-        ),*/
+        ),*//*
           ),
         ],
       ),
@@ -303,7 +328,7 @@ class WinnersState extends State<Winners> {
         ),
       ],
     );
-  }
+  }*/
 
 
 }

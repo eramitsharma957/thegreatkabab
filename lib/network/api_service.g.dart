@@ -83,6 +83,22 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<WinnerData> getWinners(hotelId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'HotelID_FK': hotelId};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<WinnerData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'userwinner/UserWinnerByHotelID',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = WinnerData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<NotificationData> updatenotification(operation, userid, id) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
