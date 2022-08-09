@@ -39,14 +39,25 @@ class WinnersState extends State<Winners> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   OtpFieldController otpController = OtpFieldController();
   var _Otp;
-  bool _layoutlogin=true;
+  bool _isVisible=false;
   bool restu=true,vegPic=false,nonvegPicfalse=false;
   List<WinnerList> list=<WinnerList>[];
   int _youareWinner=1;
   bool isLoader = false;
+  var _UserID;
+  var _Name="",_WinnerRank="",_title="",_descp="";
+
 
   @override
   void initState() {
+    Future<String> getpay = sfdata.getUserId(context);
+    getpay.then((data) {
+      setState(() {
+        _UserID=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
     winnersList();
     super.initState();
   }
@@ -63,6 +74,15 @@ class WinnersState extends State<Winners> {
         EasyLoading.dismiss();
         setState(() {
           list=result.data.toList();
+          for(int i=0;i<list.length;i++){
+            if(list[i].userTypeIdFk==int.parse(_UserID)){
+              _isVisible=true;
+               _Name=list[i].name;
+              _WinnerRank=list[i].winnerRank;
+              _title=list[i].title;
+              _descp=list[i].description;
+            }
+          }
         });
       }else{
         EasyLoading.dismiss();
@@ -119,16 +139,81 @@ class WinnersState extends State<Winners> {
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
-              child:MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                child:Expanded(
-                  child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: _buildRow,
-                  ),
+              child:Container(
+               color: Colors.white,
+               height: MediaQuery.of(context).size.height,
+               width: MediaQuery.of(context).size.width,
+                child:  Column(
+                  children: [
+                    Visibility(
+                      visible: _isVisible,
+                      child:
+                      Card(
+                          clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          elevation: 5,
+                          margin: EdgeInsets.all(10),
+                          child:  Container(
+                            // height: 500,
+                            width: double.infinity,
+                            child:Center(
+                              child: Column(
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(height: 10.0),
+                                  Text("Congratulations!!",
+                                      textAlign: TextAlign.start,
+                                      style: style.copyWith(color: colors.redtheme, fontWeight: FontWeight.w600,fontSize: 25.0)),
+
+                                  Image.asset(
+                                    "assets/win.png",
+                                    height: 75.0,
+                                    width: 75.0,
+                                  ),
+                                  const SizedBox(height: 10.0),
+                                  Text(_Name,
+                                      textAlign: TextAlign.start,
+                                      style: style.copyWith(color: colors.black, fontWeight: FontWeight.w600,fontSize: 28.0)),
+                                  Text("You Won!! ${_WinnerRank} Prize",
+                                      textAlign: TextAlign.start,
+                                      style: style.copyWith(color: colors.black, fontWeight: FontWeight.w600,fontSize: 25.0)),
+                                  Text(_title,
+                                      textAlign: TextAlign.start,
+                                      style: style.copyWith(color: colors.black, fontWeight: FontWeight.w600,fontSize: 20.0)),
+                                  Text(_descp,
+                                      textAlign: TextAlign.start,
+                                      style: style.copyWith(color: colors.black, fontWeight: FontWeight.w600,fontSize: 15.0)),
+                                  const SizedBox(height: 50.0),
+                                ],
+                              ),
+                            ),
+                          )
+                      ),
+
+                    ),
+                    Visibility(
+                      visible: _isVisible==false?true:false,
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        child:Expanded(
+                          child: ListView.builder(
+                            itemCount: list.length,
+                            itemBuilder: _buildRow,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
+
+
+
+
 
 
 
@@ -164,25 +249,51 @@ class WinnersState extends State<Winners> {
                   Container(
                       color: colors.redtheme,
                       width: 100.0,
-                      height: 160.0,
+                      height: 140.0,
                       child: Center(
-                          child: RotatedBox(
-                            quarterTurns: 4,
-                            child: RichText(
-                              text: TextSpan(
-                                text:list[index].winnerRank,
-                                style: TextStyle(color: colors.white,fontSize: 18.0,fontFamily: 'Montserrat',
-                                    fontWeight: FontWeight.w700),
+                          child:Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset("assets/win.png",
+                                width: 35.0,
+                                height: 35.0,
                               ),
-                            ),
-                          )
+                              const SizedBox(height: 10.0),
+                              RotatedBox(
+                                quarterTurns: 4,
+                                child: RichText(
+                                  text: TextSpan(
+                                    text:list[index].winnerRank,
+                                    style: TextStyle(color: colors.white,fontSize: 18.0,fontFamily: 'Montserrat',
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ),
+
+                              RotatedBox(
+                                quarterTurns: 4,
+                                child: RichText(
+                                  text: TextSpan(
+                                    text:"Winner",
+                                    style: TextStyle(color: colors.white,fontSize: 14.0,fontFamily: 'Montserrat',
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              )
+
+
+                            ],
+                          ),
+
+
+
                       )
                   ),
 
                   Expanded(
                       child:Padding(padding:const EdgeInsets.all(0.0),
                           child:  Container(
-                              height: 160.0,
+                              height: 140.0,
                               padding: const EdgeInsets.all(5.0),
                               color: Colors.white,
                               child: Column(
@@ -191,6 +302,13 @@ class WinnersState extends State<Winners> {
                                   // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   //  mainAxisAlignment: MainAxisAlignment.start,
                                   children:<Widget>[
+                                    const SizedBox(height: 15.0),
+                                    Text(list[index].name,
+                                        maxLines: 2,
+                                        //textAlign: TextAlign.justify,
+                                        style: TextStyle(color: colors.black,fontSize: 15.0,fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w700)),
+                                    const SizedBox(height: 5.0),
                                     Text(list[index].title,
                                         maxLines: 2,
                                         //textAlign: TextAlign.justify,

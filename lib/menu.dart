@@ -161,143 +161,147 @@ class MenuViewState extends State<MenuView> {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
               child: SingleChildScrollView(
-                  child: Padding(padding:const EdgeInsets.all(10.0),
-                       child: Column(
-                         children: [
-                           Text(
-                             "Menu Items",maxLines: 2,textAlign: TextAlign.center,
-                             style: TextStyle(
-                               fontFamily: 'Poppins',
-                               fontWeight: FontWeight.w600,
-                               fontSize: 16.0,
-                               color: colors.redtheme,
-                             ),
-                           ),
-                           SizedBox(height: 10),
-                           Container(
-                             child: MediaQuery.removePadding(
-                               context: context,
-                               removeTop: true,
-                               child:SingleChildScrollView(
-                                 physics: ScrollPhysics(),
-                                 child: Column(
-                                   children: <Widget>[
-                                     // Text('Hey'),
-                                     GridView.builder(
-                                         physics: NeverScrollableScrollPhysics(),
-                                         shrinkWrap: true,
-                                         itemCount:menudata.length,
-                                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                         crossAxisCount: 3,
-                                        ),
-                                       itemBuilder:(BuildContext context, int index) {
-                                         return  Card(
-                                           clipBehavior: Clip.antiAlias,
-                                           shape: RoundedRectangleBorder(
-                                             borderRadius: BorderRadius.circular(15.0),
-                                           ),
-                                           elevation: 5,
-                                           margin: EdgeInsets.all(5),
-                                           child:InkWell(
-                                             onTap: () => onEditGrid(index,context),
-                                             child:Padding(
-                                               padding: const EdgeInsets.all(2.0),
-                                               child:  Column(
-                                                 mainAxisAlignment: MainAxisAlignment.center,
-                                                 children: [
-                                                   SizedBox(
-                                                     height: 45,
-                                                     width: 45,
-                                                     child:Image.network(menudata[index].iconImage,
-                                                         errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
-                                                           return Image.asset("assets/logo.png", fit: BoxFit.contain);
-                                                         }
+                  child: Container(
+                  color: Colors.white,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                 child: Padding(padding:const EdgeInsets.all(10.0),
+                   child: Column(
+                     children: [
+                       Text(
+                         "Menu Items",maxLines: 2,textAlign: TextAlign.center,
+                         style: TextStyle(
+                           fontFamily: 'Poppins',
+                           fontWeight: FontWeight.w600,
+                           fontSize: 16.0,
+                           color: colors.redtheme,
+                         ),
+                       ),
+                       SizedBox(height: 10),
+                       Container(
+                         child: MediaQuery.removePadding(
+                           context: context,
+                           removeTop: true,
+                           child:SingleChildScrollView(
+                             physics: ScrollPhysics(),
+                             child: Column(
+                               children: <Widget>[
+                                 // Text('Hey'),
+                                 GridView.builder(
+                                   physics: NeverScrollableScrollPhysics(),
+                                   shrinkWrap: true,
+                                   itemCount:menudata.length,
+                                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                     crossAxisCount: 3,
+                                   ),
+                                   itemBuilder:(BuildContext context, int index) {
+                                     return  Card(
+                                       clipBehavior: Clip.antiAlias,
+                                       shape: RoundedRectangleBorder(
+                                         borderRadius: BorderRadius.circular(15.0),
+                                       ),
+                                       elevation: 5,
+                                       margin: EdgeInsets.all(5),
+                                       child:InkWell(
+                                         onTap: () => onEditGrid(index,context),
+                                         child:Padding(
+                                           padding: const EdgeInsets.all(2.0),
+                                           child:  Column(
+                                             mainAxisAlignment: MainAxisAlignment.center,
+                                             children: [
+                                               SizedBox(
+                                                 height: 45,
+                                                 width: 45,
+                                                 child:Image.network(menudata[index].iconImage,
+                                                     errorBuilder:(BuildContext context, Object exception, StackTrace? stackTrace) {
+                                                       return Image.asset("assets/logo.png", fit: BoxFit.contain);
+                                                     }
 
-                                                     ),
+                                                 ),
 
 
-                                                     // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
-                                                   ),
-                                                   //SizedBox(height: 5),
-                                                   Text(menudata[index].name,maxLines: 2,textAlign: TextAlign.center,
-                                                     style: TextStyle(
-                                                       fontFamily: 'Poppins',
-                                                       fontWeight: FontWeight.w600,
-                                                       fontSize: 12.0,
-                                                       color: colors.redthemenew,
-                                                     ),
-                                                   ),
-                                                 ],
+                                                 // Image.asset("assets/menu_item_icon1.png", fit: BoxFit.contain),
                                                ),
-                                             ),
-
-
-
+                                               //SizedBox(height: 5),
+                                               Text(menudata[index].name,maxLines: 2,textAlign: TextAlign.center,
+                                                 style: TextStyle(
+                                                   fontFamily: 'Poppins',
+                                                   fontWeight: FontWeight.w600,
+                                                   fontSize: 12.0,
+                                                   color: colors.redthemenew,
+                                                 ),
+                                               ),
+                                             ],
                                            ),
+                                         ),
 
-                                         );
-                                       },
-                                     )
-                                   ],
-                                 ),
-                               ),
+
+
+                                       ),
+
+                                     );
+                                   },
+                                 )
+                               ],
                              ),
                            ),
-                          /* ConstrainedBox(
+                         ),
+                       ),
+                       /* ConstrainedBox(
                              constraints: BoxConstraints(
                                  maxHeight: 300
                              ),
                              child:_periodlayout(context),
 
                            ),*/
-                           const SizedBox(height: 5.0),
+                       const SizedBox(height: 5.0),
 
-                           Container(
-                                 color: colors.redtheme,
-                                 margin: const EdgeInsets.symmetric(horizontal: 9),
-                                 child:  Row(
-                                   mainAxisAlignment: MainAxisAlignment.center,
-                                     children: [
-                                 Padding(padding:const EdgeInsets.all(5.0),
-                                   child: Text(_selectmenu,
-                                       textAlign: TextAlign.center,
-                                       style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
-                                 ),
-
-                                     ]
-                                 ),
-
-
+                       Container(
+                         color: colors.redtheme,
+                         margin: const EdgeInsets.symmetric(horizontal: 9),
+                         child:  Row(
+                             mainAxisAlignment: MainAxisAlignment.center,
+                             children: [
+                               Padding(padding:const EdgeInsets.all(5.0),
+                                 child: Text(_selectmenu,
+                                     textAlign: TextAlign.center,
+                                     style: style.copyWith(color: Colors.white, fontWeight: FontWeight.w600,fontSize: 16.0)),
                                ),
 
-                           Container(
-                             child: MediaQuery.removePadding(
-                               context: context,
-                               removeTop: true,
-                               child:SingleChildScrollView(
-                                 physics: ScrollPhysics(),
-                                 child: Column(
-                                   children: <Widget>[
-                                     // Text('Hey'),
-                                     ListView.builder(
-                                         physics: NeverScrollableScrollPhysics(),
-                                         shrinkWrap: true,
-                                         itemCount:menuDescdata.length,
-                                         itemBuilder: _buildRow
-                                     )
-                                   ],
-                                 ),
-                               ),
+                             ]
+                         ),
+
+
+                       ),
+
+                       Container(
+                         child: MediaQuery.removePadding(
+                           context: context,
+                           removeTop: true,
+                           child:SingleChildScrollView(
+                             physics: ScrollPhysics(),
+                             child: Column(
+                               children: <Widget>[
+                                 // Text('Hey'),
+                                 ListView.builder(
+                                     physics: NeverScrollableScrollPhysics(),
+                                     shrinkWrap: true,
+                                     itemCount:menuDescdata.length,
+                                     itemBuilder: _buildRow
+                                 )
+                               ],
                              ),
                            ),
+                         ),
+                       ),
 
-                           /*ListView.builder(
+                       /*ListView.builder(
                                physics: NeverScrollableScrollPhysics(),
                                shrinkWrap: true,
                                itemCount:menuDescdata.length,
                                itemBuilder: _buildRow
                            ),*/
-                           /*Padding(
+                       /*Padding(
                                padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 0.0),
                                child:ConstrainedBox(
                                  constraints: BoxConstraints(
@@ -314,9 +318,10 @@ class MenuViewState extends State<MenuView> {
                            ),*/
 
 
-                         ],
-                       ),
-                      ),
+                     ],
+                   ),
+                 ),),
+
 
 
 
