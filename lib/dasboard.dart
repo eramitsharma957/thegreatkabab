@@ -456,9 +456,9 @@ class _MyHomePageState extends State<HomePage> {
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Login'),
+          title: Text('Create Account'),
           content: const Text(
-              'Login for complete the booking process'),
+              'Login for using all options.Thanks for your visit.'),
           actions: <Widget>[
             FlatButton(
               child: const Text('No'),
@@ -467,7 +467,7 @@ class _MyHomePageState extends State<HomePage> {
               },
             ),
             FlatButton(
-              child: const Text('Yes',style: TextStyle(color: Colors.green)),
+              child: const Text('Yes',style: TextStyle(color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop(ConfirmAction.Accept);
                 Navigator.pushAndRemoveUntil(
@@ -952,7 +952,12 @@ class _MyHomePageState extends State<HomePage> {
               children: <Widget>[
                 IconButton(
                   onPressed: (){
-                    _scaffoldKey.currentState?.openDrawer();
+                    if(_IsLogin==1){
+                      _scaffoldKey.currentState?.openDrawer();
+                    }else{
+                      _asyncloginAlert(context);
+                    }
+
                   },
                   icon: Icon(Icons.more_vert, color: Colors.white),
                 ),

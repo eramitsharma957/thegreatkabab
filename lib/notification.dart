@@ -149,6 +149,7 @@ class NotificationsState extends State<Notifications> {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
               child: SingleChildScrollView(
+
                   child: Container(
                     color: Colors.white,
                       height: MediaQuery.of(context).size.height,
