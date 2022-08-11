@@ -119,9 +119,14 @@ class _MyHomePageState extends State<HomePage> {
     });
     gallery();
     bannerList();
-    notificationList();
     menuList();
     hotelData();
+
+    if(_IsLogin==1){
+      notificationList();
+    }else{
+      _asyncloginAlert(context);
+    }
 
     if(defaultTargetPlatform != TargetPlatform.iOS){
       checkForUpdate();
@@ -1352,7 +1357,12 @@ class _MyHomePageState extends State<HomePage> {
                           margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
-                              _navigateAndDisplaySelection(context);
+                              if(_IsLogin==1){
+                                _navigateAndDisplaySelection(context);
+                              }else{
+                                _asyncloginAlert(context);
+                              }
+
 
                             },
                             child:Padding(
@@ -1418,8 +1428,13 @@ class _MyHomePageState extends State<HomePage> {
                           margin: EdgeInsets.all(8),
                           child:InkWell(
                             onTap: (){
-                              Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => BookingStatus()));
+                              if(_IsLogin==1){
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => BookingStatus()));
+                              }else{
+                                _asyncloginAlert(context);
+                              }
+
                             },
                             child:Padding(
                               padding: const EdgeInsets.all(14.0),

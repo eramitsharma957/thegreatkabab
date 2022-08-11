@@ -212,6 +212,7 @@ class BookingCancelState extends State<BookingCancel> {
        // print(result);
         await Share.file('Receipt', 'bookingReceipt.png', pngBytes, 'image/png');
       }
+
       setState(() {
         var _message = 'New screenshot successfully saved!';
       });
@@ -246,7 +247,7 @@ class BookingCancelState extends State<BookingCancel> {
         onPressed: () async {
           _takeScreenshot();
         },
-        tooltip: 'Increment',
+        tooltip: '',
         child: Icon(Icons.share),
       ),
      appBar: AppBar(

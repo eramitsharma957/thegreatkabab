@@ -169,6 +169,7 @@ class BookSeatState extends State<BookSeat> {
         if(result.data.isNotEmpty){
           foodTypeList=result.data.toList();
           _lunchTypeID=foodTypeList[0].foodTimingIdPk;
+          _Isavilable=false;
           timeSlots();
         }
       });
