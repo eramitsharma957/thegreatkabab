@@ -202,6 +202,28 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<MenuDayData> getMenuofDay(
+      hotelId, foodTimingID_FK, dayNamesID_FK) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {
+      'HotelID_FK': hotelId,
+      'FoodTimingID_FK': foodTimingID_FK,
+      'DayNamesID_FK': dayNamesID_FK
+    };
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<MenuDayData>(Options(
+                method: 'POST', headers: _headers, extra: _extra)
+            .compose(_dio.options,
+                'TodayMenu/TodayMenuItemsWithCategoryByHotelFoodTiminingAndDay',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = MenuDayData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ReviewData> getReviews(hotelId) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -284,6 +306,27 @@ class _ApiService implements ApiService {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = SeatPrices.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<SeatAvailableData> getSeatNow(
+      hotelId, foodTimingID_FK, bookingDate) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {
+      'HotelID_FK': hotelId,
+      'FoodTimingID_FK': foodTimingID_FK,
+      'BookingDate': bookingDate
+    };
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<SeatAvailableData>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'seatorder/AvailableSeatsByTimingDate',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = SeatAvailableData.fromJson(_result.data!);
     return value;
   }
 

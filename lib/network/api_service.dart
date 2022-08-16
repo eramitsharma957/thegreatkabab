@@ -14,9 +14,11 @@ import 'dart:async';
 
 import 'package:thegreatkabab/models/logindata.dart';
 import 'package:thegreatkabab/models/menudata.dart';
+import 'package:thegreatkabab/models/menudaydata.dart';
 import 'package:thegreatkabab/models/menudescdata.dart';
 import 'package:thegreatkabab/models/notificatiodata.dart';
 import 'package:thegreatkabab/models/reviewdata.dart';
+import 'package:thegreatkabab/models/seatavailabledata.dart';
 import 'package:thegreatkabab/models/seatprices.dart';
 import 'package:thegreatkabab/models/slotsdata.dart';
 import 'package:thegreatkabab/models/verifyotp.dart';
@@ -107,6 +109,13 @@ abstract class ApiService {
       @Field("HotelID_FK") hotelId,
       );
 
+  @POST("TodayMenu/TodayMenuItemsWithCategoryByHotelFoodTiminingAndDay")
+  Future<MenuDayData> getMenuofDay(
+      @Field("HotelID_FK") hotelId,
+      @Field("FoodTimingID_FK") foodTimingID_FK,
+      @Field("DayNamesID_FK") dayNamesID_FK,
+      );
+
   @POST("review/ReviewByHotel")
   Future<ReviewData> getReviews(
       @Field("HotelID_FK") hotelId,
@@ -130,6 +139,13 @@ abstract class ApiService {
 
   @POST("seatprice/SeatPriceByHotelFoodTimingDayName")
   Future<SeatPrices> getTimeSlotPrice(
+      @Field("HotelID_FK") hotelId,
+      @Field("FoodTimingID_FK") foodTimingID_FK,
+      @Field("BookingDate") bookingDate,
+      );
+
+  @POST("seatorder/AvailableSeatsByTimingDate")
+  Future<SeatAvailableData> getSeatNow(
       @Field("HotelID_FK") hotelId,
       @Field("FoodTimingID_FK") foodTimingID_FK,
       @Field("BookingDate") bookingDate,

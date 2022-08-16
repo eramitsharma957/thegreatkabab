@@ -13,6 +13,7 @@ import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
 import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
+import 'package:thegreatkabab/const/permissionrequest.dart';
 import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/models/bookingstatusdata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
@@ -53,6 +54,7 @@ class BookingCancelState extends State<BookingCancel> {
   late File _imageFile;
   @override
   void initState() {
+    askPermission();
     Future<String> userid = sfdata.getUserId(context);
     userid.then((data) {
       setState(() {
@@ -236,7 +238,21 @@ class BookingCancelState extends State<BookingCancel> {
       print(onError);
     });
   }*/
+///////////////////Permission /////
+  askPermission() async {
+    var status= PermissionsService().requestStoragePermission(
+        onPermissionDenied: () {
+          print('Permission has been denied');
+        });
+    // var status = await Permission.storage.status;
+    if(status == true){
+      _takeScreenshot();
+      print('Permission');
+    }else{
+      print('NOTPermission');
+    }
 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,6 +262,8 @@ class BookingCancelState extends State<BookingCancel> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           _takeScreenshot();
+
+
         },
         tooltip: '',
         child: Icon(Icons.share),

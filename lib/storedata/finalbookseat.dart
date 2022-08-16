@@ -21,6 +21,7 @@ import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/models/bookingdata.dart';
 import 'package:thegreatkabab/models/bookingresponse.dart';
 import 'package:thegreatkabab/models/discountdata.dart';
+import 'package:thegreatkabab/models/seatavailabledata.dart';
 import 'package:thegreatkabab/models/seatprices.dart';
 import 'package:thegreatkabab/models/slotsdata.dart';
 import 'package:thegreatkabab/network/api_service.dart';
@@ -94,9 +95,11 @@ class FinalBookSeatState extends State<FinalBookSeat> {
   String _hotalName="";
   late String _seatTypeIdFk_PKVeg,_seatTypeIdFk_PKNonVeg,_seatTypeIdFk_PKChild,_discountDetail;
   int _maxseat=0,_maxseatBook=0;
+  int _availableSeat=0;
 
   List<BookingData> bookingdatalist=<BookingData>[];
   List<Datum> bookingresponse=<Datum>[];
+  List<SeatAvailableList> seatavidata=<SeatAvailableList>[];
 
 
   @override
@@ -138,10 +141,12 @@ class FinalBookSeatState extends State<FinalBookSeat> {
       print(e);
     });
     super.initState();
+    seatAvilable();
     seatPriceSlots();
     getDiscount();
     //downloadData();
   }
+
 
 
   //////////////////  Get Slot Price //////////////////////
@@ -224,6 +229,24 @@ class FinalBookSeatState extends State<FinalBookSeat> {
     });
   }
 
+  //////////////////  Get AvalableSeat//////////////////////
+  Future<Null> seatAvilable() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .getSeatNow(colors.hotelId,widget.type,widget.currentDate)
+        .then((result) {
+      setState(() {
+        seatavidata=result.data.toList();
+        _availableSeat=int.parse(seatavidata[0].availableSeats);
+      });
+    }).catchError((error) {
+
+      print(error);
+    });
+  }
+
+
   void TaxCalculation(BuildContext context,String category){
     setState(() {
       if(bookingdatalist.isEmpty){
@@ -282,7 +305,7 @@ class FinalBookSeatState extends State<FinalBookSeat> {
         }
       }
       _maxseatBook=_v+_n+_c;
-      print(jsonEncode(_maxseatBook));
+     // print(jsonEncode(_maxseatBook));
 
       
     });
@@ -959,6 +982,9 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                         return element.noOfSeats == 0;
                                       });
                                       print(jsonEncode(bookingdatalist));
+                                      for(int i=0;i<bookingdatalist.length;i++){
+
+                                      }
                                       if(bookingdatalist.isEmpty){
                                         commonAlert.showToast(context,"Select Seats for complete your booking");
                                       }else{
@@ -977,8 +1003,21 @@ class FinalBookSeatState extends State<FinalBookSeat> {
                                             },
                                             confirmBtnText: 'Contact me',
                                           );
+                                        }else if(_availableSeat<_maxseatBook){
+                                          CoolAlert.show(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            type: CoolAlertType.warning,
+                                            backgroundColor: colors.white,
+                                            text: '${_availableSeat} seats available for select day.',
+                                            // autoCloseDuration: Duration(seconds: 2),
+                                            onConfirmBtnTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            confirmBtnText: 'Close',
+                                          );
                                         }else{
-                                          this.commonAlert.showLoadingDialog(context,_keyLoader);
+                                          commonAlert.showLoadingDialog(context,_keyLoader);
                                           saveBookingData();
                                         }
 

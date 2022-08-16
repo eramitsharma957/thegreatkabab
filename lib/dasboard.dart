@@ -1251,7 +1251,7 @@ class _MyHomePageState extends State<HomePage> {
                           child:InkWell(
                             onTap: (){
                               Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => MenuView()));
+                                  context, MaterialPageRoute(builder: (context) => DailyMenuView()));
                             },
                             child:Padding(
                               padding: const EdgeInsets.all(14.0),
@@ -1265,7 +1265,7 @@ class _MyHomePageState extends State<HomePage> {
                                   ),
                                   SizedBox(height: 5),
                                   Text(
-                                    "Our Menu",maxLines: 2,textAlign: TextAlign.center,
+                                    "Menu of the Day",maxLines: 2,textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.w600,

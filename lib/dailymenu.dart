@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -11,6 +12,7 @@ import 'package:thegreatkabab/const/colors.dart';
 import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/dasboard.dart';
 import 'package:thegreatkabab/models/menudata.dart';
+import 'package:thegreatkabab/models/menudaydata.dart';
 import 'package:thegreatkabab/models/menudescdata.dart';
 import 'package:thegreatkabab/storedata/sfdata.dart';
 
@@ -48,39 +50,21 @@ class DailyMenuViewState extends State<DailyMenuView> {
   bool _layoutlogin=true;
   List<Datamenu> menudata=<Datamenu>[];
   List<MenuDesc> menuDescdata=<MenuDesc>[];
-  List<MenuDesc> allmenuDescdata=<MenuDesc>[];
+  List<MenuDayList> allmenuDescdata=<MenuDayList>[];
   var _selectmenu="Non Veg";
   var _selectmenuID=0;
+  bool lunch=true,dinner=false;
+  var _day=DateTime.now().weekday;
 
   @override
   void initState() {
-    menuList();
+    menuDescription(1);
     super.initState();
   }
 
 
 
-  //////////////////  Get Menus //////////////////////
-  Future<Null> menuList() async {
-    EasyLoading.show(status: 'Loading');
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    final api = Provider.of<ApiService>(context, listen: false);
-    return await api
-        .getMenuLsit(colors.hotelId)
-        .then((result) {
-      setState(() {
-        EasyLoading.dismiss();
-        if(result.data.isNotEmpty){
-          menudata=result.data.toList();
-          menuDescription(menudata[0].menuItemCategoryIdPk);
-        }
-      });
-    }).catchError((error) {
 
-      EasyLoading.dismiss();
-      print(error);
-    });
-  }
 
   //////////////////  Get Menus Description //////////////////////
   Future<Null> menuDescription(int selectmenuID) async {
@@ -88,13 +72,13 @@ class DailyMenuViewState extends State<DailyMenuView> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
-        .getMenuDescription(colors.hotelId)
+        .getMenuofDay(colors.hotelId,selectmenuID,_day)
         .then((result) {
       setState(() {
         EasyLoading.dismiss();
         if(result.data.isNotEmpty) {
           allmenuDescdata = result.data.toList();
-          getmenuDescriptions(context,selectmenuID);
+          // getmenuDescriptions(context,selectmenuID);
           }
       });
     }).catchError((error) {
@@ -103,14 +87,6 @@ class DailyMenuViewState extends State<DailyMenuView> {
     });
   }
 
-  void getmenuDescriptions(BuildContext context,int selectmenuID){
-    menuDescdata=[];
-    for(int i=0;i<allmenuDescdata.length;i++){
-      if(allmenuDescdata[i].menuItemCategoryIdPk==selectmenuID){
-        menuDescdata.add(MenuDesc(menuIdPk: allmenuDescdata[i].menuIdPk, item: allmenuDescdata[i].item, itemPrice: allmenuDescdata[i].itemPrice, itemDescription:allmenuDescdata[i].itemDescription, menuItemCategoryIdPk:allmenuDescdata[i].menuItemCategoryIdPk, name:allmenuDescdata[i].name));
-      }
-    }
-  }
 
 
   @override
@@ -173,140 +149,105 @@ class DailyMenuViewState extends State<DailyMenuView> {
                                color: colors.redtheme,
                              ),
                            ),
-                           SizedBox(height: 10),
-                           Card(
-                             clipBehavior: Clip.antiAlias,
-                             shape: RoundedRectangleBorder(
-                               borderRadius: BorderRadius.circular(5.0),
-                             ),
-                             elevation: 5,
-                             margin: EdgeInsets.all(10),
-                             child:InkWell(
-                               child:Padding(
-                                 padding: const EdgeInsets.all(8.0),
-                                 child:  Column(
-                                   mainAxisAlignment: MainAxisAlignment.center,
-                                   children: [
-                                     //SizedBox(height: 5),
-                                     Text("TGKF Classical Salad/Dahi Bhalla Chaat/Tamato Dhaniya Shorba",maxLines: 2,textAlign: TextAlign.center,
-                                       style: TextStyle(
-                                         fontFamily: 'Poppins',
-                                         fontWeight: FontWeight.w500,
-                                         fontSize: 14.0,
-                                         color: colors.black,
-                                       ),
-                                     ),
-                                   ],
+                           SizedBox(height: 20),
+                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            //crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                            GestureDetector(
+                             onTap: (){
+                               setState(() {
+                                 lunch=true;
+                                 dinner=false;
+                                 menuDescription(1);
+                               });
+
+
+                             },
+                             child:Container(
+                               width: 150,
+                               margin: EdgeInsets.all(0.0),
+                               decoration: BoxDecoration(
+                                 color:lunch==true?colors.purpals:colors.greylight,
+                                 borderRadius: BorderRadius.only(
+                                   topRight: Radius.circular(10.0),
+                                   topLeft: Radius.circular(10.0),
                                  ),
                                ),
-
-
-
-                             ),
-
-                           ),
-                           Container(
-                             color: colors.redtheme,
-                             height: 40.0,
-                             child: Row(
-                               children: [
-                                 Text(
-                                   "  Vegetarian",maxLines: 2,textAlign: TextAlign.center,
+                               child: Padding(padding:const EdgeInsets.all(10.0),
+                                 child:  Text(
+                                   "LUNCH",maxLines: 2,textAlign: TextAlign.center,
                                    style: TextStyle(
                                      fontFamily: 'Poppins',
-                                     fontWeight: FontWeight.w600,
-                                     fontSize: 16.0,
-                                     color: colors.white,
+                                     fontWeight: FontWeight.w500,
+                                     fontSize: 14.0,
+                                     color: lunch==true?colors.redthemenew:colors.grey,
                                    ),
                                  ),
-                               ],
-                             ),
-                          ),
-
-
-
-                           Container(
-                             child: MediaQuery.removePadding(
-                               context: context,
-                               removeTop: true,
-                               child:SingleChildScrollView(
-                                 physics: ScrollPhysics(),
-                                 child: Column(
-                                   children: <Widget>[
-                                     // Text('Hey'),
-                                     ListView.builder(
-                                         physics: NeverScrollableScrollPhysics(),
-                                         shrinkWrap: true,
-                                         itemCount:menuDescdata.length,
-                                         itemBuilder: _buildRow
-                                     )
-                                   ],
-                                 ),
                                ),
+
+
+
                              ),
                            ),
+                           const SizedBox(width: 10.0,),
+                           GestureDetector(
+                             onTap: (){
+                               setState(() {
+                                 lunch=false;
+                                 dinner=true;
+                                 menuDescription(2);
+                               });
 
-                           const SizedBox(height: 5.0),
-                           Container(
-                             color: colors.redtheme,
-                             height: 40.0,
-                             child: Row(
-                               children: [
-                                 Text(
-                                   "  Non-Vegetarian",maxLines: 2,textAlign: TextAlign.center,
+                             },
+                             child:Container(
+                               width: 150,
+                               margin: EdgeInsets.all(0.0),
+                               decoration: BoxDecoration(
+                                 color: dinner==true?colors.purpals:colors.greylight,
+                                 borderRadius: BorderRadius.only(
+                                   topRight: Radius.circular(10.0),
+                                   topLeft: Radius.circular(10.0),
+                                 ),
+                               ),
+                               child: Padding(padding:const EdgeInsets.all(10.0),
+                                 child:  Text(
+                                   "DINNER",maxLines: 2,textAlign: TextAlign.center,
                                    style: TextStyle(
                                      fontFamily: 'Poppins',
-                                     fontWeight: FontWeight.w600,
-                                     fontSize: 16.0,
-                                     color: colors.white,
+                                     fontWeight: FontWeight.w500,
+                                     fontSize: 14.0,
+                                     color: dinner==true?colors.redthemenew:colors.grey,
                                    ),
                                  ),
+                               ),
+
+
+
+                             ),
+                           ),
+
+
+
+                         ],
+                       ),
+
+                           Container(
+
+                             color: colors.purpals,
+                             child: Column(
+                               children: [
+                                 ListView.builder(
+                                     physics: NeverScrollableScrollPhysics(),
+                                     shrinkWrap: true,
+                                     itemCount:allmenuDescdata.length,
+                                     itemBuilder: _buildRow
+                                 )
                                ],
                              ),
                            ),
 
-                           Container(
-                             child: MediaQuery.removePadding(
-                               context: context,
-                               removeTop: true,
-                               child:SingleChildScrollView(
-                                 physics: ScrollPhysics(),
-                                 child: Column(
-                                   children: <Widget>[
-                                     // Text('Hey'),
-                                     ListView.builder(
-                                         physics: NeverScrollableScrollPhysics(),
-                                         shrinkWrap: true,
-                                         itemCount:menuDescdata.length,
-                                         itemBuilder: _buildRow
-                                     )
-                                   ],
-                                 ),
-                               ),
-                             ),
-                           ),
 
-                           /*ListView.builder(
-                               physics: NeverScrollableScrollPhysics(),
-                               shrinkWrap: true,
-                               itemCount:menuDescdata.length,
-                               itemBuilder: _buildRow
-                           ),*/
-                           /*Padding(
-                               padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 0.0),
-                               child:ConstrainedBox(
-                                 constraints: BoxConstraints(
-                                     maxHeight: 600
-                                 ),
-                                 child:ListView.builder(
-                                   primary: false,
-                                   shrinkWrap: true,
-                                   itemCount: menuDescdata.length,
-                                   itemBuilder: _buildRow,
-                                 ),
-
-                               ),
-                           ),*/
 
 
                          ],
@@ -337,11 +278,20 @@ class DailyMenuViewState extends State<DailyMenuView> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(menuDescdata[index].item,
+            Row(
+              children: [
+                SizedBox(
+                  height: 22,
+                  width: 22,
+                  child: Image.asset(allmenuDescdata[index].name=="Veg"?"assets/vicon.png":"assets/nicon.png", fit: BoxFit.cover),
+                ),
+              ],
+            ),
+            Text(allmenuDescdata[index].item,
                 textAlign: TextAlign.start,
                 style: style.copyWith(color: colors.black, fontWeight: FontWeight.w600,fontSize: 14.0)),
 
-            Text(menuDescdata[index].itemDescription,
+            Text(allmenuDescdata[index].itemDescription,
                 textAlign: TextAlign.start,
                 style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 12.0)),
             const SizedBox(height: 5.0),
