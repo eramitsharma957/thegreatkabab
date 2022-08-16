@@ -475,16 +475,26 @@ class BookSeatState extends State<BookSeat> {
                                                                     ),
                                             onChanged: (SlotListdata? data) {
                                               setState(() {
+                                                DateTime date2;
                                                 slotdata = data!;
                                                 _selectSlotCode=slotdata!.slotsIdPk;
                                                 _selectSlotTime=slotdata!.slotTime;
                                                 if(_selectSlotTime != "Select Slot"){
                                                   DateTime date= DateFormat.jm().parse(_selectSlotTime);
                                                   print(DateFormat("HH:mm").format(date));
-
+                                                  print("DATE11-   ${date}");
                                                   print(TimeOfDay.now().format(context));
                                                   DateTime date2=DateFormat.jm().parse(TimeOfDay.now().format(context));
-
+                                                  /*try {
+                                                    DateTime date2=DateFormat.jm().parse(TimeOfDay.now().format(context));
+                                                    print("DATE2-   ${date2}");
+                                                  } on Exception catch (e) {
+                                                    date2=TimeOfDay.now();
+                                                    print(e); // Only catches an exception of type `Exception`.
+                                                  } catch (e) {
+                                                    print(e); // Catches all types of `Exception` and `Error`.
+                                                  }
+*/
 
                                                   if(dateCalendar.isAfter(DateTime.now())){
                                                     print("DATE AFTER");
