@@ -51,6 +51,7 @@ class BookingList {
     required this.seattimename,
     required this.foodtimeName,
     required this.totaltax,
+    required this.bookingTimeFormate,
   });
 
   int seatOrderIdPk;
@@ -74,6 +75,7 @@ class BookingList {
   int createdBy;
   String seattimename;
   String foodtimeName;
+  String bookingTimeFormate;
 
   factory BookingList.fromJson(Map<String, dynamic> json) => BookingList(
     seatOrderIdPk: json["SeatOrderID_PK"],
@@ -97,6 +99,7 @@ class BookingList {
     seattimename: json["SeatTypeName"],
     foodtimeName: json["FoodTimeName"],
     totaltax: json["TotalTax"],
+    bookingTimeFormate: json["BookingTimeFormate"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -121,6 +124,7 @@ class BookingList {
     "SeatTypeName": seattimename,
     "FoodTimeName": foodtimeName,
     "TotalTax": totaltax,
+    "BookingTimeFormate": bookingTimeFormate,
   };
 }
 

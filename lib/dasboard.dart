@@ -96,6 +96,9 @@ class _MyHomePageState extends State<HomePage> {
     getpay.then((data) {
       setState(() {
         _IsLogin=data;
+        if(_IsLogin==1){
+          notificationList();
+        }
       });
     },onError: (e) {
       print(e);
@@ -122,11 +125,6 @@ class _MyHomePageState extends State<HomePage> {
     menuList();
     hotelData();
 
-    if(_IsLogin==1){
-      notificationList();
-    }else{
-      _asyncloginAlert(context);
-    }
 
     if(defaultTargetPlatform != TargetPlatform.iOS){
       checkForUpdate();
