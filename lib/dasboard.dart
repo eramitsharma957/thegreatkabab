@@ -98,7 +98,6 @@ class _MyHomePageState extends State<HomePage> {
         _IsLogin=data;
         if(_IsLogin==1){
           notificationList();
-        }else{
         }
       });
     },onError: (e) {
@@ -125,6 +124,7 @@ class _MyHomePageState extends State<HomePage> {
     bannerList();
     menuList();
     hotelData();
+
 
     if(defaultTargetPlatform != TargetPlatform.iOS){
       checkForUpdate();

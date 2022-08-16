@@ -68,6 +68,7 @@ class BookSeatState extends State<BookSeat> {
   bool _Isavilable=false;
   DateTime dateCalendar=DateTime.now();
   int selectedIndex=0;
+  DateTime date2=DateTime.now();
 
 
   @override
@@ -475,35 +476,55 @@ class BookSeatState extends State<BookSeat> {
                                                                     ),
                                             onChanged: (SlotListdata? data) {
                                               setState(() {
-                                                DateTime date2;
                                                 slotdata = data!;
                                                 _selectSlotCode=slotdata!.slotsIdPk;
                                                 _selectSlotTime=slotdata!.slotTime;
                                                 if(_selectSlotTime != "Select Slot"){
                                                   DateTime date= DateFormat.jm().parse(_selectSlotTime);
-                                                  print(DateFormat("HH:mm").format(date));
-                                                  print("DATE11-   ${date}");
-                                                  print(TimeOfDay.now().format(context));
-                                                  DateTime date2=DateFormat.jm().parse(TimeOfDay.now().format(context));
+                                                 // print(DateFormat("HH:mm").format(date));
+                                                  String time=DateFormat("HH:mm:ss").format(date);
+                                                 // date=DateTime.parse(time);
+
+                                                 // print(TimeOfDay.now().format(context));
+                                                 // String end=DateFormat.jm().format(DateTime.now());
+                                                  String end=DateFormat("HH:mm:ss").format(DateTime.now());
+                                                  var format = DateFormat("HH:mm:ss");
+                                                  var start = format.parse(time);
+                                                  var endTime = format.parse(end);
+                                                  print(" start-   ${start}");
+                                                  print(" endTime-   ${endTime}");
+
+
+
+                                                 // print(" EXPCON-   ${date2}");
+                                                 // print(" EXPCON-   ${date}");
                                                   /*try {
-                                                    DateTime date2=DateFormat.jm().parse(TimeOfDay.now().format(context));
-                                                    print("DATE2-   ${date2}");
-                                                  } on Exception catch (e) {
-                                                    date2=TimeOfDay.now();
-                                                    print(e); // Only catches an exception of type `Exception`.
+                                                    date2=DateFormat.jm().parse(TimeOfDay.now().format(context));
+                                                    print("NOR   ${date2}");
                                                   } catch (e) {
-                                                    print(e); // Catches all types of `Exception` and `Error`.
-                                                  }
-*/
+                                                    print(e);
+                                                    print(DateFormat.jm().format(DateTime.now()));
+                                                    print(DateFormat.jm().parse(DateFormat.jm().format(DateTime.now())));
+                                                   // date2=DateFormat.jm().format(DateTime.now());
+                                                    //date2=DateFormat.jm().format(DateTime.now());
+                                                   // print(DateFormat.jm().format(DateTime.now()));
+                                                    //print(" EXP-   ${TimeOfDay.now().format(context)}");
+
+                                                   // date2=DateTime.parse(TimeOfDay.now().format(context));
+                                                    print(" EXPCON-   ${date2}");
+                                                    print(" EXPCON-   ${date}");
+                                                    // TODO: handle exception, for example by showing an alert to the user
+                                                  }*/
+
 
                                                   if(dateCalendar.isAfter(DateTime.now())){
                                                     print("DATE AFTER");
                                                     _Isavilable=true;
                                                   }else{
-                                                    if (date2.isAfter(date)) {
-                                                      _Isavilable=false;
-                                                    }else{
+                                                    if (start.isAfter(endTime)) {
                                                       _Isavilable=true;
+                                                    }else{
+                                                      _Isavilable=false;
                                                     }
                                                   }
                                                 }else{

@@ -252,7 +252,7 @@ class BookingStatusState extends State<BookingStatus> {
                         textAlign: TextAlign.start,
                         style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 12.0)),
 
-                    Text(commonAlert.dateFormate24to12hour(context,uniquebookinglist[index].bookingTime),
+                    Text(uniquebookinglist[index].bookingTimeFormate,
                         textAlign: TextAlign.start,
                         style: style.copyWith(color: colors.redthemenew, fontWeight: FontWeight.w400,fontSize: 12.0)),
                     Text("${uniquebookinglist[index].foodtimeName}",
