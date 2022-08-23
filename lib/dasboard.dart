@@ -1886,17 +1886,11 @@ class _MyHomePageState extends State<HomePage> {
                   ),
                 ),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        color: colors.purpals,
-                        child: _gallerylayout(context)
-                    ),
-                  ],
+                Container(
+                    //width: MediaQuery.of(context).size.width,
+                    //height: MediaQuery.of(context).size.height,
+                    color: colors.purpals,
+                    child: _gallerylayout(context)
                 ),
 
 

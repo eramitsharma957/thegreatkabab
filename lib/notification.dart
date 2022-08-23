@@ -132,13 +132,11 @@ class NotificationsState extends State<Notifications> {
     automaticallyImplyLeading: false,
     centerTitle: false,
     flexibleSpace: Container(
-    decoration: BoxDecoration(
+    decoration: const BoxDecoration(
     image: DecorationImage(
     image: AssetImage('assets/imgappbar.png'),
     fit: BoxFit.cover,
-    ),
-    ),
-    ),
+    ),),),
     backgroundColor: Colors.transparent,
 
     ),

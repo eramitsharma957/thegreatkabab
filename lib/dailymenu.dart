@@ -234,7 +234,7 @@ class DailyMenuViewState extends State<DailyMenuView> {
 
                            Container(
 
-                             color: colors.purpals,
+                             color: colors.white,
                              child: Column(
                                children: [
                                  ListView.builder(

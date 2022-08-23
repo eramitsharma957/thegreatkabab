@@ -307,21 +307,15 @@ class GalleryViewState extends State<GalleryView> {
                          ],
                        ),*/
 
-                       Row(
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         crossAxisAlignment: CrossAxisAlignment.center,
-                         children: [
-                           Container(
-                             width: MediaQuery.of(context).size.width,
-                             height: MediaQuery.of(context).size.height,
-                             color: colors.purpals,
-                             child: Column(
-                               children: [
-                                 _gallerylayout(context),
-                               ],
-                             ),
-                           ),
-                         ],
+                       Container(
+                         // width: MediaQuery.of(context).size.width,
+                         // height: MediaQuery.of(context).size.height,
+                         color: colors.purpals,
+                         child: Column(
+                           children: [
+                             _gallerylayout(context),
+                           ],
+                         ),
                        ),
                      ],
                    ),

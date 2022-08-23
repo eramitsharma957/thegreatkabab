@@ -54,7 +54,7 @@ class BookingCancelState extends State<BookingCancel> {
   late File _imageFile;
   @override
   void initState() {
-    askPermission();
+  //  askPermission();
     Future<String> userid = sfdata.getUserId(context);
     userid.then((data) {
       setState(() {
@@ -239,7 +239,7 @@ class BookingCancelState extends State<BookingCancel> {
     });
   }*/
 ///////////////////Permission /////
-  askPermission() async {
+  /*askPermission() async {
     var status= PermissionsService().requestStoragePermission(
         onPermissionDenied: () {
           print('Permission has been denied');
@@ -252,7 +252,7 @@ class BookingCancelState extends State<BookingCancel> {
       print('NOTPermission');
     }
 
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
