@@ -187,7 +187,7 @@ class SignUpState extends State<SignUp> {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: AssetImage("assets/bg2.png"),
+                                  image: AssetImage(_layoutlogin==false?"assets/bg2.png":"assets/bg.jpg"),
                                   fit: BoxFit.fill,
                                 ),
                               ),
@@ -203,8 +203,8 @@ class SignUpState extends State<SignUp> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             SizedBox(
-                                              height: 220.0,
-                                              width: 220.0,
+                                              height: 160.0,
+                                              width: 160.0,
                                               child: Image.asset("assets/logo.png", fit: BoxFit.contain),
                                             ),
                                           ],
