@@ -1888,7 +1888,7 @@ class _MyHomePageState extends State<HomePage> {
 
                 Container(
                     //width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
+                    //height: MediaQuery.of(context).size.height,
                     color: colors.purpals,
                     child: _gallerylayout(context)
                 ),

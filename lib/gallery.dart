@@ -310,7 +310,7 @@ class GalleryViewState extends State<GalleryView> {
 
                        Container(
                          // width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
+                         // height: MediaQuery.of(context).size.height,
                          color: colors.purpals,
                          child: Column(
                            children: [
