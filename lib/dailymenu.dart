@@ -283,7 +283,7 @@ class DailyMenuViewState extends State<DailyMenuView> {
                 SizedBox(
                   height: 22,
                   width: 22,
-                  child: Image.asset(allmenuDescdata[index].name=="Veg"?"assets/vicon.png":"assets/nicon.png", fit: BoxFit.cover),
+                  child: Image.asset(allmenuDescdata[index].name=="Non Veg"?"assets/nicon.png":"assets/vicon.png", fit: BoxFit.cover),
                 ),
               ],
             ),

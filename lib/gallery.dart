@@ -48,6 +48,7 @@ class GalleryViewState extends State<GalleryView> {
   List<GalleryList> topCategories=<GalleryList>[];
   int _photoGalleryCategoryIdPk=0;
   int selectedIndex=0;
+ // final mediaQuery = MediaQuery.of(context);
 
   @override
   void initState() {
@@ -309,7 +310,7 @@ class GalleryViewState extends State<GalleryView> {
 
                        Container(
                          // width: MediaQuery.of(context).size.width,
-                         // height: MediaQuery.of(context).size.height,
+                          height: MediaQuery.of(context).size.height,
                          color: colors.purpals,
                          child: Column(
                            children: [
@@ -369,24 +370,32 @@ class GalleryViewState extends State<GalleryView> {
                   Positioned(
                         bottom: 0,
                         left: 0,
-                        child:Container(
+                        child: Container(
                           alignment: Alignment.center,
-                            width: 300,
-                            color: Colors.black54,
-                            padding: const EdgeInsets.all(5),
-                            child:Row(
-                              children: [
-                                Text(
-                                  vegdata[index].name==null?"":vegdata[index].name,textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
+                          width: MediaQuery.of(context).size.width/2,
+                          // width: 180,
+                          color: Colors.black54,
+                          padding: const EdgeInsets.all(5),
+                          child:IntrinsicWidth(
+                            child:Text(
+                              vegdata[index].name==null?"":vegdata[index].name,textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
+
+
+                        ),
+
+
+
+
+
+
+
                       ),
                 ],
 

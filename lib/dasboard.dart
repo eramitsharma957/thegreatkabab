@@ -1888,7 +1888,7 @@ class _MyHomePageState extends State<HomePage> {
 
                 Container(
                     //width: MediaQuery.of(context).size.width,
-                    //height: MediaQuery.of(context).size.height,
+                    height: MediaQuery.of(context).size.height,
                     color: colors.purpals,
                     child: _gallerylayout(context)
                 ),
@@ -2160,21 +2160,22 @@ class _MyHomePageState extends State<HomePage> {
                     left: 0,
                     child:Container(
                       alignment: Alignment.center,
-                      width: 300,
+                      width: MediaQuery.of(context).size.width/2,
+                      // width: 180,
                       color: Colors.black54,
                       padding: const EdgeInsets.all(5),
-                      child:Row(
-                        children: [
-                          Text(
-                            vegdata[index].name==null?"":vegdata[index].name,textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
+                      child:IntrinsicWidth(
+                        child:Text(
+                          vegdata[index].name==null?"":vegdata[index].name,textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 12,
                           ),
-                        ],
+                        ),
                       ),
+
+
                     ),
                   ),
                 ],
