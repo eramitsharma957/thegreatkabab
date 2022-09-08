@@ -153,23 +153,18 @@ class GalleryViewState extends State<GalleryView> {
                    color: colors.white,
                    child:  Column(
                      children: [
-                       Row(
-                         children: [
-                           Padding(padding:const EdgeInsets.all(10.0),
-                             child: Text(
-                               "Gallery",textAlign: TextAlign.start,
-                               style: TextStyle(
-                                 fontFamily: 'Poppins',
-                                 fontWeight: FontWeight.w600,
-                                 fontSize: 16.0,
-                                 color: colors.redthemenew,
-                               ),
-                             ),
-                           ),
-
-                         ],
-                       ),
                        SizedBox(height: 5),
+                       Text(
+                         "Gallery",maxLines: 2,textAlign: TextAlign.center,
+                         style: TextStyle(
+                           fontFamily: 'Poppins',
+                           fontWeight: FontWeight.w600,
+                           fontSize: 16.0,
+                           color: colors.redthemenew,
+                         ),
+                       ),
+
+                       SizedBox(height: 10),
 
                        SizedBox(
                          height: 45.0,

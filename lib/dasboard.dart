@@ -1851,21 +1851,17 @@ class _MyHomePageState extends State<HomePage> {
           child: Padding(padding:const EdgeInsets.all(0.0),
             child: Column(
               children: [
-              Row(
-                  children: [
-                    Padding(padding:const EdgeInsets.all(10.0),
-                      child: Text(
-                        "Gallery",textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.0,
-                          color: colors.redthemenew,
-                        ),
-                      ),
-                    ),
-                  ],
+                SizedBox(height: 10),
+                Text(
+                  "Gallery",maxLines: 2,textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16.0,
+                    color: colors.redthemenew,
+                  ),
                 ),
+
 
               SizedBox(height: 20),
                 SizedBox(
@@ -1926,31 +1922,17 @@ class _MyHomePageState extends State<HomePage> {
                     color: colors.redthemenew,
                   ),
                 ),
-                SizedBox(height: 10),
-                MediaQuery.removePadding(
-                  context: context,
-                  removeTop: true,
-                  child:
-                  datalist.isNotEmpty
-                      ? Container(
-                    child: Expanded(
-                      child: ListView.builder(
-                        itemCount: datalist.length,
-                        itemBuilder: _buildRowNotification,
-                      ),
-                    ),
-                  )
-                      : isLoader == true
-                      ? Container(
-                      margin: const EdgeInsets.all(180.0),
-                      child: const Center(child: CircularProgressIndicator()))
-                      : Container(
-                    margin: const EdgeInsets.all(160.0),
-                    child: Text("",style: TextStyle(color: colors.redtheme),),
+                SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: datalist.length,
+                    itemBuilder: _buildRowNotification,
                   ),
                 ),
                 SizedBox(
-                  height: 100.0,
+                  height: 20.0,
                 ),
 
 
