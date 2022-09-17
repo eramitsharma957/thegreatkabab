@@ -250,6 +250,7 @@ class ReviewsState extends State<Reviews> {
         //alignment: Alignment.centerLeft,
           children: <Widget>[
             Container(
+                    width: double.maxFinite,
                     padding: const EdgeInsets.all(2.0),
                     child: Container(
                       decoration: BoxDecoration(
@@ -270,7 +271,6 @@ class ReviewsState extends State<Reviews> {
                                   color: Colors.black,
                                 ),
                               ),
-
                               SizedBox(
                                 height: 10.0,
                               ),
