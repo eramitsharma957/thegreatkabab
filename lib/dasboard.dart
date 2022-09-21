@@ -18,6 +18,7 @@ import 'package:thegreatkabab/const/common.dart';
 import 'package:thegreatkabab/contact.dart';
 import 'package:thegreatkabab/custom_animated_bottom_bar.dart';
 import 'package:thegreatkabab/dailymenu.dart';
+import 'package:thegreatkabab/deleteaccount.dart';
 import 'package:thegreatkabab/dprbooking.dart';
 import 'package:thegreatkabab/gallery.dart';
 import 'package:thegreatkabab/gallery_view.dart';
@@ -406,7 +407,7 @@ class _MyHomePageState extends State<HomePage> {
     return Padding(
         padding: const EdgeInsets.only(right: 10.0),
         child: IconButton(icon: Icon(Icons.power_settings_new), onPressed: () async {
-          _asyncConfirmDialognew(context);
+
         }
         )
     );
@@ -421,9 +422,9 @@ class _MyHomePageState extends State<HomePage> {
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Logout'),
+          title: const Text('Delete account'),
           content: const Text(
-              'Do you really want to logout?'),
+              'Do you really want to delete account?'),
           actions: <Widget>[
             FlatButton(
               child: const Text('No'),
@@ -432,16 +433,10 @@ class _MyHomePageState extends State<HomePage> {
               },
             ),
             FlatButton(
-              child: const Text('Logout',style: TextStyle(color: Colors.red)),
+              child: const Text('Delete',style: TextStyle(color: Colors.red)),
               onPressed: () {
-                //sfdata.removeAll(context);
-                sfdata.saveLoginDataToSF(context,"0","",0);
-                Navigator.of(context).pop(ConfirmAction.Accept);
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (BuildContext context) => SignUp()),
-                  ModalRoute.withName('/'),
-                );
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => DeleteAccount()));
               },
             )
           ],
@@ -459,9 +454,9 @@ class _MyHomePageState extends State<HomePage> {
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Create Account'),
+          title: Text('Login'),
           content: const Text(
-              'Login for using all options.Thanks for your visit.'),
+              'Guest user not allowed.Login for access.Thanks for your visit.'),
           actions: <Widget>[
             FlatButton(
               child: const Text('No'),
@@ -850,6 +845,29 @@ class _MyHomePageState extends State<HomePage> {
                       MaterialPageRoute(builder: (BuildContext context) => SignUp()),
                       ModalRoute.withName('/'),
                     );
+
+                  },
+                ),
+                Divider(color: colors.purpals,),
+                ListTile(
+                  leading:Icon(Icons.delete_outline_sharp,
+                      size: 30,
+                      color: Colors.white
+                  ),
+                  title: Text("Delete Account",style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 14.0,
+                  ),),
+                  trailing: Icon(Icons.keyboard_arrow_right_sharp),
+                  onTap: () async {
+                    ///  Comment //////
+                    Navigator.of(context).pop();
+                    _asyncConfirmDialognew(context);
+
+
+
 
                   },
                 ),
