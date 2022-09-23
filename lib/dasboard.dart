@@ -1995,7 +1995,7 @@ class _MyHomePageState extends State<HomePage> {
                   children: [
                     Text(commonAlert.dateFormateSQLServer(context,datalist[index].createdOn),
                         textAlign: TextAlign.start,
-                        style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 14.0)),
+                        style: style.copyWith(color: colors.black, fontWeight: FontWeight.w400,fontSize: 12.0)),
                     Text(datalist[index].notificationsMessage,
                         textAlign: TextAlign.start,
                         style: style.copyWith(color: Colors.black45, fontWeight: FontWeight.w400,fontSize: 13.0)),

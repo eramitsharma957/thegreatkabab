@@ -302,7 +302,7 @@ class ReviewsState extends State<Reviews> {
 
                     ),
                     child: Padding(padding:const EdgeInsets.all(4.0),
-                      child: Text(commonAlert.dateFormateSQLServer(context,reviewdata[index].createdOn),textAlign: TextAlign.center,style:TextStyle(color: colors.redthemenew,fontSize: 14.0,fontFamily: 'Poppins',
+                      child: Text(commonAlert.dateFormateSQLServer(context,reviewdata[index].createdOn),textAlign: TextAlign.center,style:TextStyle(color: colors.redthemenew,fontSize: 11.0,fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600)),
                     ),
 
