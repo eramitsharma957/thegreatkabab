@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:thegreatkabab/const/colors.dart';
@@ -228,6 +229,13 @@ class ContactUsState extends State<ContactUs> {
                                                            ],
                                                          ),
                                                      ),
+                                                     Expanded(
+                                                       flex:1,
+                                                       child: Text("",
+                                                           textAlign: TextAlign.start,
+                                                           style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
+                                                               fontWeight: FontWeight.w600)),
+                                                     ),
 
                                                      ],),
                                                      Divider(
@@ -255,19 +263,51 @@ class ContactUsState extends State<ContactUs> {
                                                          Expanded(
                                                            flex:2,
                                                            child:Column(
-                                                             mainAxisAlignment: MainAxisAlignment.start,
-                                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                                             children: [
-                                                               Text("MOBILE",
-                                                                   textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily: 'Poppins',
-                                                                       fontWeight: FontWeight.w600)),
-                                                               Text(_mobile,
-                                                                   textAlign: TextAlign.start,
-                                                                   style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily: 'Poppins',
-                                                                       fontWeight: FontWeight.w600)),
-                                                             ],
+                                                               mainAxisAlignment: MainAxisAlignment.start,
+                                                               crossAxisAlignment: CrossAxisAlignment.start,
+                                                               children: [
+                                                                 Text("MOBILE",
+                                                                     textAlign: TextAlign.start,
+                                                                     style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily: 'Poppins',
+                                                                         fontWeight: FontWeight.w600)),
+                                                                 Row(
+                                                                   children: [
+                                                                     Text(_mobile,
+                                                                         textAlign: TextAlign.start,
+                                                                         style: TextStyle(color: colors.black,fontSize: 12.0,fontFamily: 'Poppins',
+                                                                             fontWeight: FontWeight.w600)),
+
+
+                                                                   ],
+                                                                 ),
+
+                                                               ],
+                                                             ),
+
+
+
+                                                         ),
+
+                                                         Expanded(
+                                                           flex:1,
+                                                           child: GestureDetector(
+                                                             onTap: (){
+                                                               Clipboard.setData(ClipboardData(text: _mobile));
+                                                               print(_mobile);
+                                                               FlutterPhoneDirectCaller.callNumber(_mobile);
+                                                             },
+                                                             child:Padding(
+                                                               padding: EdgeInsets.all(5.0),
+                                                               child: SizedBox(
+                                                                 height: 35,
+                                                                 width: 35,
+                                                                 child: Image.asset( "assets/telecall.png", fit: BoxFit.contain),
+                                                               ),
+                                                             ),
                                                            ),
+
+
+
                                                          ),
 
                                                        ],),
@@ -309,6 +349,14 @@ class ContactUsState extends State<ContactUs> {
                                                                        fontWeight: FontWeight.w600)),
                                                              ],
                                                            ),
+                                                         ),
+
+                                                         Expanded(
+                                                           flex:1,
+                                                           child: Text("",
+                                                               textAlign: TextAlign.start,
+                                                               style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
+                                                                   fontWeight: FontWeight.w600)),
                                                          ),
 
                                                        ],),

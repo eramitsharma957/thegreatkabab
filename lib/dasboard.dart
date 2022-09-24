@@ -129,8 +129,10 @@ class _MyHomePageState extends State<HomePage> {
 
     if(defaultTargetPlatform != TargetPlatform.iOS){
       checkForUpdate();
+    }else{
+      _checkVersion();
     }
-    //_checkVersion();
+
 
   }
 
@@ -171,9 +173,6 @@ class _MyHomePageState extends State<HomePage> {
     var storeversion = int.parse(status.storeVersion.substring(4));
     if(localversion<storeversion){
       if(defaultTargetPlatform == TargetPlatform.iOS){
-        setState(() {
-          _updatevisible=false;
-        });
         newVersion.showUpdateDialog(
           context: context,
           versionStatus: status,
@@ -849,7 +848,7 @@ class _MyHomePageState extends State<HomePage> {
                   },
                 ),
                 Divider(color: colors.purpals,),
-                ListTile(
+               /* ListTile(
                   leading:Icon(Icons.delete_outline_sharp,
                       size: 30,
                       color: Colors.white
@@ -871,7 +870,7 @@ class _MyHomePageState extends State<HomePage> {
 
                   },
                 ),
-                Divider(color: colors.purpals,),
+                Divider(color: colors.purpals,),*/
 
       ],
     ),

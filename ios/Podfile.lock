@@ -34,6 +34,8 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
+  - flutter_phone_direct_caller (0.0.1):
+    - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
   - modern_form_esys_flutter_share (0.0.1):
@@ -56,6 +58,7 @@ PODS:
 DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - flutter_phone_direct_caller (from `.symlinks/plugins/flutter_phone_direct_caller/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - modern_form_esys_flutter_share (from `.symlinks/plugins/modern_form_esys_flutter_share/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -76,6 +79,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  flutter_phone_direct_caller:
+    :path: ".symlinks/plugins/flutter_phone_direct_caller/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   modern_form_esys_flutter_share:
@@ -96,6 +101,7 @@ SPEC CHECKSUMS:
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_phone_direct_caller: bd2ffd297f371a8a6c7bfbba0196964ffe3c4358
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   modern_form_esys_flutter_share: a60d6693d1d6ec1d467457448d26572daa39c363
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e

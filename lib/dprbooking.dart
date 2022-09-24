@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:thegreatkabab/const/colors.dart';
@@ -172,10 +173,12 @@ class DprBookingState extends State<DprBooking> {
                                                   SizedBox(
                                                     height: 30.0,
                                                   ),
+
                                                   Row(
                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                    //crossAxisAlignment: CrossAxisAlignment.center,
                                                    children: [
+
                                                      Expanded(
                                                        flex:1,
                                                          child: Padding(
@@ -209,10 +212,19 @@ class DprBookingState extends State<DprBooking> {
                                                          ),
                                                      ),
 
-                                                     ],),
-                                                     Divider(
-
+                                                     Expanded(
+                                                       flex:1,
+                                                       child: Text("",
+                                                           textAlign: TextAlign.start,
+                                                           style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
+                                                               fontWeight: FontWeight.w600)),
                                                      ),
+
+                                                     ],),
+
+                                                     Divider(
+                                                     ),
+
                                                   Row(
                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                        //crossAxisAlignment: CrossAxisAlignment.center,
@@ -250,10 +262,33 @@ class DprBookingState extends State<DprBooking> {
                                                            ),
                                                          ),
 
-                                                       ],),
-                                                     Divider(
+                                                         Expanded(
+                                                           flex:1,
+                                                           child: GestureDetector(
+                                                             onTap: (){
+                                                               Clipboard.setData(ClipboardData(text: _mobile));
+                                                               print(_mobile);
+                                                               FlutterPhoneDirectCaller.callNumber(_mobile);
+                                                             },
+                                                             child:Padding(
+                                                               padding: EdgeInsets.all(5.0),
+                                                               child: SizedBox(
+                                                                 height: 35,
+                                                                 width: 35,
+                                                                 child: Image.asset( "assets/telecall.png", fit: BoxFit.contain),
+                                                               ),
+                                                             ),
+                                                           ),
 
+
+
+                                                         ),
+
+                                                       ],),
+
+                                                     Divider(
                                                      ),
+
                                                   Row(
                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                        //crossAxisAlignment: CrossAxisAlignment.center,
@@ -291,10 +326,19 @@ class DprBookingState extends State<DprBooking> {
                                                            ),
                                                          ),
 
-                                                       ],),
-                                                     Divider(
+                                                         Expanded(
+                                                           flex:1,
+                                                           child: Text("",
+                                                               textAlign: TextAlign.start,
+                                                               style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
+                                                                   fontWeight: FontWeight.w600)),
+                                                         ),
 
+                                                       ],),
+
+                                                     Divider(
                                                      ),
+
                                                      Row(
                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                        //crossAxisAlignment: CrossAxisAlignment.center,
@@ -327,6 +371,14 @@ class DprBookingState extends State<DprBooking> {
                                                                        fontWeight: FontWeight.w600)),
                                                              ],
                                                            ),
+                                                         ),
+
+                                                         Expanded(
+                                                           flex:1,
+                                                           child: Text("",
+                                                               textAlign: TextAlign.start,
+                                                               style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
+                                                                   fontWeight: FontWeight.w600)),
                                                          ),
 
                                                        ],),
