@@ -41,6 +41,8 @@ class Datum {
     required this.firstTimeDiscountInPercent,
     required this.contactPerson,
     required this.oneTimeBookingSeatNo,
+    required this.latitude,
+    required this.longitude,
   });
 
   String hotelIdPk;
@@ -54,6 +56,8 @@ class Datum {
   double firstTimeDiscountInPercent;
   int oneTimeBookingSeatNo;
   String contactPerson;
+  String latitude;
+  String longitude;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     hotelIdPk: json["HotelID_PK"]??'',
@@ -67,6 +71,8 @@ class Datum {
     firstTimeDiscountInPercent: json["FirstTimeDiscountInPercent"]??0.0,
     contactPerson: json["ContactPerson"]??'',
     oneTimeBookingSeatNo: json["OneTimeBookingSeatNo"]??'',
+    latitude: json["Latitude"]??'',
+    longitude: json["Longitude"]??'',
   );
 
   Map<String, dynamic> toJson() => {
@@ -81,6 +87,8 @@ class Datum {
     "FirstTimeDiscountInPercent": firstTimeDiscountInPercent,
     "ContactPerson": contactPerson,
     "OneTimeBookingSeatNo": oneTimeBookingSeatNo,
+    "Latitude": latitude,
+    "Longitude": longitude,
   };
 }
 

@@ -39,7 +39,7 @@ class DprBookingState extends State<DprBooking> {
   OtpFieldController otpController = OtpFieldController();
   var _Otp;
   bool _layoutlogin=true;
-  var _hotelName,_email,_contactPerson,_mobile,_address;
+  var _hotelName,_email,_contactPerson,_mobile,_address,_lat,_long;
 
   @override
   void initState() {
@@ -80,6 +80,23 @@ class DprBookingState extends State<DprBooking> {
     ad.then((data) {
       setState(() {
         _address=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+
+    Future<String> lat = sfdata.getlati(context);
+    lat.then((data) {
+      setState(() {
+        _lat=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> lon = sfdata.getlongi(context);
+    lon.then((data) {
+      setState(() {
+        _long=data;
       });
     },onError: (e) {
       print(e);
@@ -375,10 +392,21 @@ class DprBookingState extends State<DprBooking> {
 
                                                          Expanded(
                                                            flex:1,
-                                                           child: Text("",
-                                                               textAlign: TextAlign.start,
-                                                               style: TextStyle(color: colors.redtheme,fontSize: 12.0,fontFamily:'Poppins',
-                                                                   fontWeight: FontWeight.w600)),
+                                                           child: GestureDetector(
+                                                             onTap: (){
+                                                               print(_mobile);
+                                                               commonAlert.launchMapsUrl(double.parse(_lat.trim()), double.parse(_long.trim()));
+                                                             },
+                                                             child:Padding(
+                                                               padding: EdgeInsets.all(5.0),
+                                                               child: SizedBox(
+                                                                 height: 35,
+                                                                 width: 35,
+                                                                 child: Image.asset( "assets/maps.png", fit: BoxFit.contain),
+                                                               ),
+                                                             ),
+                                                           ),
+
                                                          ),
 
                                                        ],),

@@ -50,6 +50,7 @@ class BookingCancelState extends State<BookingCancel> {
   double totalfinalpricepfbooking=0.0;
   bool isCancel=false;
   final GlobalKey _key = GlobalKey();
+  var _lat,_long;
 //  ScreenshotController screenshotController = ScreenshotController();
   late File _imageFile;
   @override
@@ -68,6 +69,23 @@ class BookingCancelState extends State<BookingCancel> {
     logo.then((data) {
       setState(() {
         _logoUrl=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+
+    Future<String> lat = sfdata.getlati(context);
+    lat.then((data) {
+      setState(() {
+        _lat=data;
+      });
+    },onError: (e) {
+      print(e);
+    });
+    Future<String> lon = sfdata.getlongi(context);
+    lon.then((data) {
+      setState(() {
+        _long=data;
       });
     },onError: (e) {
       print(e);
@@ -448,10 +466,29 @@ class BookingCancelState extends State<BookingCancel> {
 
                             ),
                         ),
+
+
+                            SizedBox(
+                              height:5.0,
+                            ),
+
+                            GestureDetector(
+                              onTap: (){
+                                commonAlert.launchMapsUrl(double.parse(_lat.trim()), double.parse(_long.trim()));
+                              },
+                              child:Padding(
+                                padding: EdgeInsets.all(5.0),
+                                child: SizedBox(
+                                  height: 35,
+                                  width: 35,
+                                  child: Image.asset( "assets/maps.png", fit: BoxFit.contain),
+                                ),
+                              ),
+                            ),
+
                             SizedBox(
                               height:10.0,
                             ),
-
                             Visibility(
                                 visible: isCancel,
                                 child: Row(

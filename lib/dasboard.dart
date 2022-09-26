@@ -212,7 +212,7 @@ class _MyHomePageState extends State<HomePage> {
         .then((result) {
       setState(() {
         if(result.data.isNotEmpty){
-        sfdata.saveHotelData(context,result.data[0].name, result.data[0].logo, result.data[0].address, result.data[0].phoneNumber, result.data[0].email, result.data[0].seatDiscountInPercent, result.data[0].itemDiscountInPercent, result.data[0].firstTimeDiscountInPercent, result.data[0].contactPerson,result.data[0].oneTimeBookingSeatNo);
+        sfdata.saveHotelData(context,result.data[0].name,result.data[0].logo, result.data[0].address, result.data[0].phoneNumber, result.data[0].email, result.data[0].seatDiscountInPercent, result.data[0].itemDiscountInPercent, result.data[0].firstTimeDiscountInPercent, result.data[0].contactPerson,result.data[0].oneTimeBookingSeatNo,result.data[0].latitude,result.data[0].longitude);
         logoUrl=result.data[0].logo;
         }else{
 
