@@ -344,12 +344,12 @@ class BookingCancelState extends State<BookingCancel> {
                                 color: colors.redtheme,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10.0,
                             ),
-                        RepaintBoundary(
-                          key: _key,
-                          child:Card(
+                          RepaintBoundary(
+                           key: _key,
+                           child:Card(
                               clipBehavior: Clip.antiAlias,
                               semanticContainer: true,
                               shape: RoundedRectangleBorder(
@@ -465,19 +465,17 @@ class BookingCancelState extends State<BookingCancel> {
 
 
                             ),
-                        ),
+                          ),
 
-
-                            SizedBox(
+                            const SizedBox(
                               height:5.0,
                             ),
-
                             GestureDetector(
                               onTap: (){
                                 commonAlert.launchMapsUrl(double.parse(_lat.trim()), double.parse(_long.trim()));
                               },
                               child:Padding(
-                                padding: EdgeInsets.all(5.0),
+                                padding: const EdgeInsets.all(5.0),
                                 child: SizedBox(
                                   height: 35,
                                   width: 35,
